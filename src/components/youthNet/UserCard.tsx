@@ -23,6 +23,7 @@ type UserCardProps = {
   totalCount?: number;
   newRegistrations?: number;
   onClick?: (name: string) => void; // Add onClick prop
+  onToggleClick?: (name: string) => void; // Add onClick prop
 };
 
 const UserCard: React.FC<UserCardProps> = ({
@@ -37,6 +38,7 @@ const UserCard: React.FC<UserCardProps> = ({
   totalCount,
   newRegistrations,
   onClick,
+  onToggleClick,
 }) => {
   const theme = useTheme<any>();
 
@@ -47,14 +49,12 @@ const UserCard: React.FC<UserCardProps> = ({
       width={'100%'}
       justifyContent={'space-between'}
       sx={{
-        cursor: 'pointer',
         ...(!totalCount && {
           '@media (min-width: 600px)': {
             background: theme.palette.warning.A400,
           },
         }),
       }}
-      onClick={() => onClick && onClick(name)}
     >
       <ListItem>
         {showAvtar && (
@@ -87,12 +87,14 @@ const UserCard: React.FC<UserCardProps> = ({
         >
           <Typography
             sx={{
+              cursor: 'pointer',
               fontSize: '16px',
               color: theme.palette.secondary.main,
               textDecoration: 'underline',
-              cursor: 'pointer',
+
               padding: '5px 5px',
             }}
+            onClick={() => onClick && onClick(name)}
           >
             {name}
           </Typography>
@@ -148,6 +150,7 @@ const UserCard: React.FC<UserCardProps> = ({
                   color: theme.palette.warning['300'],
                   cursor: 'pointer',
                 }}
+                onClick={() => onToggleClick && onToggleClick(name)}
               />
             )}
           </Box>
@@ -161,12 +164,14 @@ type UserListProps = {
   users: UserCardProps[];
   layout?: 'list' | 'grid'; // Added layout prop
   onUserClick?: (name: string) => void; // Add onUserClick prop
+  onToggleUserClick?: (name: string) => void;
 };
 
 export const UserList: React.FC<UserListProps> = ({
   users,
   layout = 'grid',
   onUserClick, // Receive onUserClick prop
+  onToggleUserClick,
 }) => {
   return layout === 'grid' ? (
     <List>
@@ -180,7 +185,11 @@ export const UserList: React.FC<UserListProps> = ({
               md={user.totalCount ? 12 : 6}
               lg={user.totalCount ? 12 : 4}
             >
-              <UserCard {...user} onClick={onUserClick} />{' '}
+              <UserCard
+                {...user}
+                onClick={onUserClick}
+                onToggleClick={onToggleUserClick}
+              />{' '}
               {/* Pass onUserClick */}
             </Grid>
             {index < users.length - 1 && <Divider />}
@@ -192,7 +201,11 @@ export const UserList: React.FC<UserListProps> = ({
     <List>
       {users.map((user, index) => (
         <React.Fragment key={index}>
-          <UserCard {...user} onClick={onUserClick} />
+          <UserCard
+            {...user}
+            onClick={onUserClick}
+            onToggleClick={onToggleUserClick}
+          />
           {index < users.length - 1 && <Divider />}
         </React.Fragment>
       ))}

@@ -590,17 +590,17 @@
     "HAVE_YOU_RECEIVE_ANY_PRIOR_TRAINING": "Have You Received Any Prior Training?",
     "WHAT_DO_YOU_WANT_TO_BECOME": "What do you want to become?",
     "EDUCATIONAL_INSTITUTE": "Educational Institute",
-    "UNEMPLOYED_OR_DOMESTIC_WORK":"Unemployed or Domestic Work",
-    "SELF_PLACED":"Self Placed",
-    "TRANSGENDER":"Transgender",
-    "HINDI":"Hindi",
-    "MARATHI":"Marathi",
-    "URDU":"Urdu",
-    "DIVORCED/WIDOW":"Divorced/Widow",
-    "AVAILABLE_SUGGESTIONS":"Available suggestions:",
-    "USERNAME_ALREADY_EXIST":"This username already exists",
-    "GRADUATE":"Graduate",
-    "POST_GRADUATE":"Post Graduate"
+    "UNEMPLOYED_OR_DOMESTIC_WORK": "Unemployed or Domestic Work",
+    "SELF_PLACED": "Self Placed",
+    "TRANSGENDER": "Transgender",
+    "HINDI": "Hindi",
+    "MARATHI": "Marathi",
+    "URDU": "Urdu",
+    "DIVORCED/WIDOW": "Divorced/Widow",
+    "AVAILABLE_SUGGESTIONS": "Available suggestions:",
+    "USERNAME_ALREADY_EXIST": "This username already exists",
+    "GRADUATE": "Graduate",
+    "POST_GRADUATE": "Post Graduate"
   },
   "FORM_ERROR_MESSAGES": {
     "INVALID_INPUT": "Invalid Input.",
@@ -620,7 +620,6 @@
     "MUST_BE_GREATER_THAN": "{{fieldname}} must be greater than {{minLength}}",
     "ENTER_VALID_CENTER_NAME": "Enter valid center name",
     "SPACE_AND_SPECIAL_CHARACTERS_NOT_ALLOWED": "Space and special characters are not allowed"
-
   },
   "COURSE_PLANNER": {
     "COURSE_PLANNER": "Curriculum Plan",
@@ -739,16 +738,17 @@
     "PHONE_NUMBER": "Phone Number",
     "MENTOR_ID": "Mentor ID",
     "GENDER": "Gender",
-    "AGE": "Age"
+    "AGE": "Age",
+    "VOLUNTEERING_DETAILS": "Volunteering details"
   },
   "YOUTHNET_CAMP_DETAILS": {
     "SUBMISSION": "Submission",
     "SUMMARY": "Summary"
   },
   "SURVEYS": {
-    "SURVEYS" :"Surveys",
-    "ACTIVE_SURVEYS" :"Active Surveys",
-    "PREVIOUS_SURVEYS" :"Previous Surveys",
-    "VILLAGES":"Villages"
+    "SURVEYS": "Surveys",
+    "ACTIVE_SURVEYS": "Active Surveys",
+    "PREVIOUS_SURVEYS": "Previous Surveys",
+    "VILLAGES": "Villages"
   }
 }

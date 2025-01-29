@@ -12,7 +12,7 @@ import { UserList } from '@/components/youthNet/UserCard';
 import Profile from '@/components/youthNet/Profile';
 import { useTheme } from '@mui/material/styles';
 
-const StudentDetails = () => {
+const YouthDetails = () => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
   const router = useRouter();
@@ -93,4 +93,4 @@ export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
   };
 };
 
-export default withRole(TENANT_DATA.YOUTHNET)(StudentDetails);
+export default withRole(TENANT_DATA.YOUTHNET)(YouthDetails);
