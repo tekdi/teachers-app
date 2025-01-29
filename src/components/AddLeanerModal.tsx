@@ -271,7 +271,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
               sendEmail(
                 creatorName,
                 apiBody['username'],
-                password,
+                apiBody['username'],
                 userEmail,
                 apiBody['firstName']
               );

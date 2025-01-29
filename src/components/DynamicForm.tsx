@@ -64,6 +64,8 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   };
   const { t } = useTranslation();
   const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [isGetUserName, setIsGetUserName] = useState<boolean>(false);
+
 
   const submittedButtonStatus = useSubmittedButtonStore(
     (state: any) => state.submittedButtonStatus
@@ -273,34 +275,35 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
       return error;
     });
   }
-  const validateUsername = async (userData: { firstName: string; lastName: string; username: string }) => {
+  const validateUsername = async (userData: {
+    firstName: string;
+    lastName: string;
+    username: string;
+  }) => {
     try {
-      const response = await userNameExist(userData);
-      setSuggestions([response?.suggestedUsername]);
+      console.log('suggestions.length', suggestions.length);
+      if (suggestions.length === 0) {
+        const response = await userNameExist(userData);
+        setSuggestions([response?.suggestedUsername]);
+        setIsGetUserName(false);
+      }
     } catch (error) {
       setSuggestions([]);
+      setIsGetUserName(true);
       console.error('Error validating username:', error);
     }
   };
   const handleChange= async(event: any)=> {
     const sanitizedData = sanitizeFormData(event.formData);
-    if(formData?.username && formData?.firstName && formData?.lastName && formData?.username!== event.formData?.username) 
-    {
-      const userData = {
-        firstName: formData?.firstName,
-        lastName: formData?.lastName,
-        username: event.formData?.username,
-      }
-      //         const response = await userNameExist(userData);
-      // setSuggestions([response?.suggestedUsername]);
-      await validateUsername(userData);
-     
+    if (event.formData?.username !== formData?.username && formData?.username) {
+      setIsGetUserName(false);
+      setSuggestions([]);
     }
     onChange({ ...event, formData: sanitizedData });
   }
   const handleUsernameBlur = async (username: string) => {
    
-    if (username && formData?.firstName && formData?.lastName) {
+    if (username && formData?.firstName && formData?.lastName &&  !isGetUserName  ) {
       const userData = {
         firstName: formData?.firstName,
         lastName: formData?.lastName,
@@ -310,7 +313,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
     }
   };
   const handleFirstLastNameBlur = async (lastName: string) => {
-    if (lastName && !isEdit) {
+    if (lastName && !isEdit && !isGetUserName) {
       try {
         console.log('Username onblur called' ,formData);
         if(formData?.firstName && formData?.lastName){
@@ -342,6 +345,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
         ...prev,
         username: selectedUsername,
       }));
+      setIsGetUserName(true)
     setSuggestions([]);
   };
 
