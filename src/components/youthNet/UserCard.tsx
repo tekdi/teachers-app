@@ -94,7 +94,7 @@ const UserCard: React.FC<UserCardProps> = ({
 
               padding: '5px 5px',
             }}
-            onClick={() => onClick && onClick(name)}
+            onClick={() => onClick?.(name)}
           >
             {name}
           </Typography>
@@ -150,7 +150,7 @@ const UserCard: React.FC<UserCardProps> = ({
                   color: theme.palette.warning['300'],
                   cursor: 'pointer',
                 }}
-                onClick={() => onToggleClick && onToggleClick(name)}
+                onClick={() => onToggleClick?.(name)}
               />
             )}
           </Box>
