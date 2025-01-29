@@ -1,6 +1,6 @@
 import React from 'react';
 import { Drawer, Box, Typography, Button, Divider } from '@mui/material';
-import SwapHorizIcon from '@mui/icons-material/SwapHoriz'; // Adjust this if needed
+import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import { useTheme } from '@mui/material/styles';
 
 interface BottomDrawerProps {

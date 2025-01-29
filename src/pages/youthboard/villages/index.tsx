@@ -69,7 +69,7 @@ const Index = () => {
           <Tabs
             value={value}
             onChange={handleChange}
-            textColor="inherit" // Use "inherit" to apply custom color
+            textColor="inherit"
             aria-label="secondary tabs example"
             sx={{
               fontSize: '14px',
@@ -104,20 +104,12 @@ const Index = () => {
       <Box>
         {value === 1 && (
           <>
-            {/* <Grid
-              px={'18px'}
-              spacing={2}
-              mt={1}
-              sx={{ display: 'flex', alignItems: 'center' }}
-              container
-            > */}
             <Box
               display={'flex'}
               flexDirection={'row'}
               sx={{
                 pr: '20px',
               }}
-              // justifyContent={'space-around'}
             >
               <SearchBar
                 onSearch={setSearchInput}
@@ -225,7 +217,6 @@ const Index = () => {
               sx={{
                 pr: '20px',
               }}
-              // justifyContent={'space-around'}
             >
               <SearchBar
                 onSearch={setSearchInput}
@@ -252,7 +243,7 @@ const Index = () => {
               open={openDrawer}
               onClose={handleToggleClose}
               title={toggledUser}
-              buttonLabel="Mark as Volunteer"
+              buttonLabel={t('YOUTHNET_PROFILE.MARK_AS_VOLUNTEER')}
               onAction={handleMarkAsVolunteer}
             />
           </>

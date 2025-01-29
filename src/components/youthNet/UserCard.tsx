@@ -170,7 +170,7 @@ type UserListProps = {
 export const UserList: React.FC<UserListProps> = ({
   users,
   layout = 'grid',
-  onUserClick, // Receive onUserClick prop
+  onUserClick,
   onToggleUserClick,
 }) => {
   return layout === 'grid' ? (
@@ -190,7 +190,6 @@ export const UserList: React.FC<UserListProps> = ({
                 onClick={onUserClick}
                 onToggleClick={onToggleUserClick}
               />{' '}
-              {/* Pass onUserClick */}
             </Grid>
             {index < users.length - 1 && <Divider />}
           </React.Fragment>

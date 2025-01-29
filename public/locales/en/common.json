@@ -739,7 +739,8 @@
     "MENTOR_ID": "Mentor ID",
     "GENDER": "Gender",
     "AGE": "Age",
-    "VOLUNTEERING_DETAILS": "Volunteering details"
+    "VOLUNTEERING_DETAILS": "Volunteering details",
+    "MARK_AS_VOLUNTEER": "Mark as Volunteer"
   },
   "YOUTHNET_CAMP_DETAILS": {
     "SUBMISSION": "Submission",
