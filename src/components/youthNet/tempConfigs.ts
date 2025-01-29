@@ -246,6 +246,17 @@ export const villageList = [
   },
 ];
 
+export const DROPDOWN_NAME = 'Village';
+export const VILLAGE_OPTIONS = ['Shivare', 'Pune', 'Mumbai'];
+
+export const studentListDetails = [
+  {
+    name: 'Ananya Gupta',
+    age: 'Shivare (Bhor, Pune, Maharashtra)',
+    showMore: true,
+    showAvtar: true,
+  },
+
 
 
 // surveys UI  data 
@@ -340,4 +351,5 @@ export const surveysData = [
       actionRequired: "Finalize List of Attendees"
     }
   }
+
 ];
