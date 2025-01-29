@@ -258,6 +258,33 @@ export const GenerateSchemaAndUiSchema = (
       }
       fieldSchema.validation = field.validation;
     }
+    if (field.dependsOn) {
+      const dependencyField = field.dependsOn;
+
+      schema.dependencies = schema.dependencies || {};
+
+      schema.dependencies[dependencyField] =
+        schema.dependencies[dependencyField] ||
+        ({
+          properties: {},
+        } as JSONSchema7);
+
+      const dependencyObject = schema.dependencies[
+        dependencyField
+      ] as JSONSchema7;
+
+      dependencyObject.properties = {
+        ...dependencyObject.properties,
+        [name]: fieldSchema,
+      };
+
+      schema.dependencies[dependencyField] = dependencyObject;
+    } else {
+      if (schema.properties) {
+        schema.properties[name] = fieldSchema;
+        uiSchema[name] = fieldUiSchema;
+      }
+    }
 
     if (schema !== undefined && schema.properties) {
       schema.properties[name] = fieldSchema;
