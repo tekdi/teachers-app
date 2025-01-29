@@ -16,17 +16,17 @@ const StudentDetails = () => {
   const theme = useTheme<any>();
   const { t } = useTranslation();
   const router = useRouter();
-  const { studentDetails } = router.query;
+  const { id } = router.query;
 
   const [studentName, setStudentName] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    if (Array.isArray(studentDetails)) {
-      setStudentName(studentDetails[0]);
+    if (Array.isArray(id)) {
+      setStudentName(id[0]);
     } else {
-      setStudentName(studentDetails);
+      setStudentName(id);
     }
-  }, [studentDetails]);
+  }, [id]);
 
   const handleBack = () => {
     router.back();
@@ -63,7 +63,6 @@ const StudentDetails = () => {
       >
         <Typography
           variant="h6"
-          fontWeight="bold"
           sx={{
             fontSize: '14px',
             fontWeight: 500,
