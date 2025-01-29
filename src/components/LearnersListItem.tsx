@@ -303,9 +303,9 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
           if (data) {
             const userData = data?.userData;
             setUserData(userData);
-            setUserName(userData?.name);
+            setUserName(userData?.firstName+' '+userData?.middleName+' '+userData?.lastName);
             setContactNumber(userData?.mobile);
-            setEnrollmentNumber(capitalizeEachWord(userData?.username));
+            setEnrollmentNumber(userData?.username);
             const customDataFields = userData?.customFields;
             if (customDataFields?.length > 0) {
               setCustomFieldsData(customDataFields);
@@ -408,15 +408,15 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
   const stringAvatar = (name: string) => {
     if (name) {
       const nameParts = name.split(' ');
-
+  
       return {
         children:
           nameParts.length === 1
             ? nameParts[0][0]
-            : `${nameParts[0][0]}${nameParts[1][0]}`,
+            : `${nameParts[0][0]}${nameParts[1]?.[0] || ''}`, 
       };
     }
-
+  
     return '';
   };
 

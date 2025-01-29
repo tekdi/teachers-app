@@ -92,7 +92,8 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
   const { userId }: any = router.query;
   const store = useStore();
   const isActiveYear = store.isActiveYearSelected;
-
+  const [selectedUserEmail, setSelectedUserEmail] = useState("");
+  const [selectedUserUserName, setSelectedUserUserName] = useState("");
   const [assesmentData, setAssesmentData] = useState<any>(null);
   const [test, setTest] = React.useState('Pre Test');
   const [subject, setSubject] = React.useState('English');
@@ -158,6 +159,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
   };
 
   const mapFields = (formFields: any, response: any) => {
+    response.userData.phone_number=response.userData.mobile
     const initialFormData: any = {};
     formFields.fields.forEach((item: any) => {
       const userData = response?.userData;
@@ -208,10 +210,12 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
           }
         }
       } else {
-        const fieldValue = getValue(userData, customFieldValue);
 
-        if (fieldValue) {
-          initialFormData[item.name] = fieldValue;
+        if (customFieldValue) {
+          const fieldValue = getValue(userData, customFieldValue); 
+          if (fieldValue) {
+            initialFormData[item.name] = fieldValue;
+          }
         }
       }
     });
@@ -221,6 +225,12 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
   const fetchDataAndInitializeForm = async () => {
     try {
       const response = await getUserDetails(userId, true);
+      setSelectedUserUserName(response?.result?.userData?.username);
+      setSelectedUserEmail(response?.result?.userData?.email);
+   
+
+
+
       const formFields = await getFormRead(
         FormContext.USERS,
         FormContextType.STUDENT
@@ -296,7 +306,21 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
             const data = response;
             if (data) {
               const coreFieldData = data?.result?.userData;
-              setUserName(toPascalCase(coreFieldData?.name));
+              let fullName = "";
+
+              if (coreFieldData?.firstName) {
+                fullName += toPascalCase(coreFieldData.firstName);
+              }
+              
+              if (coreFieldData?.middleName) {
+                fullName += (fullName ? " " : "") + toPascalCase(coreFieldData.middleName);
+              }
+              
+              if (coreFieldData?.lastName) {
+                fullName += (fullName ? " " : "") + toPascalCase(coreFieldData.lastName);
+              }
+              
+              setUserName(fullName);
               const fields: CustomField[] =
                 data?.result?.userData?.customFields;
               if (fields?.length > 0) {
@@ -321,7 +345,9 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
                     FormContext.USERS,
                     FormContextType.STUDENT
                   );
-                  if (response) {
+                  if (response) {    
+
+
                     const mergeData = (
                       fieldIdToValueMap: { [key: string]: string },
                       response: any
@@ -919,6 +945,8 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
                 isEditModal={true}
                 userId={userId}
                 onReload={handleReload}
+                learnerEmailId={selectedUserEmail}
+                learnerUserName={selectedUserUserName}
               />
             </div>
           )}

@@ -5,24 +5,30 @@ import { Theme as MaterialUITheme } from '@rjsf/mui';
 import { RJSFSchema, RegistryFieldsType, WidgetProps } from '@rjsf/utils';
 import validator from '@rjsf/validator-ajv8';
 import { useTranslation } from 'next-i18next';
-import React, { ReactNode, useEffect } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import CustomRadioWidget from './CustomRadioWidget';
 import MultiSelectCheckboxes from './MultiSelectCheckboxes';
 import MultiSelectDropdown from './MultiSelectDropdown';
 import CustomNumberWidget from './CustomNumberWidget';
+import UsernameWithSuggestions from './UsernameWithSuggestions';
+import { userNameExist } from '@/services/CreateUserService';
 
 const FormWithMaterialUI = withTheme(MaterialUITheme);
 
 interface DynamicFormProps {
   schema: any;
   uiSchema: object;
-  formData?: object;
+  formData?: {
+    username?: string;
+    [key: string]: any;
+  };
   onSubmit: (
     data: IChangeEvent<any, RJSFSchema, any>,
     event: React.FormEvent<any>
   ) => void | Promise<void>;
   onChange: (event: IChangeEvent<any>) => void;
   onError: (errors: any) => void;
+  setFormData?: (data: any) => void;
   showErrorList: boolean;
 
   widgets: {
@@ -32,6 +38,7 @@ interface DynamicFormProps {
     [key: string]: React.FC<RegistryFieldsType<any, RJSFSchema, any>>;
   };
   children?: ReactNode;
+  isEdit?: boolean;
 }
 
 const DynamicForm: React.FC<DynamicFormProps> = ({
@@ -43,14 +50,20 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   onError,
   customFields,
   children,
+  setFormData,
+  isEdit=false,
 }) => {
   const widgets = {
     MultiSelectCheckboxes: MultiSelectCheckboxes,
     CustomRadioWidget: CustomRadioWidget,
     MultiSelectDropdown: MultiSelectDropdown,
     CustomNumberWidget: CustomNumberWidget,
+    UsernameWithSuggestions: UsernameWithSuggestions as React.FC<
+      WidgetProps<any, RJSFSchema, any>
+    >,
   };
   const { t } = useTranslation();
+  const [suggestions, setSuggestions] = useState<string[]>([]);
 
   const submittedButtonStatus = useSubmittedButtonStore(
     (state: any) => state.submittedButtonStatus
@@ -83,13 +96,16 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   };
   const sanitizeFormData = (data: any): any => {
     if (Array.isArray(data)) {
-      return data.map(item => (typeof item === "undefined" ? '' : sanitizeFormData(item)));
+      return data.map((item) =>
+        typeof item === 'undefined' ? '' : sanitizeFormData(item)
+      );
     }
     if (data !== null && typeof data === 'object') {
       return Object.fromEntries(
-       
-        Object.entries(data)?.map(([key, value]) => [key, value === "undefined" ? "" : sanitizeFormData(value)])
-
+        Object.entries(data)?.map(([key, value]) => [
+          key,
+          value === 'undefined' ? '' : sanitizeFormData(value),
+        ])
       );
     }
     return data;
@@ -186,6 +202,12 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
               );
               break;
             }
+            case '^[a-zA-Z0-9.@]+$': {
+              error.message = t(
+                'FORM_ERROR_MESSAGES.SPACE_AND_SPECIAL_CHARACTERS_NOT_ALLOWED'
+              );
+              break;
+            }
             default: {
               if (error?.property === '.email') {
                 const validEmail = emailPattern.test(pattern);
@@ -251,11 +273,77 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
       return error;
     });
   }
-
-  function handleChange(event: any) {
+  const validateUsername = async (userData: { firstName: string; lastName: string; username: string }) => {
+    try {
+      const response = await userNameExist(userData);
+      setSuggestions([response?.suggestedUsername]);
+    } catch (error) {
+      setSuggestions([]);
+      console.error('Error validating username:', error);
+    }
+  };
+  const handleChange= async(event: any)=> {
     const sanitizedData = sanitizeFormData(event.formData);
+    if(formData?.username && formData?.firstName && formData?.lastName && formData?.username!== event.formData?.username) 
+    {
+      const userData = {
+        firstName: formData?.firstName,
+        lastName: formData?.lastName,
+        username: event.formData?.username,
+      }
+      //         const response = await userNameExist(userData);
+      // setSuggestions([response?.suggestedUsername]);
+      await validateUsername(userData);
+     
+    }
     onChange({ ...event, formData: sanitizedData });
   }
+  const handleUsernameBlur = async (username: string) => {
+   
+    if (username && formData?.firstName && formData?.lastName) {
+      const userData = {
+        firstName: formData?.firstName,
+        lastName: formData?.lastName,
+        username: username,
+      }
+      await validateUsername(userData)     
+    }
+  };
+  const handleFirstLastNameBlur = async (lastName: string) => {
+    if (lastName && !isEdit) {
+      try {
+        console.log('Username onblur called' ,formData);
+        if(formData?.firstName && formData?.lastName){
+          if( setFormData){
+            setFormData((prev: any) => ({
+              ...prev,
+              username: formData.username ? formData.username :`${formData?.firstName}${formData?.lastName}`.toLowerCase(),
+            }));
+            const userData = {
+              firstName: formData?.firstName,
+              lastName: formData?.lastName,
+              username: formData.username ? formData.username: `${formData?.firstName}${formData?.lastName}`.toLowerCase(),
+            }
+            await validateUsername(userData)  
+           
+          }
+        }
+      } catch (error) {
+        setSuggestions([]);
+
+        console.error('Error validating username:', error);
+      }
+    }
+  };
+
+  const handleSuggestionSelect = (selectedUsername: string) => {
+    if (setFormData)
+      setFormData((prev: any) => ({
+        ...prev,
+        username: selectedUsername,
+      }));
+    setSuggestions([]);
+  };
 
   return (
     <div className="form-parent">
@@ -273,6 +361,18 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
         onError={handleError}
         transformErrors={transformErrors}
         fields={customFields}
+        formContext={{
+          suggestions,
+          onSuggestionSelect: handleSuggestionSelect,
+        }}
+        onBlur={(field, value) => {
+          if (field === 'username') {
+            handleUsernameBlur(value);
+          }
+          if (field === 'root_lastName' || field === 'root_firstName') {
+            handleFirstLastNameBlur(value);
+          }
+        }}
       >
         {children}
       </FormWithMaterialUI>

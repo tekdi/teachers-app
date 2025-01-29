@@ -11,7 +11,7 @@ import {
   getDoIdForAssessmentDetails,
 } from '@/services/AssesmentService';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
-import { toPascalCase } from '@/utils/Helper';
+import { getAssessmentType, toPascalCase } from '@/utils/Helper';
 import { ICohort } from '@/utils/Interfaces';
 import {
   AssessmentStatus,
@@ -117,8 +117,7 @@ const Assessments = () => {
         if (resp) {
           const userDetails = resp.map((user: any) => ({
             ...user,
-            name: toPascalCase(user.name),
-            userId: user.userId,
+            name: toPascalCase(user?.firstName || '') + ' ' + (user?.lastName ? toPascalCase(user.lastName) : ""),            userId: user.userId,
           }));
           setCohortMembers(userDetails);
         }
@@ -141,6 +140,7 @@ const Assessments = () => {
     }
   }, [classId]);
 
+
   useEffect(() => {
     const getDoIdForAssessmentReport = async (
       selectedState: string,
@@ -153,10 +153,7 @@ const Assessments = () => {
         board: selectedBoard || centerData?.board,
         state: selectedState || centerData?.state,
         status: ['Live'],
-        assessmentType:
-          assessmentType === 'pre'
-            ? AssessmentType.PRE_TEST
-            : AssessmentType.POST_TEST,
+        assessmentType: getAssessmentType(assessmentType),
         primaryCategory: ['Practice Question Set'],
       };
       try {
@@ -371,13 +368,14 @@ const Assessments = () => {
 
     const queryParams = { ...query };
     if (newType === 'post') queryParams.type = 'post';
+    if (newType === 'other') queryParams.type = 'other';
     else delete queryParams.type;
 
     router.push({ pathname: router.pathname, query: queryParams }, undefined, { shallow: true });
   };
 
   useEffect(() => {
-    setAssessmentType(query.type === 'post' ? 'post' : 'pre');
+    setAssessmentType(query.type === 'post' ? 'post' : (query.type === 'pre' ? 'pre' : 'other'));
   }, [query.type]);
 
   return (
@@ -457,6 +455,9 @@ const Assessments = () => {
                 <MenuItem value={'post'} style={{ textAlign: 'right' }}>
                   {t('PROFILE.POST_TEST')}
                 </MenuItem>
+                <MenuItem value={'other'} style={{ textAlign: 'right' }}>
+                  {t('FORM.OTHER')}
+                </MenuItem>
               </Select>
             </FormControl>
           </Box>
@@ -472,7 +473,7 @@ const Assessments = () => {
             alignItems: 'center',
           }}
         >
-          <Loader showBackdrop={false} loadingText="Loading" />
+          <Loader showBackdrop={false} />
         </Box>
       )}
 
@@ -501,9 +502,9 @@ const Assessments = () => {
                 color: theme?.palette?.warning['400'],
               }}
             >
-              {testCompletionCount.totalCount > 0 && (
+              {testCompletionCount?.totalCount > 0 && (
                 <span>
-                  {`${testCompletionCount.completionCount}/${testCompletionCount.totalCount}`}{' '}
+                  {`${testCompletionCount.completionCount} ${t('ASSESSMENTS.OUT_OF')} ${testCompletionCount.totalCount}`}{' '}
                   {t('ASSESSMENTS.COMPLETED_THE_ASSESSMENT')}
                 </span>
               )}

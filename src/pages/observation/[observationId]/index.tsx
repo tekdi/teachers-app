@@ -313,7 +313,7 @@ setFilteredEntityData(result)
         const filters = {
           cohortId: selectedCohort,
         } as CohortMemberList['filters'];
-        if (searchInput !== '') filters.name = searchInput;
+        if (searchInput !== '') filters.firstName = searchInput;
         //const limit=limit;
         let response;
         if (entity === ObservationEntityType?.LEARNER) {
@@ -338,7 +338,7 @@ setFilteredEntityData(result)
               (field: { label: string }) => field.label === 'AGE'
             );
             return {
-              name: toPascalCase(user?.name),
+              name: toPascalCase(user?.firstName || '') + ' ' + (user?.lastName ? toPascalCase(user.lastName) : ""),
               userId: user?.userId,
               memberStatus: user?.status,
               statusReason: user?.statusReason,

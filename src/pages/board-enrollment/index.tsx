@@ -237,7 +237,9 @@ const BoardEnrollment = () => {
     return members.map((entry: any) => ({
       userId: entry.userId,
       cohortMembershipId: entry.cohortMembershipId,
-      name: toPascalCase(entry.name),
+      name: toPascalCase(entry?.firstName || '') + ' ' + (entry?.lastName ? toPascalCase(entry.lastName) : ""),
+
+      
       memberStatus: entry.status,
       statusReason: entry.statusReason,
       customField: entry.customField,

@@ -280,7 +280,7 @@ const LoginPage = () => {
 
             localStorage.setItem('role', userResponse?.tenantData[0]?.roleName);
             localStorage.setItem('userEmail', userResponse?.email);
-            localStorage.setItem('userName', userResponse?.name);
+            localStorage.setItem('userName', userResponse?.firstName);
             localStorage.setItem('userIdName', userResponse?.username);
             localStorage.setItem(
               'temporaryPassword',

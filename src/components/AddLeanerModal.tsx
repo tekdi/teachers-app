@@ -19,7 +19,7 @@ import {
 import { telemetryFactory } from '@/utils/telemetry';
 import { IChangeEvent } from '@rjsf/core';
 import { RJSFSchema } from '@rjsf/utils';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactGA from 'react-ga4';
 import { useTranslation } from 'react-i18next';
 import { tenantId } from '../../app.config';
@@ -37,6 +37,8 @@ interface AddLearnerModalProps {
   isEditModal?: boolean;
   userId?: string;
   onReload?: (() => void) | undefined;
+  learnerEmailId?: string;
+  learnerUserName?: string;
 }
 const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
   open,
@@ -46,9 +48,13 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
   isEditModal = false,
   userId,
   onReload,
+  learnerUserName,
+  learnerEmailId,
 }) => {
   const [schema, setSchema] = React.useState<any>();
   const [uiSchema, setUiSchema] = React.useState<any>();
+  const [customFormData, setCustomFormData] = React.useState<any>(formData);
+
   const [reloadProfile, setReloadProfile] = React.useState(false);
   const [openModal, setOpenModal] = React.useState(false);
   const [learnerFormData, setLearnerFormData] = React.useState<any>();
@@ -104,21 +110,17 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
     data: IChangeEvent<any, RJSFSchema, any>,
     event: React.FormEvent<any>
   ) => {
-    if(data?.formData?.name)
-    {
-      data.formData.name = data?.formData?.name?.trim()
+    if (data?.formData?.name) {
+      data.formData.name = data?.formData?.name?.trim();
     }
-    if(data?.formData?.father_name)
-    {
-      data.formData.father_name = data?.formData?.father_name?.trim()
+    if (data?.formData?.father_name) {
+      data.formData.father_name = data?.formData?.father_name?.trim();
     }
     setTimeout(() => {
       setLearnerFormData(data.formData);
     });
 
-
     const formData = data.formData;
-    
   };
 
   useEffect(() => {
@@ -195,22 +197,32 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
           fieldId: fieldData?.state?.districtId,
           value: [fieldData?.state?.districtCode],
         });
-        
       }
 
       try {
         if (isEditModal && userId && cohortId) {
           const userData = {
             name: apiBody.name,
-            mobile: apiBody.mobile,
+            mobile: String(apiBody?.phone_number),
             father_name: apiBody.father_name,
             username: apiBody.username,
+            email: apiBody?.email,
+            firstName: apiBody?.firstName,
+            middleName: apiBody?.middleName,
+            lastName: apiBody?.lastName,
+            dob: apiBody?.dob,
+            gender: apiBody?.gender,
           };
           const customFields = apiBody.customFields;
           const object = {
             userData: userData,
             customFields: customFields,
           };
+
+          if (learnerEmailId === userData.email) {
+            delete userData.email;
+          }
+          if (learnerUserName === userData.username) delete userData.username;
           const response = await editEditUser(userId, object);
           if (response) {
             showToastMessage(
@@ -222,6 +234,9 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
             onClose();
           }
         } else {
+          if (apiBody?.phone_number) {
+            apiBody.mobile = apiBody?.phone_number;
+          }
           const response = await createUser(apiBody);
           if (response) {
             showToastMessage(
@@ -255,10 +270,10 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
             if (creatorName && userEmail) {
               sendEmail(
                 creatorName,
-                username,
+                apiBody['username'],
                 password,
                 userEmail,
-                apiBody['name']
+                apiBody['firstName']
               );
             } else {
               showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
@@ -268,6 +283,10 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
       } catch (error: any) {
         if (error?.response?.data?.params?.err === 'User already exist.') {
           showToastMessage(error?.response?.data?.params?.err, 'error');
+        } else if (
+          error?.response?.data?.params?.errmsg === 'Email already exists'
+        ) {
+          showToastMessage(error?.response?.data?.params?.errmsg, 'error');
         } else {
           showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
         }
@@ -279,9 +298,26 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
     }
   };
 
-  const handleChange = (event: IChangeEvent<any>) => {
-    console.log('Form data changed:', event.formData);
+   const handleChange = (event: IChangeEvent<any>) => {
+    const { formData } = event;
+  
+    if (!isEditModal) {
+      const { firstName, lastName, username } = formData;
+       
+      if (firstName && lastName) {
+  
+        setCustomFormData({
+          ...formData,
+        
+        });
+      } else {
+        setCustomFormData({ ...formData });
+      }
+    } else {
+      setCustomFormData({ ...formData });
+    }
   };
+  
 
   const handleError = (errors: any) => {
     console.log('Form errors:', errors);
@@ -329,7 +365,9 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
             widgets={{}}
             showErrorList={true}
             customFields={customFields}
-            formData={formData ?? undefined}
+            formData={customFormData ?? undefined}
+            setFormData={setCustomFormData}
+            isEdit={isEditModal}
           >
             <FormButtons
               formData={formData ?? learnerFormData}

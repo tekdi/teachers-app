@@ -13,6 +13,7 @@ interface CustomPaginationProps {
     onPageChange: (value: number) => void;
     color?: 'primary' | 'secondary' | 'standard';
     fetchMoreData?: () => void;
+    TotalCount:number;
     hasMore?: boolean;
     items?: React.ReactNode[]; // Items to display in infinite scroll
 }
@@ -24,8 +25,12 @@ const CustomPagination: React.FC<CustomPaginationProps> = ({
     color = 'primary',
     fetchMoreData,
     hasMore = true,
+    TotalCount=0,
     items = [],
 }) => {
+
+
+    
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const { t } = useTranslation();
@@ -38,12 +43,12 @@ const CustomPagination: React.FC<CustomPaginationProps> = ({
                     console.warn('fetchMoreData callback is required for infinite scroll');
                 })}
                 hasMore={hasMore}
-                loader={<h4>{t('COMMON.LOADING')}...</h4>}
+                loader={items?.length >= TotalCount ? '' : <h4>{t('COMMON.LOADING')}...</h4>}
                 // endMessage={
                 //     <p style={{ textAlign: 'center' }}>You have seen all data!</p>
                 // }
             >
-                <></>
+                {null}
             </InfiniteScroll>
         );
     }

@@ -12,7 +12,7 @@ import { getUserDetails } from '@/services/ProfileService';
 import useAttendanceRangeColor from '@/hooks/useAttendanceRangeColor';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
-import { capitalizeEachWord, filterMiniProfileFields } from '@/utils/Helper';
+import { capitalizeEachWord, filterMiniProfileFields, toPascalCase } from '@/utils/Helper';
 
 interface StudentsStatsListProps {
   name: string;
@@ -36,6 +36,8 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
   const textColor = determinePathColor(presentPercent);
 
   const [userData, setUserData] = React.useState<UserData | null>(null);
+  const [fullName, setFullName] = React.useState<string>("");
+
   const [customFieldsData, setCustomFieldsData] = React.useState<
     UpdateCustomField[]
   >([]);
@@ -62,6 +64,21 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
           if (data) {
             const userData = data?.userData;
             setUserData(userData);
+
+            let fullName = "";
+
+              if (userData?.firstName) {
+                fullName += toPascalCase(userData.firstName);
+              }
+              
+              if (userData?.middleName) {
+                fullName += (fullName ? " " : "") + toPascalCase(userData.middleName);
+              }
+              
+              if (userData?.lastName) {
+                fullName += (fullName ? " " : "") + toPascalCase(userData.lastName);
+              }
+              setFullName(fullName);
             const customDataFields = userData?.customFields;
             if (customDataFields?.length > 0) {
               setCustomFieldsData(customDataFields);
@@ -93,9 +110,9 @@ const StudentsStatsList: React.FC<StudentsStatsListProps> = ({
           open={isModalOpenLearner}
           onClose={handleCloseModalLearner}
           data={filteredFields}
-          userName={userData?.name}
+          userName={fullName}
           contactNumber={userData?.mobile}
-          enrollmentNumber={capitalizeEachWord(userData?.username || '')}
+          enrollmentNumber={userData?.username || ''}
         />
       )}
       <Stack>

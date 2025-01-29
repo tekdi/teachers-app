@@ -303,7 +303,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
             const nameUserIdArray = resp
               ?.map((entry: any) => ({
                 userId: entry.userId,
-                name: toPascalCase(entry.name),
+                name: toPascalCase(entry.firstName),
                 memberStatus: entry.status,
                 createdAt: entry.createdAt,
                 updatedAt: entry.updatedAt,
@@ -1452,15 +1452,17 @@ const Dashboard: React.FC<DashboardProps> = () => {
             </>
           </>
         )}
-      <CentralizedModal
-        title={t('LOGIN_PAGE.WELCOME')}
-        subTitle={t('LOGIN_PAGE.PLEASE_RESET_YOUR_PASSWORD')}
-        secondary={t('LOGIN_PAGE.DO_IT_LATER')}
-        primary={t('LOGIN_PAGE.RESET_PASSWORD')}
-        modalOpen={centralizedModal}
-        handlePrimaryButton={handlePrimaryButton}
-        handleSkipButton={handleSkipButton}
-      />
+
+      {centralizedModal && (
+        <CentralizedModal
+          title={t('LOGIN_PAGE.WELCOME')}
+          subTitle={t('LOGIN_PAGE.PLEASE_RESET_YOUR_PASSWORD')}
+          secondary={t('LOGIN_PAGE.DO_IT_LATER')}
+          primary={t('LOGIN_PAGE.RESET_PASSWORD')}
+          modalOpen={centralizedModal}
+          handlePrimaryButton={handlePrimaryButton}
+          handleSkipButton={handleSkipButton}
+        />)}
     </>
   );
 };
