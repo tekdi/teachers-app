@@ -622,7 +622,6 @@
     "SPACE_AND_SPECIAL_CHARACTERS_NOT_ALLOWED": "Space and special characters are not allowed",
     "DATE_MUST_BE_ON_OR_BEFORE": "Date must be on or before {{date}}",
     "DATE_MUST_BE_ON_OR_AFTER": "Date must be on or after {{date}}"
-
   },
   "COURSE_PLANNER": {
     "COURSE_PLANNER": "Curriculum Plan",
@@ -719,6 +718,8 @@
   },
   "YOUTHNET_DASHBOARD": {
     "VILLAGES_MANAGED_BY_YOU": "Villages Managed by you : {{totalVillageCount}}",
+    "MANAGES": "Manages",
+    "VILLAGES": "Villages",
     "MONTHLY_REGISTRATIONS_OVERVIEW": "Monthly Registrations Overview",
     "CLOSED_ON": "Closed on",
     "ABOVE_18": "Over 18 Registrations",
