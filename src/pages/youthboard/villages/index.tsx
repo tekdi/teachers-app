@@ -3,7 +3,7 @@ import BackHeader from '@/components/youthNet/BackHeader';
 import { Box, Grid, Tab, Tabs, TextField, Typography } from '@mui/material';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import SearchBar from '@/components/Searchbar';
 import SortBy from '@/components/youthNet/SortBy';
@@ -14,6 +14,7 @@ import {
   VILLAGE_OPTIONS,
   villageList,
   youthList,
+  YOUTHNET_USER_ROLE,
 } from '@/components/youthNet/tempConfigs';
 import { UserList } from '@/components/youthNet/UserCard';
 import DownloadIcon from '@mui/icons-material/Download';
@@ -22,6 +23,11 @@ import { TENANT_DATA } from '../../../../app.config';
 import Dropdown from '@/components/youthNet/DropDown';
 import { useRouter } from 'next/router';
 import BottomDrawer from '@/components/youthNet/BottomDrawer';
+import Loader from '@/components/Loader';
+import {
+  fetchBlockData,
+  fetchDistrictData,
+} from '@/services/youthNet/Dashboard/VillageServices';
 
 const Index = () => {
   const { t } = useTranslation();
@@ -31,6 +37,19 @@ const Index = () => {
   const [searchInput, setSearchInput] = useState('');
   const [toggledUser, setToggledUser] = useState('');
   const [openDrawer, setOpenDrawer] = useState(false);
+  const [districtData, setDistrictData] = useState<any>(null);
+  const [blockData, setBlockData] = useState<any>(null);
+
+  useEffect(() => {
+    const getData = async () => {
+      const districtData = await fetchDistrictData();
+      const blockData = await fetchBlockData();
+      setDistrictData(districtData);
+      setBlockData(blockData);
+    };
+
+    getData();
+  }, []);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -104,6 +123,49 @@ const Index = () => {
       <Box>
         {value === 1 && (
           <>
+            {YOUTHNET_USER_ROLE.MENTOR_LEAD === TENANT_DATA.LEADER && (
+              <Box
+                display={'flex'}
+                flexDirection={'row'}
+                sx={{
+                  p: '20px',
+                }}
+              >
+                <Box
+                  sx={{
+                    width: '50%',
+                    mr: '20px',
+                  }}
+                >
+                  {districtData ? (
+                    <Dropdown
+                      name={districtData?.DISTRICT_NAME}
+                      values={districtData?.DISTRICT_OPTIONS}
+                      defaultValue={districtData?.DISTRICT_OPTIONS[0]}
+                      onSelect={(value) => console.log('Selected:', value)}
+                    />
+                  ) : (
+                    <Loader showBackdrop={true} />
+                  )}
+                </Box>
+                <Box
+                  sx={{
+                    width: '50%',
+                  }}
+                >
+                  {blockData ? (
+                    <Dropdown
+                      name={blockData?.BLOCK_NAME}
+                      values={blockData?.BLOCK_OPTIONS}
+                      defaultValue={blockData?.BLOCK_OPTIONS[0]}
+                      onSelect={(value) => console.log('Selected:', value)}
+                    />
+                  ) : (
+                    <Loader showBackdrop={true} />
+                  )}
+                </Box>
+              </Box>
+            )}
             <Box
               display={'flex'}
               flexDirection={'row'}
@@ -199,6 +261,49 @@ const Index = () => {
       <Box>
         {value === 2 && (
           <>
+            {YOUTHNET_USER_ROLE.MENTOR_LEAD === TENANT_DATA.LEADER && (
+              <Box
+                display={'flex'}
+                flexDirection={'row'}
+                sx={{
+                  p: '20px 20px 0px 20px',
+                }}
+              >
+                <Box
+                  sx={{
+                    width: '50%',
+                    mr: '20px',
+                  }}
+                >
+                  {districtData ? (
+                    <Dropdown
+                      name={districtData?.DISTRICT_NAME}
+                      values={districtData?.DISTRICT_OPTIONS}
+                      defaultValue={districtData?.DISTRICT_OPTIONS[0]}
+                      onSelect={(value) => console.log('Selected:', value)}
+                    />
+                  ) : (
+                    <Loader showBackdrop={true} />
+                  )}
+                </Box>
+                <Box
+                  sx={{
+                    width: '50%',
+                  }}
+                >
+                  {blockData ? (
+                    <Dropdown
+                      name={blockData?.BLOCK_NAME}
+                      values={blockData?.BLOCK_OPTIONS}
+                      defaultValue={blockData?.BLOCK_OPTIONS[0]}
+                      onSelect={(value) => console.log('Selected:', value)}
+                    />
+                  ) : (
+                    <Loader showBackdrop={true} />
+                  )}
+                </Box>
+              </Box>
+            )}
             <Box
               sx={{
                 px: '20px',
@@ -208,6 +313,7 @@ const Index = () => {
               <Dropdown
                 name={DROPDOWN_NAME}
                 values={VILLAGE_OPTIONS}
+                defaultValue={VILLAGE_OPTIONS[0]}
                 onSelect={(value) => console.log('Selected:', value)}
               />
             </Box>
