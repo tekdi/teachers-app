@@ -249,6 +249,16 @@ export const villageList = [
 ];
 
 export const DROPDOWN_NAME = 'Village';
+
+export const MENTOR_NAME = 'Mentor';
+
+export const MENTOR_OPTIONS = [
+  'Shivan Mathur',
+  'Mentor 2',
+  'Mentor 3',
+  'Mentor 4',
+];
+
 export const VILLAGE_OPTIONS = ['Shivare', 'Pune', 'Mumbai'];
 
 export const studentListDetails = [
@@ -351,3 +361,7 @@ export const surveysData = [
     },
   },
 ];
+
+export const YOUTHNET_USER_ROLE = {
+  MENTOR_LEAD: 'leader',
+};

@@ -124,6 +124,8 @@ export const TENANT_DATA = {
   SECOND_CHANCE_PROGRAM: 'Second Chance Program',
   PRATHAM_SCP: 'pratham SCP',
   YOUTHNET: 'YouthNet',
+  MENTOR: 'mentor',
+  LEADER: 'leader',
 };
 
 export const jotFormId = process.env.NEXT_PUBLIC_JOTFORM_ID || '';

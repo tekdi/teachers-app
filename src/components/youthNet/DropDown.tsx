@@ -6,10 +6,16 @@ interface DropdownProps {
   name: string;
   values: string[];
   onSelect: (value: string) => void;
+  defaultValue?: string;
 }
 
-const Dropdown: React.FC<DropdownProps> = ({ name, values, onSelect }) => {
-  const [selectedValue, setSelectedValue] = useState('');
+const Dropdown: React.FC<DropdownProps> = ({
+  name,
+  values,
+  onSelect,
+  defaultValue = '',
+}) => {
+  const [selectedValue, setSelectedValue] = useState(defaultValue);
 
   const handleChange = (event: any) => {
     const value = event.target.value;
