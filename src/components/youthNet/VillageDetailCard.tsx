@@ -19,7 +19,6 @@ const VillageDetailCard: React.FC<VillageDetailProps> = ({
         border: `1px solid ${theme.palette.warning['A100']}`,
         bgcolor: theme.palette.warning['800'],
         padding: '12px',
-
         margin: '20px',
         borderRadius: '16px',
         height: '64px',

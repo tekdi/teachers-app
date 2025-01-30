@@ -439,7 +439,7 @@ export interface Field {
   label: string;
   order: string;
   coreField: number;
-  dependsOn: string | boolean | null;
+  dependsOn: string | null;
   isEditable: boolean;
   isPIIField: boolean | null;
   validation?: string[];

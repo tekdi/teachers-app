@@ -11,6 +11,8 @@ import MultiSelectCheckboxes from './MultiSelectCheckboxes';
 import MultiSelectDropdown from './MultiSelectDropdown';
 import CustomNumberWidget from './CustomNumberWidget';
 import UsernameWithSuggestions from './UsernameWithSuggestions';
+import { customValidation } from './FormValidation';
+import { userNameExist } from '@/services/CreateUserService';
 
 const FormWithMaterialUI = withTheme(MaterialUITheme);
 
@@ -37,6 +39,7 @@ interface DynamicFormProps {
     [key: string]: React.FC<RegistryFieldsType<any, RJSFSchema, any>>;
   };
   children?: ReactNode;
+  isEdit?: boolean;
 }
 
 const DynamicForm: React.FC<DynamicFormProps> = ({
@@ -49,6 +52,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   customFields,
   children,
   setFormData,
+  isEdit = false,
 }) => {
   const widgets = {
     MultiSelectCheckboxes: MultiSelectCheckboxes,
@@ -61,6 +65,9 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   };
   const { t } = useTranslation();
   const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [storedSuggestions, setStoredSuggestions] = useState<string[]>([]);
+
+  const [isGetUserName, setIsGetUserName] = useState<boolean>(false);
 
   const submittedButtonStatus = useSubmittedButtonStore(
     (state: any) => state.submittedButtonStatus
@@ -69,6 +76,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
     (state: any) => state.setSubmittedButtonStatus
   );
 
+  
   useEffect(() => {
     setSubmittedButtonStatus(false);
   }, []);
@@ -270,17 +278,75 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
       return error;
     });
   }
-
-  function handleChange(event: any) {
+  const validateUsername = async (userData: {
+    firstName: string;
+    lastName: string;
+    username: string;
+  }) => {
+    try {
+      console.log('suggestions.length', suggestions.length);
+      if (suggestions.length === 0) {
+        const response = await userNameExist(userData);
+        setSuggestions([response?.suggestedUsername]);
+        setStoredSuggestions([response?.suggestedUsername]);
+        setIsGetUserName(false);
+      }
+    } catch (error) {
+      setSuggestions([]);
+      setIsGetUserName(true);
+      console.error('Error validating username:', error);
+    }
+  };
+  const handleChange = async (event: any) => {
     const sanitizedData = sanitizeFormData(event.formData);
+    if (event.formData?.username !== formData?.username && (formData?.username||formData?.username==="")) {
+      if (event.formData?.username !== '') {
+        setIsGetUserName(false);
+        setSuggestions([]);
+      } else setSuggestions(storedSuggestions);
+    }
     onChange({ ...event, formData: sanitizedData });
-  }
+  };
   const handleUsernameBlur = async (username: string) => {
-    if (username) {
+    if (
+      username &&
+      formData?.firstName &&
+      formData?.lastName &&
+      !isGetUserName
+    ) {
+      const userData = {
+        firstName: formData?.firstName,
+        lastName: formData?.lastName,
+        username: username,
+      };
+      await validateUsername(userData);
+    }
+  };
+  const handleFirstLastNameBlur = async (lastName: string) => {
+    if (lastName && !isEdit && !isGetUserName) {
       try {
-        console.log('Username onblur called');
-        // setSuggestions(["1234"])
+        console.log('Username onblur called', formData);
+        if (formData?.firstName && formData?.lastName) {
+          if (setFormData) {
+            setFormData((prev: any) => ({
+              ...prev,
+              username: formData.username
+                ? formData.username
+                : `${formData?.firstName}${formData?.lastName}`.toLowerCase(),
+            }));
+            const userData = {
+              firstName: formData?.firstName,
+              lastName: formData?.lastName,
+              username: formData.username
+                ? formData.username
+                : `${formData?.firstName}${formData?.lastName}`.toLowerCase(),
+            };
+            await validateUsername(userData);
+          }
+        }
       } catch (error) {
+        setSuggestions([]);
+
         console.error('Error validating username:', error);
       }
     }
@@ -292,6 +358,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
         ...prev,
         username: selectedUsername,
       }));
+    setIsGetUserName(true);
     setSuggestions([]);
   };
 
@@ -305,6 +372,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
         onSubmit={onSubmit}
         validator={validator}
         liveValidate
+        customValidate={customValidation(schema, t)}
         showErrorList={false}
         widgets={widgets}
         noHtml5Validate
@@ -318,6 +386,9 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
         onBlur={(field, value) => {
           if (field === 'username') {
             handleUsernameBlur(value);
+          }
+          if (field === 'root_lastName' || field === 'root_firstName') {
+            handleFirstLastNameBlur(value);
           }
         }}
       >

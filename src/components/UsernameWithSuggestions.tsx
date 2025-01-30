@@ -6,6 +6,8 @@ import {
   Typography,
 } from '@mui/material';
 import { WidgetProps } from '@rjsf/utils';
+import { useTranslation } from 'next-i18next';
+
 import React from 'react';
 interface UsernameWidgetProps {
   formContext: {
@@ -23,7 +25,9 @@ const UsernameWithSuggestions: React.FC<UsernameWidgetProps> = ({
   onChange,
   ...rest
 }) => {
+  console.log("value", value);        
   const { suggestions, onSuggestionSelect } = formContext;
+  const { t } = useTranslation();
 
   const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
     if (onBlur) {
@@ -56,10 +60,15 @@ const UsernameWithSuggestions: React.FC<UsernameWidgetProps> = ({
         <div>
           {suggestions?.map((suggestion: any, index: number) => (
             <Box>
-              {/* Availble suggestion :  */}
+              {value!=="" &&(<Typography variant="h6"  sx={{marginLeft:"12px", mt:"2px"}} color="error" gutterBottom>
+                {t('FORM.USERNAME_ALREADY_EXIST')}
+              </Typography>)}
+              <Typography variant="h6" m="2px"  sx={{marginLeft:"12px"}}color="textSecondary" gutterBottom>
+                {t('FORM.AVAILABLE_SUGGESTIONS')}
+              </Typography>
               <Typography
                 onClick={() => onSuggestionSelect(suggestion)}
-                sx={{ cursor: 'pointer', color: 'green' }}
+                sx={{ cursor: 'pointer', color: 'green', marginLeft:"12px" }}
               >
                 {suggestion}
               </Typography>

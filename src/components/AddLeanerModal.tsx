@@ -9,7 +9,7 @@ import { createUser } from '@/services/CreateUserService';
 import { sendEmailOnLearnerCreation } from '@/services/NotificationService';
 import { editEditUser } from '@/services/ProfileService';
 import useSubmittedButtonStore from '@/store/useSubmittedButtonStore';
-import { generateUsernameAndPassword } from '@/utils/Helper';
+import { calculateAge, generateUsernameAndPassword } from '@/utils/Helper';
 import {
   FormContext,
   FormContextType,
@@ -19,7 +19,7 @@ import {
 import { telemetryFactory } from '@/utils/telemetry';
 import { IChangeEvent } from '@rjsf/core';
 import { RJSFSchema } from '@rjsf/utils';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactGA from 'react-ga4';
 import { useTranslation } from 'react-i18next';
 import { tenantId } from '../../app.config';
@@ -33,7 +33,7 @@ interface AddLearnerModalProps {
   open: boolean;
   onClose: () => void;
   onLearnerAdded?: () => void;
-  formData?: object;
+  formData?: any;
   isEditModal?: boolean;
   userId?: string;
   onReload?: (() => void) | undefined;
@@ -53,12 +53,12 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
 }) => {
   const [schema, setSchema] = React.useState<any>();
   const [uiSchema, setUiSchema] = React.useState<any>();
-  const [customFormData, setCustomFormData] = React.useState<any>(formData);
-
+  const [customFormData, setCustomFormData] = React.useState<any>(formData ?? {});
   const [reloadProfile, setReloadProfile] = React.useState(false);
   const [openModal, setOpenModal] = React.useState(false);
   const [learnerFormData, setLearnerFormData] = React.useState<any>();
   const [fullname, setFullname] = React.useState<any>();
+  const [originalSchema, setOriginalSchema] = React.useState(schema);
 
   const { data: formResponse, isPending } = useFormRead(
     FormContext.USERS,
@@ -79,6 +79,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
       const { schema, uiSchema } = GenerateSchemaAndUiSchema(formResponse, t);
       setSchema(schema);
       setUiSchema(uiSchema);
+      setOriginalSchema({ ...schema });
     }
   }, [formResponse]);
 
@@ -271,7 +272,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
               sendEmail(
                 creatorName,
                 apiBody['username'],
-                password,
+                apiBody['username'],
                 userEmail,
                 apiBody['firstName']
               );
@@ -301,28 +302,113 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
   const handleChange = (event: IChangeEvent<any>) => {
     const { formData } = event;
 
-    if (!isEditModal) {
-      const { firstName, lastName, username } = formData;
-      if (firstName && lastName) {
-        const updatedUsername = event.formData.username
-          ? username
-          : firstName && lastName
-            ? (firstName + lastName).toLowerCase()
-            : '';
+    let newFormData = { ...formData };
 
-        const updatedFormData = {
-          ...formData,
-          username: updatedUsername,
-        };
 
-        setCustomFormData(updatedFormData);
-      } else {
-        setCustomFormData({ ...event.formData });
+    console.log('Form data changed:', event.formData);
+    console.log('schema:', schema);
+    const dob = event.formData.dob;
+    const dependencyKeys = Object.keys(schema.dependencies)[0];
+    const dependentFields = schema?.dependencies?.dob?.properties;
+
+    // if (!isUsernameEdited) {
+    //   if (event.formData.firstName && event.formData.lastName) {
+    //     event.formData.username =
+    //       event.formData.firstName + event.formData.lastName;
+    //   } else {
+    //     event.formData.username = null;
+    //   }
+    // }
+
+    if (dob) {
+      const age = calculateAge(new Date(dob));
+
+      if (age >= 18) {
+        const newSchema = { ...schema };
+        const dependentFieldKeys = Object.keys(dependentFields);
+
+        newSchema.properties = Object.keys(newSchema.properties)
+          .filter((key) => !dependentFieldKeys.includes(key))
+          .reduce((acc: any, key) => {
+            acc[key] = newSchema.properties[key];
+            return acc;
+          }, {});
+
+        // Remove dependent fields from the formData
+        const updatedFormData = { ...event.formData };
+        dependentFieldKeys.forEach((key) => {
+          delete updatedFormData[key];
+        });
+
+        newSchema.dependencies = Object.keys(newSchema.dependencies)
+          .filter((key) => !dependentFieldKeys.includes(key))
+          .reduce((acc: any, key) => {
+            // Remove dependentFieldKeys from properties within dependencies
+            const filteredProperties = Object.keys(
+              newSchema.dependencies[key].properties
+            )
+              .filter((propKey) => !dependentFieldKeys.includes(propKey))
+              .reduce((nestedAcc: any, propKey) => {
+                nestedAcc[propKey] =
+                  newSchema.dependencies[key].properties[propKey];
+                return nestedAcc;
+              }, {});
+
+            // Add filtered dependencies back
+            acc[key] = { properties: filteredProperties };
+            return acc;
+          }, {});
+
+        setSchema(newSchema);
+        // setFormData(updatedFormData);
+        // setCustomFormData(updatedFormData);
+        newFormData = { ...updatedFormData };
+      } else if (age < 18) {
+        const newSchema = { ...originalSchema };
+        // Add dependent fields and reorder them in the schema
+        const reorderedFields: any[] = [];
+        const filteredFields = Object.keys(newSchema.properties).filter(
+          (key) => !Object.keys(dependentFields).includes(key)
+        );
+
+        filteredFields.forEach((key) => {
+          reorderedFields.push(key);
+          if (key === dependencyKeys) {
+            reorderedFields.push(...Object.keys(dependentFields));
+          }
+        });
+
+        newSchema.properties = reorderedFields.reduce((acc: any, key: any) => {
+          acc[key] = dependentFields[key] || newSchema.properties[key];
+          return acc;
+        }, {});
+
+        setSchema(newSchema);
+        // setFormData({ ...event.formData });
+        // setCustomFormData({ ...event.formData });
+        newFormData = { ...event.formData };
       }
     } else {
-      setCustomFormData({ ...formData });
+      // setFormData(event.formData);
     }
+
+    if (!isEditModal) {
+      const { firstName, lastName, username } = newFormData;
+
+      if (firstName && lastName) {
+        setCustomFormData({
+          ...newFormData,
+        });
+      }
+      // else {
+      //   setCustomFormData({ ...formData });
+      // }
+    }
+    //  else {
+    //   setCustomFormData({ ...formData });
+    // }
   };
+
 
   const handleError = (errors: any) => {
     console.log('Form errors:', errors);
@@ -370,8 +456,9 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
             widgets={{}}
             showErrorList={true}
             customFields={customFields}
-            formData={customFormData ?? undefined}
+            formData={customFormData}
             setFormData={setCustomFormData}
+            isEdit={isEditModal}
           >
             <FormButtons
               formData={formData ?? learnerFormData}

@@ -93,6 +93,7 @@ if (!frameworkId) {
 export enum AssessmentType {
   PRE_TEST = 'Pre Test',
   POST_TEST = 'Post Test',
+  OTHER = 'Other',
 }
 export const RequisiteType = {
   PRE_REQUISITES: 'prerequisite',
@@ -123,6 +124,8 @@ export const TENANT_DATA = {
   SECOND_CHANCE_PROGRAM: 'Second Chance Program',
   PRATHAM_SCP: 'pratham SCP',
   YOUTHNET: 'YouthNet',
+  MENTOR: 'mentor',
+  LEADER: 'leader',
 };
 
 export const jotFormId = process.env.NEXT_PUBLIC_JOTFORM_ID || '';

@@ -11,6 +11,7 @@ dayjs.extend(utc);
 import { format, parseISO } from 'date-fns';
 import manageUserStore from '@/store/manageUserStore';
 import {
+  AssessmentType,
   avgLearnerAttendanceLimit,
   lowLearnerAttendanceLimit,
 } from '../../app.config';
@@ -920,7 +921,7 @@ export const getBMG = (cohortData: any) => {
 };
 
 
-export const getLastDayDate= (): string => {
+export const getLastDayDate = (): string => {
   const currentDate = new Date();
   currentDate.setDate(currentDate.getDate() - 1); // Subtract 1 day
   const year = currentDate.getFullYear();
@@ -928,3 +929,13 @@ export const getLastDayDate= (): string => {
   const day = String(currentDate.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 };
+
+export const getAssessmentType = (type: string) => {
+  if (type === 'pre') {
+    return AssessmentType.PRE_TEST;
+  } else if (type === 'post') {
+    return AssessmentType.POST_TEST;
+  } else {
+    return AssessmentType.OTHER;
+  }
+}

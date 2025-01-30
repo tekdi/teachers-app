@@ -11,7 +11,7 @@ import {
   getDoIdForAssessmentDetails,
 } from '@/services/AssesmentService';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
-import { toPascalCase } from '@/utils/Helper';
+import { getAssessmentType, toPascalCase } from '@/utils/Helper';
 import { ICohort } from '@/utils/Interfaces';
 import {
   AssessmentStatus,
@@ -140,6 +140,7 @@ const Assessments = () => {
     }
   }, [classId]);
 
+
   useEffect(() => {
     const getDoIdForAssessmentReport = async (
       selectedState: string,
@@ -152,10 +153,7 @@ const Assessments = () => {
         board: selectedBoard || centerData?.board,
         state: selectedState || centerData?.state,
         status: ['Live'],
-        assessmentType:
-          assessmentType === 'pre'
-            ? AssessmentType.PRE_TEST
-            : AssessmentType.POST_TEST,
+        assessmentType: getAssessmentType(assessmentType),
         primaryCategory: ['Practice Question Set'],
       };
       try {
@@ -370,13 +368,14 @@ const Assessments = () => {
 
     const queryParams = { ...query };
     if (newType === 'post') queryParams.type = 'post';
+    if (newType === 'other') queryParams.type = 'other';
     else delete queryParams.type;
 
     router.push({ pathname: router.pathname, query: queryParams }, undefined, { shallow: true });
   };
 
   useEffect(() => {
-    setAssessmentType(query.type === 'post' ? 'post' : 'pre');
+    setAssessmentType(query.type === 'post' ? 'post' : (query.type === 'pre' ? 'pre' : 'other'));
   }, [query.type]);
 
   return (
@@ -474,7 +473,7 @@ const Assessments = () => {
             alignItems: 'center',
           }}
         >
-          <Loader showBackdrop={false} loadingText="Loading" />
+          <Loader showBackdrop={false} />
         </Box>
       )}
 
