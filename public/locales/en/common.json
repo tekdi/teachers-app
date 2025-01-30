@@ -747,6 +747,8 @@
     "SURVEYS" :"Surveys",
     "ACTIVE_SURVEYS" :"Active Surveys",
     "PREVIOUS_SURVEYS" :"Previous Surveys",
-    "VILLAGES":"Villages"
+    "VILLAGES":"Villages",
+    "SUBMISSION":"Submissions",
+    "SUMMARY":"Summary"
   }
 }
