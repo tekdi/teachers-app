@@ -212,6 +212,7 @@ export const youthList = [
     age: 14,
     joinOn: 'Join on 15 Jan, 2025',
     image: '',
+    showMore: true,
     showAvtar: true,
   },
   {
@@ -219,6 +220,7 @@ export const youthList = [
     age: 17,
     joinOn: 'Join on 15 Jan, 2025',
     image: '',
+    showMore: true,
     showAvtar: true,
   },
 ];
