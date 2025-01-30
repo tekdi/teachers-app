@@ -21,6 +21,7 @@ import withRole from '@/components/withRole';
 import { TENANT_DATA } from '../../../../app.config';
 import Dropdown from '@/components/youthNet/DropDown';
 import { useRouter } from 'next/router';
+import BottomDrawer from '@/components/youthNet/BottomDrawer';
 
 const Index = () => {
   const { t } = useTranslation();
@@ -28,6 +29,8 @@ const Index = () => {
   const router = useRouter();
   const [value, setValue] = useState<number>(1);
   const [searchInput, setSearchInput] = useState('');
+  const [toggledUser, setToggledUser] = useState('');
+  const [openDrawer, setOpenDrawer] = useState(false);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -35,7 +38,22 @@ const Index = () => {
 
   const handleUserClick = (name: any) => {
     console.log('Clicked user:', name);
-    router.push(`/youthboard/student/${name}`);
+    router.push(`/youthboard/volunteer-profile/${name}`);
+  };
+
+  const handleToggledUserClick = (name: any) => {
+    console.log('Toggled user:', name);
+    setToggledUser(name);
+    setOpenDrawer((prev) => !prev);
+  };
+
+  const handleMarkAsVolunteer = () => {
+    console.log('Marked as Volunteer');
+    setOpenDrawer(false);
+  };
+
+  const handleToggleClose = () => {
+    setOpenDrawer(false);
   };
 
   return (
@@ -51,7 +69,7 @@ const Index = () => {
           <Tabs
             value={value}
             onChange={handleChange}
-            textColor="inherit" // Use "inherit" to apply custom color
+            textColor="inherit"
             aria-label="secondary tabs example"
             sx={{
               fontSize: '14px',
@@ -86,20 +104,12 @@ const Index = () => {
       <Box>
         {value === 1 && (
           <>
-            {/* <Grid
-              px={'18px'}
-              spacing={2}
-              mt={1}
-              sx={{ display: 'flex', alignItems: 'center' }}
-              container
-            > */}
             <Box
               display={'flex'}
               flexDirection={'row'}
               sx={{
                 pr: '20px',
               }}
-              // justifyContent={'space-around'}
             >
               <SearchBar
                 onSearch={setSearchInput}
@@ -207,7 +217,6 @@ const Index = () => {
               sx={{
                 pr: '20px',
               }}
-              // justifyContent={'space-around'}
             >
               <SearchBar
                 onSearch={setSearchInput}
@@ -227,8 +236,16 @@ const Index = () => {
                 layout="list"
                 users={youthList}
                 onUserClick={handleUserClick}
+                onToggleUserClick={handleToggledUserClick}
               />
             </Box>
+            <BottomDrawer
+              open={openDrawer}
+              onClose={handleToggleClose}
+              title={toggledUser}
+              buttonLabel={t('YOUTHNET_PROFILE.MARK_AS_VOLUNTEER')}
+              onAction={handleMarkAsVolunteer}
+            />
           </>
         )}
       </Box>

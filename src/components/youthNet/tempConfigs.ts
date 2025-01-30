@@ -212,6 +212,7 @@ export const youthList = [
     age: 14,
     joinOn: 'Join on 15 Jan, 2025',
     image: '',
+    showMore: true,
     showAvtar: true,
   },
   {
@@ -219,6 +220,7 @@ export const youthList = [
     age: 17,
     joinOn: 'Join on 15 Jan, 2025',
     image: '',
+    showMore: true,
     showAvtar: true,
   },
 ];
@@ -247,6 +249,7 @@ export const villageList = [
 ];
 
 export const DROPDOWN_NAME = 'Village';
+
 export const VILLAGE_OPTIONS = ['Shivare', 'Pune', 'Mumbai'];
 
 export const studentListDetails = [
@@ -349,3 +352,7 @@ export const surveysData = [
     },
   },
 ];
+
+export const YOUTHNET_USER_ROLE = {
+  MENTOR_LEAD: 'leader',
+};

@@ -590,17 +590,17 @@
     "HAVE_YOU_RECEIVE_ANY_PRIOR_TRAINING": "Have You Received Any Prior Training?",
     "WHAT_DO_YOU_WANT_TO_BECOME": "What do you want to become?",
     "EDUCATIONAL_INSTITUTE": "Educational Institute",
-    "UNEMPLOYED_OR_DOMESTIC_WORK":"Unemployed or Domestic Work",
-    "SELF_PLACED":"Self Placed",
-    "TRANSGENDER":"Transgender",
-    "HINDI":"Hindi",
-    "MARATHI":"Marathi",
-    "URDU":"Urdu",
-    "DIVORCED/WIDOW":"Divorced/Widow",
-    "AVAILABLE_SUGGESTIONS":"Available suggestions:",
-    "USERNAME_ALREADY_EXIST":"This username already exists",
-    "GRADUATE":"Graduate",
-    "POST_GRADUATE":"Post Graduate"
+    "UNEMPLOYED_OR_DOMESTIC_WORK": "Unemployed or Domestic Work",
+    "SELF_PLACED": "Self Placed",
+    "TRANSGENDER": "Transgender",
+    "HINDI": "Hindi",
+    "MARATHI": "Marathi",
+    "URDU": "Urdu",
+    "DIVORCED/WIDOW": "Divorced/Widow",
+    "AVAILABLE_SUGGESTIONS": "Available suggestions:",
+    "USERNAME_ALREADY_EXIST": "This username already exists",
+    "GRADUATE": "Graduate",
+    "POST_GRADUATE": "Post Graduate"
   },
   "FORM_ERROR_MESSAGES": {
     "INVALID_INPUT": "Invalid Input.",
@@ -718,6 +718,8 @@
   },
   "YOUTHNET_DASHBOARD": {
     "VILLAGES_MANAGED_BY_YOU": "Villages Managed by you : {{totalVillageCount}}",
+    "MANAGES": "Manages",
+    "VILLAGES": "Villages",
     "MONTHLY_REGISTRATIONS_OVERVIEW": "Monthly Registrations Overview",
     "CLOSED_ON": "Closed on",
     "ABOVE_18": "Over 18 Registrations",
@@ -740,16 +742,18 @@
     "PHONE_NUMBER": "Phone Number",
     "MENTOR_ID": "Mentor ID",
     "GENDER": "Gender",
-    "AGE": "Age"
+    "AGE": "Age",
+    "VOLUNTEERING_DETAILS": "Volunteering details",
+    "MARK_AS_VOLUNTEER": "Mark as Volunteer"
   },
   "YOUTHNET_CAMP_DETAILS": {
     "SUBMISSION": "Submission",
     "SUMMARY": "Summary"
   },
   "SURVEYS": {
-    "SURVEYS" :"Surveys",
-    "ACTIVE_SURVEYS" :"Active Surveys",
-    "PREVIOUS_SURVEYS" :"Previous Surveys",
-    "VILLAGES":"Villages"
+    "SURVEYS": "Surveys",
+    "ACTIVE_SURVEYS": "Active Surveys",
+    "PREVIOUS_SURVEYS": "Previous Surveys",
+    "VILLAGES": "Villages"
   }
 }
