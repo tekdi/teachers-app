@@ -13,8 +13,6 @@ import {
   SURVEY_DATA,
   YOUTHNET_USER_ROLE,
   users,
-  MENTOR_NAME,
-  MENTOR_OPTIONS,
 } from '@/components/youthNet/tempConfigs';
 import BackHeader from '@/components/youthNet/BackHeader';
 import MonthlyRegistrationsChart from '@/components/youthNet/MonthlyRegistrationsChart';
@@ -23,6 +21,8 @@ import YouthAndVolunteers from '@/components/youthNet/YouthAndVolunteers';
 import VillageNewRegistration from '@/components/youthNet/VillageNewRegistration';
 import { UserList } from '@/components/youthNet/UserCard';
 import Dropdown from '@/components/youthNet/DropDown';
+import { fetchUserData } from '@/services/youthNet/Dashboard/UserServices';
+import Loader from '@/components/Loader';
 
 const Index = () => {
   const { t } = useTranslation();
@@ -33,6 +33,7 @@ const Index = () => {
   const [abvmodalOpen, setAbvModalOpen] = useState<boolean>(false);
   const [belmodalOpen, setBelModalOpen] = useState<boolean>(false);
   const [vilmodalOpen, setVilModalOpen] = useState<boolean>(false);
+  const [userData, setUserData] = useState<any>(null);
 
   useEffect(() => {
     const getSurveyData = async () => {
@@ -42,6 +43,15 @@ const Index = () => {
     };
 
     getSurveyData();
+  }, []);
+
+  useEffect(() => {
+    const getData = async () => {
+      const data = await fetchUserData();
+      setUserData(data);
+    };
+
+    getData();
   }, []);
 
   const handleModalClose = () => {
@@ -86,12 +96,16 @@ const Index = () => {
             mt: '15px',
           }}
         >
-          <Dropdown
-            name={MENTOR_NAME}
-            values={MENTOR_OPTIONS}
-            defaultValue={MENTOR_OPTIONS[0]}
-            onSelect={(value) => console.log('Selected:', value)}
-          />
+          {userData ? (
+            <Dropdown
+              name={userData?.MENTOR_NAME}
+              values={userData?.MENTOR_OPTIONS}
+              defaultValue={userData?.MENTOR_OPTIONS[0]}
+              onSelect={(value) => console.log('Selected:', value)}
+            />
+          ) : (
+            <Loader showBackdrop={true} />
+          )}
         </Box>
       )}
       <Box ml={2}>

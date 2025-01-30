@@ -32,7 +32,7 @@ const Dropdown: React.FC<DropdownProps> = ({
         onChange={handleChange}
         IconComponent={KeyboardArrowDownIcon}
       >
-        {values.map((value, index) => (
+        {values?.map((value, index) => (
           <MenuItem key={index} value={value}>
             {value}
           </MenuItem>
