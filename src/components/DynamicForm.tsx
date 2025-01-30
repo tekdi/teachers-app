@@ -52,7 +52,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   customFields,
   children,
   setFormData,
-  isEdit=false,
+  isEdit = false,
 }) => {
   const widgets = {
     MultiSelectCheckboxes: MultiSelectCheckboxes,
@@ -65,8 +65,9 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   };
   const { t } = useTranslation();
   const [suggestions, setSuggestions] = useState<string[]>([]);
-  const [isGetUserName, setIsGetUserName] = useState<boolean>(false);
+  const [storedSuggestions, setStoredSuggestions] = useState<string[]>([]);
 
+  const [isGetUserName, setIsGetUserName] = useState<boolean>(false);
 
   const submittedButtonStatus = useSubmittedButtonStore(
     (state: any) => state.submittedButtonStatus
@@ -75,6 +76,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
     (state: any) => state.setSubmittedButtonStatus
   );
 
+  
   useEffect(() => {
     setSubmittedButtonStatus(false);
   }, []);
@@ -286,6 +288,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
       if (suggestions.length === 0) {
         const response = await userNameExist(userData);
         setSuggestions([response?.suggestedUsername]);
+        setStoredSuggestions([response?.suggestedUsername]);
         setIsGetUserName(false);
       }
     } catch (error) {
@@ -294,42 +297,51 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
       console.error('Error validating username:', error);
     }
   };
-  const handleChange= async(event: any)=> {
+  const handleChange = async (event: any) => {
     const sanitizedData = sanitizeFormData(event.formData);
-    if (event.formData?.username !== formData?.username && formData?.username) {
-      setIsGetUserName(false);
-      setSuggestions([]);
+    if (event.formData?.username !== formData?.username && (formData?.username||formData?.username==="")) {
+      if (event.formData?.username !== '') {
+        setIsGetUserName(false);
+        setSuggestions([]);
+      } else setSuggestions(storedSuggestions);
     }
     onChange({ ...event, formData: sanitizedData });
-  }
+  };
   const handleUsernameBlur = async (username: string) => {
-   
-    if (username && formData?.firstName && formData?.lastName &&  !isGetUserName  ) {
+    if (
+      username &&
+      formData?.firstName &&
+      formData?.lastName &&
+      !isGetUserName
+    ) {
       const userData = {
         firstName: formData?.firstName,
         lastName: formData?.lastName,
         username: username,
-      }
-      await validateUsername(userData)     
+      };
+      await validateUsername(userData);
     }
   };
   const handleFirstLastNameBlur = async (lastName: string) => {
     if (lastName && !isEdit && !isGetUserName) {
       try {
-        console.log('Username onblur called' ,formData);
-        if(formData?.firstName && formData?.lastName){
-          if( setFormData){
+        console.log('Username onblur called', formData);
+        if (formData?.firstName && formData?.lastName) {
+          if (setFormData) {
             setFormData((prev: any) => ({
               ...prev,
-              username: formData.username ? formData.username :`${formData?.firstName}${formData?.lastName}`.toLowerCase(),
+              username: formData.username
+                ? formData.username
+                : `${formData?.firstName}${formData?.lastName}`.toLowerCase(),
             }));
             const userData = {
               firstName: formData?.firstName,
               lastName: formData?.lastName,
-              username: formData.username ? formData.username: `${formData?.firstName}${formData?.lastName}`.toLowerCase(),
-            }
-            await validateUsername(userData)  
-           
+              username: formData.username
+                ? formData.username
+                : `${formData?.firstName}${formData?.lastName}`.toLowerCase(),
+            };
+            await validateUsername(userData);
           }
         }
       } catch (error) {
@@ -346,7 +358,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
         ...prev,
         username: selectedUsername,
       }));
-      setIsGetUserName(true)
+    setIsGetUserName(true);
     setSuggestions([]);
   };
 
