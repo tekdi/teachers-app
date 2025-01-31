@@ -34,6 +34,7 @@ import assessment from '../assets/images/assessment.svg';
 import surveyForm from '../assets/images/surveyForm.svg';
 import { useDirection } from '../hooks/useDirection';
 import GroupsIcon from '@mui/icons-material/Groups';
+import { YOUTHNET_USER_ROLE } from './youthNet/tempConfigs';
 interface DrawerProps {
   toggleDrawer?: (open: boolean) => () => void;
   open: boolean;
@@ -419,7 +420,9 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                 router.push(`/youthboard/villages`);
               }}
             >
-              {t('DASHBOARD.VILLAGES_AND_YOUTH')}
+              {YOUTHNET_USER_ROLE.MENTOR_LEAD === TENANT_DATA.LEADER
+                ? t('DASHBOARD.USERS_&_VILLAGES')
+                : t('DASHBOARD.VILLAGES_AND_YOUTH')}
             </Button>
 
             <Button
@@ -436,9 +439,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                   ? '16px 18px !important'
                   : '0px 18px !important',
                 marginTop: '25px',
-                color: isSurveys
-                  ? '#2E1500'
-                  : theme.palette.warning.A200,
+                color: isSurveys ? '#2E1500' : theme.palette.warning.A200,
                 fontWeight: isSurveys ? '600' : 500,
                 '&:hover': {
                   background: isSurveys
@@ -522,12 +523,12 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               }}
               startIcon={
                 <Image
-                src={surveyForm}
-                alt="SurveyForm-Icon"
-                width={24}
-                height={24}
-              />
-            }
+                  src={surveyForm}
+                  alt="SurveyForm-Icon"
+                  width={24}
+                  height={24}
+                />
+              }
               onClick={navigateToObservation}
             >
               {t('OBSERVATION.SURVEY_FORMS')}
@@ -604,11 +605,11 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                 }}
                 startIcon={
                   <Image
-                  src={assessment}
-                  alt="Assessment Icon"
-                  width={24}
-                  height={24}
-                />
+                    src={assessment}
+                    alt="Assessment Icon"
+                    width={24}
+                    height={24}
+                  />
                 }
                 onClick={() => {
                   router.push(`/assessments`);

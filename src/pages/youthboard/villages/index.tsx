@@ -1,6 +1,16 @@
 import Header from '@/components/Header';
 import BackHeader from '@/components/youthNet/BackHeader';
-import { Box, Grid, Tab, Tabs, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Divider,
+  Grid,
+  Radio,
+  Tab,
+  Tabs,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import React, { useEffect, useState } from 'react';
@@ -14,12 +24,15 @@ import {
   VILLAGE_OPTIONS,
   villageList,
   youthList,
+  mentorList,
   YOUTHNET_USER_ROLE,
+  reAssignVillages,
+  SURVEY_DATA,
 } from '@/components/youthNet/tempConfigs';
 import { UserList } from '@/components/youthNet/UserCard';
 import DownloadIcon from '@mui/icons-material/Download';
 import withRole from '@/components/withRole';
-import { TENANT_DATA } from '../../../../app.config';
+import { BOTTOM_DRAWER_CONSTANTS, TENANT_DATA } from '../../../../app.config';
 import Dropdown from '@/components/youthNet/DropDown';
 import { useRouter } from 'next/router';
 import BottomDrawer from '@/components/youthNet/BottomDrawer';
@@ -28,15 +41,29 @@ import {
   fetchBlockData,
   fetchDistrictData,
 } from '@/services/youthNet/Dashboard/VillageServices';
+import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
+import AddIcon from '@mui/icons-material/Add';
+import SimpleModal from '@/components/SimpleModal';
+import Surveys from '@/components/youthNet/Surveys';
+import { useDirection } from '@/hooks/useDirection';
 
 const Index = () => {
+  const { isRTL } = useDirection();
   const { t } = useTranslation();
   const theme = useTheme<any>();
   const router = useRouter();
   const [value, setValue] = useState<number>(1);
   const [searchInput, setSearchInput] = useState('');
   const [toggledUser, setToggledUser] = useState('');
+  const [openMentorDrawer, setOpenMentorDrawer] = useState(false);
+
+  const [toggledMentor, setToggledMentor] = useState('');
   const [openDrawer, setOpenDrawer] = useState(false);
+
+  const [openReassignDistrict, setOpenReassignDistrict] = useState(false);
+  const [openReassignVillage, setOpenReassignVillage] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
+  const [selectedValue, setSelectedValue] = useState('');
   const [districtData, setDistrictData] = useState<any>(null);
   const [blockData, setBlockData] = useState<any>(null);
 
@@ -66,13 +93,87 @@ const Index = () => {
     setOpenDrawer((prev) => !prev);
   };
 
-  const handleMarkAsVolunteer = () => {
-    console.log('Marked as Volunteer');
-    setOpenDrawer(false);
+  const handleToggledMentorClick = (name: any) => {
+    console.log('Toggled user:', name);
+    setToggledMentor(name);
+    setOpenMentorDrawer((prev) => !prev);
   };
-
   const handleToggleClose = () => {
     setOpenDrawer(false);
+    setOpenMentorDrawer(false);
+  };
+
+  const onClose = () => {
+    setOpenDelete(false);
+    setOpenReassignDistrict(false);
+    setOpenReassignVillage(false);
+  };
+
+  const handleButtonClick = (actionType: string) => {
+    console.log(actionType);
+
+    switch (actionType) {
+      case BOTTOM_DRAWER_CONSTANTS.MARK_VOLUNTEER:
+        setOpenDrawer(false);
+        break;
+
+      case BOTTOM_DRAWER_CONSTANTS.ADD_REASSIGN:
+        setOpenMentorDrawer(false);
+        setOpenReassignVillage(true);
+        break;
+
+      case BOTTOM_DRAWER_CONSTANTS.REQUEST_REASSIGN:
+        setOpenMentorDrawer(false);
+        setOpenReassignDistrict(true);
+        break;
+
+      case BOTTOM_DRAWER_CONSTANTS.DELETE:
+        setOpenMentorDrawer(false);
+        setOpenDelete(true);
+        break;
+
+      default:
+        console.warn(BOTTOM_DRAWER_CONSTANTS.UNKNOWN_ACTION, actionType);
+    }
+  };
+
+  const buttons = [
+    {
+      label: t('YOUTHNET_USERS_AND_VILLAGES.MARK_AS_VOLUNTEER'),
+      icon: <SwapHorizIcon />,
+      onClick: () => handleButtonClick(BOTTOM_DRAWER_CONSTANTS.MARK_VOLUNTEER),
+    },
+  ];
+
+  const mentorActions = [
+    {
+      label: t('YOUTHNET_USERS_AND_VILLAGES.ADD_OR_REASSIGN_VILLAGES'),
+      action: BOTTOM_DRAWER_CONSTANTS.ADD_REASSIGN,
+    },
+    {
+      label: t('YOUTHNET_USERS_AND_VILLAGES.REQUEST_TO_REASSIGN_DISTRICT'),
+      action: BOTTOM_DRAWER_CONSTANTS.REQUEST_REASSIGN,
+    },
+    {
+      label: t('YOUTHNET_USERS_AND_VILLAGES.DELETE_USER_PERMANENTLY'),
+      action: BOTTOM_DRAWER_CONSTANTS.DELETE,
+    },
+  ];
+
+  const Mentorbuttons = mentorActions.map(({ label, action }) => ({
+    label,
+    icon: <SwapHorizIcon />,
+    onClick: () => handleButtonClick(action),
+  }));
+
+  const reasons = [
+    { value: 'Incorrect Data Entry', label: t('COMMON.INCORRECT_DATA_ENTRY') },
+    { value: 'Duplicated User', label: t('COMMON.DUPLICATED_USER') },
+    { value: 'Resignation', label: t('COMMON.RESIGNATION') },
+  ];
+
+  const handleRadioChange = (value: string) => {
+    setSelectedValue(value);
   };
 
   return (
@@ -114,14 +215,274 @@ const Index = () => {
               },
             }}
           >
-            <Tab value={1} label={t('DASHBOARD.VILLAGES')} />
-            <Tab value={2} label={t('DASHBOARD.YOUTH_VOLUNTEERS')} />
+            {YOUTHNET_USER_ROLE.MENTOR_LEAD === TENANT_DATA.LEADER && (
+              <Tab value={1} label={t('YOUTHNET_USERS_AND_VILLAGES.MENTORS')} />
+            )}
+
+            <Tab value={2} label={t('DASHBOARD.VILLAGES')} />
+            <Tab value={3} label={t('DASHBOARD.YOUTH_VOLUNTEERS')} />
           </Tabs>
         )}
       </Box>
 
       <Box>
         {value === 1 && (
+          <>
+            <Box
+              display={'flex'}
+              flexDirection={'row'}
+              sx={{
+                p: '20px',
+              }}
+            >
+              <Box
+                sx={{
+                  width: '100%',
+                  mr: '20px',
+                }}
+              >
+                {districtData ? (
+                  <Dropdown
+                    name={districtData?.DISTRICT_NAME}
+                    values={districtData?.DISTRICT_OPTIONS}
+                    defaultValue={districtData?.DISTRICT_OPTIONS[0]}
+                    onSelect={(value) => console.log('Selected:', value)}
+                  />
+                ) : (
+                  <Loader showBackdrop={true} />
+                )}
+              </Box>
+            </Box>
+
+            <Box
+              display={'flex'}
+              flexDirection={'row'}
+              sx={{
+                pr: '20px',
+              }}
+            >
+              <SearchBar
+                onSearch={setSearchInput}
+                value={searchInput}
+                placeholder={t('YOUTHNET_USERS_AND_VILLAGES.SEARCH_MENTORS')}
+                fullWidth={true}
+              />
+              <SortBy />
+            </Box>
+
+            <Box mt={'18px'} px={'18px'} ml={'10px'}>
+              <Button
+                sx={{
+                  border: `1px solid ${theme.palette.error.contrastText}`,
+                  borderRadius: '100px',
+                  height: '40px',
+                  width: '8rem',
+                  color: theme.palette.error.contrastText,
+                  '& .MuiButton-endIcon': {
+                    marginLeft: isRTL ? '0px !important' : '8px !important',
+                    marginRight: isRTL ? '8px !important' : '-2px !important',
+                  },
+                }}
+                className="text-1E"
+                // onClick={handleOpenAddFaciModal}
+                endIcon={<AddIcon />}
+              >
+                {t('COMMON.ADD_NEW')}
+              </Button>
+            </Box>
+
+            <Box>
+              <Box display={'flex'} justifyContent={'space-between'}>
+                <Typography
+                  sx={{
+                    fontSize: '16px',
+                    color: 'black',
+                    margin: '20px',
+                  }}
+                >
+                  {SURVEY_DATA.FOUR} {''}
+                  {t('YOUTHNET_USERS_AND_VILLAGES.MENTORS')}
+                </Typography>
+
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    cursor: 'pointer',
+                    pr: '20px',
+                    color: '#0D599E',
+                    '&:hover': {
+                      color: '#074d82',
+                    },
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      fontSize: '16px',
+                    }}
+                  >
+                    {t('YOUTHNET_USERS_AND_VILLAGES.CSV')}
+                  </Typography>
+                  <DownloadIcon />
+                </Box>
+              </Box>
+            </Box>
+            <Box
+              sx={{
+                px: '20px',
+              }}
+            >
+              <UserList
+                layout="list"
+                users={mentorList}
+                onUserClick={handleUserClick}
+                onToggleUserClick={handleToggledMentorClick}
+              />
+            </Box>
+            <BottomDrawer
+              open={openMentorDrawer}
+              onClose={handleToggleClose}
+              title={toggledMentor}
+              buttons={Mentorbuttons}
+            />
+            <SimpleModal
+              open={openReassignVillage}
+              onClose={onClose}
+              showFooter={true}
+              modalTitle={t(
+                'YOUTHNET_USERS_AND_VILLAGES.ADD_OR_REASSIGN_VILLAGES'
+              )}
+              primaryText={t('YOUTHNET_USERS_AND_VILLAGES.SAVE_PROGRESS')}
+              secondaryText={t('YOUTHNET_USERS_AND_VILLAGES.FINISH_ASSIGN')}
+
+              //pass function handler as props
+            >
+              <Box>
+                <Box mt={2}>
+                  <Typography
+                    sx={{
+                      fontSize: '14px',
+                      fontWeight: 500,
+                      color: theme.palette.warning['300'],
+                    }}
+                  >
+                    {t(
+                      'YOUTHNET_USERS_AND_VILLAGES.ASSIGN_VILLAGES_FROM_BLOCK'
+                    )}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      fontSize: '14px',
+                      fontWeight: 400,
+                      color: theme.palette.warning['300'],
+                      marginTop: '10px',
+                    }}
+                  >
+                    {t(
+                      'YOUTHNET_USERS_AND_VILLAGES.ASSIGN_VILLAGES_FROM_BLOCK_INFO'
+                    )}
+                  </Typography>
+                </Box>
+                <Box display="flex" flexDirection="column" gap={2} p={2}>
+                  {reAssignVillages?.map((survey, index) => (
+                    <Surveys
+                      key={index}
+                      title={survey.title}
+                      date={survey.date}
+                    />
+                  ))}
+                </Box>
+              </Box>
+            </SimpleModal>
+            <SimpleModal
+              open={openReassignDistrict}
+              onClose={onClose}
+              showFooter={true}
+              modalTitle={t(
+                'YOUTHNET_USERS_AND_VILLAGES.REQUEST_USER_TO_DIFFERENT_MENTOR'
+              )}
+              primaryText={t('COMMON.SEND_REQUEST')}
+              //pass function handler as props
+            >
+              <Box>
+                <Box m={2}>
+                  <Typography sx={{ color: theme.palette.warning['A200'] }}>
+                    {t(
+                      'YOUTHNET_USERS_AND_VILLAGES.SEND_REQUEST_TO_ADMIN_TEXT'
+                    )}
+                  </Typography>
+                </Box>
+                <Box m={2}>
+                  <Dropdown
+                    name={t('YOUTHNET_USERS_AND_VILLAGES.SELECT_STATE')}
+                    // values={districtData?.DISTRICT_OPTIONS}
+                    // defaultValue={t('YOUTHNET_USERS_AND_VILLAGES.SELECT_STATE')}
+                    onSelect={(value) => console.log('Selected:', value)}
+                  />
+                </Box>
+                <Box m={2}>
+                  <Dropdown
+                    name={t('YOUTHNET_USERS_AND_VILLAGES.SELECT_DISTRICT')}
+                    // values={blockData?.BLOCK_OPTIONS}
+                    // defaultValue={t('YOUTHNET_USERS_AND_VILLAGES.SELECT')}
+                    onSelect={(value) => console.log('Selected:', value)}
+                  />
+                </Box>
+              </Box>
+            </SimpleModal>
+            <SimpleModal
+              open={openDelete}
+              onClose={onClose}
+              showFooter={true}
+              modalTitle={t(
+                'YOUTHNET_USERS_AND_VILLAGES.DELETE_USER_PERMANENTLY'
+              )}
+              primaryText={t('COMMON.DELETE_USER_WITH_REASON')}
+            >
+              <Box>
+                <Box mt={2}>
+                  <Typography sx={{ fontSize: '14px' }}>
+                    {t('COMMON.REASON_FOR_DELETION')}
+                  </Typography>
+                </Box>
+                <Box>
+                  {reasons.map((option, index) => (
+                    <>
+                      <Box
+                        display={'flex'}
+                        justifyContent={'space-between'}
+                        alignItems={'center'}
+                      >
+                        <Typography
+                          sx={{
+                            color: theme.palette.warning['A200'],
+                            fontSize: '16px',
+                            fontWeight: 400,
+                          }}
+                          component="h2"
+                        >
+                          {option.label}
+                        </Typography>
+
+                        <Radio
+                          sx={{ pb: '20px' }}
+                          onChange={() => handleRadioChange(option.value)}
+                          value={option.value}
+                          checked={selectedValue === option.value}
+                        />
+                      </Box>
+                      {reasons?.length - 1 !== index && <Divider />}
+                    </>
+                  ))}
+                </Box>
+              </Box>
+            </SimpleModal>
+          </>
+        )}
+      </Box>
+
+      <Box>
+        {value === 2 && (
           <>
             {YOUTHNET_USER_ROLE.MENTOR_LEAD === TENANT_DATA.LEADER && (
               <Box
@@ -259,7 +620,7 @@ const Index = () => {
         )}
       </Box>
       <Box>
-        {value === 2 && (
+        {value === 3 && (
           <>
             {YOUTHNET_USER_ROLE.MENTOR_LEAD === TENANT_DATA.LEADER && (
               <Box
@@ -349,8 +710,7 @@ const Index = () => {
               open={openDrawer}
               onClose={handleToggleClose}
               title={toggledUser}
-              buttonLabel={t('YOUTHNET_PROFILE.MARK_AS_VOLUNTEER')}
-              onAction={handleMarkAsVolunteer}
+              buttons={buttons}
             />
           </>
         )}

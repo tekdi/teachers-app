@@ -134,3 +134,11 @@ if (!jotFormId) {
     'NEXT_PUBLIC_JOTFORM_ID is not set in the environment variables.'
   );
 }
+
+export const BOTTOM_DRAWER_CONSTANTS = {
+  MARK_VOLUNTEER: 'Marked as Volunteer',
+  ADD_REASSIGN: 'Add or Reassign',
+  REQUEST_REASSIGN: 'Request to Reassign',
+  DELETE: 'Delete User',
+  UNKNOWN_ACTION: 'Unknown Action',
+};

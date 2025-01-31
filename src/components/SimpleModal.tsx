@@ -68,11 +68,7 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
   return (
     <Modal
       open={open}
-      onClose={(event, reason) => {
-        if (reason !== 'backdropClick') {
-          onClose();
-        }
-      }}
+      onClose={onClose}
       aria-labelledby="child-modal-title"
       aria-describedby="child-modal-description"
     >
