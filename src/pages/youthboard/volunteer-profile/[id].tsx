@@ -115,7 +115,13 @@ const VolunteerDetails = () => {
         >
           Edit
         </Button>
-        <Profile fullName={studentName || ''} emailId={''} />
+        <Profile
+          fullName={studentName || ''}
+          emailId={''}
+          state="Maharashtra"
+          district="Pune"
+          block="Bhor"
+        />
       </Box>
     </Box>
   );
