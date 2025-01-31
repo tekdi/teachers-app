@@ -96,7 +96,7 @@ export interface CohortMemberList {
     role?: string;
     status?: string[];
     name?: string | undefined;
-    firstName?:string
+    firstName?: string;
   };
   includeArchived?: boolean;
 }
@@ -119,7 +119,7 @@ export interface UserData {
   district: string;
   state: string;
   mobile?: string;
-  firstName?:string
+  firstName?: string;
 }
 
 export interface IUserData {
@@ -270,7 +270,7 @@ export interface ICohort {
   value: string;
   state: string;
   customField?: any;
-  firstName?:string
+  firstName?: string;
 }
 
 export interface LearListHeaderProps {
@@ -435,7 +435,14 @@ export interface FieldOption {
 
 export interface Field {
   name: string;
-  type: 'text' | 'numeric' | 'drop_down' | 'checkbox' | 'radio' | 'email' | 'date';
+  type:
+    | 'text'
+    | 'numeric'
+    | 'drop_down'
+    | 'checkbox'
+    | 'radio'
+    | 'email'
+    | 'date';
   label: string;
   order: string;
   coreField: number;
@@ -909,13 +916,13 @@ export interface RegistrationModalProps {
 }
 export interface SurveysProps {
   title: string;
-  date: string;
+  date?: string;
   villages?: number;
   status?: string;
   actionRequired?: string;
   isActionRequired?: boolean;
   onClick?: () => void;
-  minHeight?:string;
+  minHeight?: string;
 }
 
 export interface VillageDetailProps {

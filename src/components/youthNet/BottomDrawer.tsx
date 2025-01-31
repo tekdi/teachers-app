@@ -1,22 +1,25 @@
 import React from 'react';
 import { Drawer, Box, Typography, Button, Divider } from '@mui/material';
-import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import { useTheme } from '@mui/material/styles';
+
+interface ButtonData {
+  label: string;
+  icon: React.ReactNode;
+  onClick: () => void;
+}
 
 interface BottomDrawerProps {
   open: boolean;
   onClose?: () => void;
   title: string;
-  buttonLabel: string;
-  onAction: () => void;
+  buttons: ButtonData[];
 }
 
 const BottomDrawer: React.FC<BottomDrawerProps> = ({
   open,
   onClose,
   title,
-  buttonLabel,
-  onAction,
+  buttons,
 }) => {
   const theme = useTheme<any>();
   return (
@@ -62,32 +65,36 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({
       >
         {title}
       </Typography>
-      <Button
-        variant="outlined"
-        startIcon={
-          <SwapHorizIcon
-            sx={{ fontSize: '20px', color: theme?.palette?.warning['400'] }}
-          />
-        }
-        sx={{
-          width: '200px',
-          border: 'none',
-          borderRadius: '8px',
-          padding: '8px 16px',
-          textTransform: 'none',
-          fontSize: '16px',
-          fontWeight: 300,
-          marginBottom: '12px',
-          '&:hover': {
-            backgroundColor: 'transparent',
-            border: 'none',
-          },
-        }}
-        onClick={onAction}
-      >
-        {buttonLabel}
-      </Button>
-      <Divider />
+
+      {buttons?.map((button, index) => (
+        <>
+          <Button
+            key={index}
+            variant="outlined"
+            startIcon={button?.icon}
+            sx={{
+              width: '100%',
+              border: 'none',
+              borderRadius: '8px',
+              padding: '8px 16px',
+              textTransform: 'none',
+              fontSize: '16px',
+              fontWeight: 300,
+              justifyContent: 'flex-start',
+              textAlign: 'left',
+              marginBottom: '12px',
+              '&:hover': {
+                backgroundColor: 'transparent',
+                border: 'none',
+              },
+            }}
+            onClick={button.onClick}
+          >
+            {button?.label}
+          </Button>
+          <Divider />
+        </>
+      ))}
     </Drawer>
   );
 };

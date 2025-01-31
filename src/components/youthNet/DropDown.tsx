@@ -3,8 +3,8 @@ import { useState } from 'react';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 interface DropdownProps {
-  name: string;
-  values: string[];
+  name?: string;
+  values?: string[];
   onSelect: (value: string) => void;
   defaultValue?: string;
 }

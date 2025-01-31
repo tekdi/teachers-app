@@ -11,10 +11,12 @@ import { GetStaticPaths } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { TENANT_DATA } from '../../../../app.config';
 import Surveys from '@/components/youthNet/Surveys';
+import { useTheme } from '@mui/material/styles';
 
 const survey = () => {
   const { t } = useTranslation();
   const router = useRouter();
+  const theme = useTheme<any>();
   const { surveyName } = router.query;
   const villageNameStringNew = Array.isArray(surveyName)
     ? surveyName[0]
@@ -43,7 +45,13 @@ const survey = () => {
           onBackClick={handleBack}
         />
       </Box>
-      <Box>
+      <Box
+        sx={{ background: theme.palette.action.selected }}
+        display="flex"
+        flexDirection="column"
+        gap={2}
+        p={2}
+      >
         {surveyData.map((survey, index) => (
           <Surveys
             key={index}
