@@ -13,8 +13,31 @@ const Unauthorized = () => {
   useEffect(() => {
     const handleBackButton = () => {
       console.log("User pressed the browser back button");
-      localStorage.clear()
-    };
+     // localStorage.clear()
+     const keysToKeep = [
+      'preferredLanguage',
+      'mui-mode',
+      'mui-color-scheme-dark',
+      'mui-color-scheme-light',
+      'hasSeenTutorial',
+    ];
+    // Retrieve the values of the keys to keep
+    const valuesToKeep: { [key: string]: any } = {};
+    keysToKeep.forEach((key: string) => {
+      valuesToKeep[key] = localStorage.getItem(key);
+    });
+
+    // Clear all local storage
+    localStorage.clear();
+
+    // Re-add the keys to keep with their values
+    keysToKeep.forEach((key: string) => {
+      if (valuesToKeep[key] !== null) {
+        // Check if the key exists and has a value
+        localStorage.setItem(key, valuesToKeep[key]);
+      }
+    })}
+    
 
     window.addEventListener("popstate", handleBackButton);
 
