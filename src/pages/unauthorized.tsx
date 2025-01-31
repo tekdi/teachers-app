@@ -4,12 +4,24 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useEffect } from 'react';
 
 
 const Unauthorized = () => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
-  
+  useEffect(() => {
+    const handleBackButton = () => {
+      console.log("User pressed the browser back button");
+      localStorage.clear()
+    };
+
+    window.addEventListener("popstate", handleBackButton);
+
+    return () => {
+      window.removeEventListener("popstate", handleBackButton);
+    };
+  }, []);
 
   return (
     <Box
