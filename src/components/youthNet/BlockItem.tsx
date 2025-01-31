@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
     Card,
     CardContent,
@@ -6,10 +6,9 @@ import {
     Box,
     Divider,
     IconButton,
-} from "@mui/material";
-import { ChevronRight } from "@mui/icons-material";
+} from '@mui/material';
+import { ChevronRight } from '@mui/icons-material';
 
-// Interfaces
 interface Block {
     id: number;
     name: string;
@@ -28,29 +27,32 @@ interface AssignVillagesProps {
     onBlockClick: (block: Block) => void;
 }
 
-// Generic BlockItem Component
-const BlockItem: React.FC<BlockItemProps> = ({ name, selectedCount, onClick }) => (
+const BlockItem: React.FC<BlockItemProps> = ({
+    name,
+    selectedCount,
+    onClick,
+}) => (
     <Box
         display="flex"
         justifyContent="space-between"
         alignItems="center"
-        padding={2}
+        padding={'10px'}
         borderRadius={2}
-        border="1px solid #E0E0E0"
+        border="1px solid #D0C5B4"
         sx={{
-            backgroundColor: "#fff",
-            cursor: "pointer",
+            backgroundColor: '#fff',
+            cursor: 'pointer',
             marginBottom: 1,
-            transition: "background-color 0.2s ease",
-            '&:hover': { backgroundColor: "#f5f5f5" },
+            transition: 'background-color 0.2s ease',
+            '&:hover': { backgroundColor: '#f5f5f5' },
         }}
         onClick={onClick}
     >
         <Box>
-            <Typography variant="body1" fontWeight="bold">
+            <Typography sx={{ color:'#1F1B13', fontSize:'16px', fontWeight:'400'}}>
                 {name}
             </Typography>
-            <Typography variant="body2" color="textSecondary">
+            <Typography sx={{ color: '#635E57', fontSize: '14px', fontWeight: '400' }} >
                 {selectedCount} villages selected
             </Typography>
         </Box>
@@ -61,19 +63,45 @@ const BlockItem: React.FC<BlockItemProps> = ({ name, selectedCount, onClick }) =
 );
 
 // Main Component
-const AssignVillages: React.FC<AssignVillagesProps> = ({ district, blocks, onBlockClick }) => {
+const AssignVillages: React.FC<AssignVillagesProps> = ({
+    district,
+    blocks,
+    onBlockClick,
+}) => {
     return (
-        <Card sx={{ maxWidth: 400, margin: "auto", padding: 2, boxShadow: 1 }}>
+        <Box>
             <CardContent>
-                <Typography variant="h6" gutterBottom>
+                <Typography
+                    sx={{
+                        color: '#1F1B13',
+                        fontSize: '14px',
+                        fontWeight: '500',
+                    }}
+                >
                     Assign Villages from Blocks
                 </Typography>
-                <Typography variant="body2" color="textSecondary" gutterBottom>
-                    You can complete this later at your own pace. However, the villages will
-                    only be assigned once you click on ‘Finish.’
+                <Typography
+                    sx={{
+                        color: '#1F1B13',
+                        fontSize: '14px',
+                        fontWeight: '400',
+                    }}
+                >
+                    You can complete this later at your own pace. However, the villages
+                    will only be assigned once you click on ‘Finish.’
                 </Typography>
-                <Divider sx={{ marginY: 2 }} />
-                <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
+               
+                <Typography
+                    variant="subtitle1"
+                    sx={{
+                        color: '#7C766F',
+                        fontSize: '14px',
+                        fontWeight: '400',
+                        my:1
+                    }}
+                    fontWeight="bold"
+                    gutterBottom
+                >
                     {district} District
                 </Typography>
                 <Box>
@@ -87,23 +115,23 @@ const AssignVillages: React.FC<AssignVillagesProps> = ({ district, blocks, onBlo
                     ))}
                 </Box>
             </CardContent>
-        </Card>
+        </Box>
     );
 };
 
 // Example Usage
 const ExamplePage: React.FC = () => {
     const blocks: Block[] = [
-        { id: 1, name: "Ambegaon", selectedCount: 0 },
-        { id: 2, name: "Baramati", selectedCount: 0 },
-        { id: 3, name: "Bhor", selectedCount: 0 },
-        { id: 4, name: "Daund", selectedCount: 0 },
-        { id: 5, name: "Haveli", selectedCount: 0 },
-        { id: 6, name: "Indapur", selectedCount: 0 },
+        { id: 1, name: 'Ambegaon', selectedCount: 0 },
+        { id: 2, name: 'Baramati', selectedCount: 0 },
+        { id: 3, name: 'Bhor', selectedCount: 0 },
+        { id: 4, name: 'Daund', selectedCount: 0 },
+        { id: 5, name: 'Haveli', selectedCount: 0 },
+        { id: 6, name: 'Indapur', selectedCount: 0 },
     ];
 
     const handleBlockClick = (block: Block) => {
-        console.log("Clicked block:", block);
+        console.log('Clicked block:', block);
     };
 
     return (
