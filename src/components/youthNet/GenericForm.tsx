@@ -23,13 +23,11 @@ const GenericForm: React.FC<GenericFormProps> = ({ fields }) => {
         <Box
             component="form"
             sx={{
-                maxWidth: 400,
                 margin: "auto",
                 display: "flex",
                 flexDirection: "column",
                 gap: 2,
                 padding: 2,
-                border: "1px solid #ddd",
                 borderRadius: "8px",
             }}
         >
@@ -45,15 +43,31 @@ const GenericForm: React.FC<GenericFormProps> = ({ fields }) => {
                                 type={field.type}
                                 variant="outlined"
                                 fullWidth
+                                sx={{
+                                    '& .MuiInputLabel-root': {
+                                        color: '#4D4639',
+                                        fontSize:'12px',
+                                        fontWeight:'400'
+                                    },
+                                }}
                             />
                         );
                     case "radio":
                         return (
                             <Box key={index}>
-                                <FormLabel>{field.label}</FormLabel>
+                                <FormLabel sx={{
+                                    color: '#4D4639',
+                                    fontSize: '12px',
+                                    fontWeight: '400'
+                                }}>{field.label}</FormLabel>
                                 <RadioGroup row>
                                     {field.options?.map((option, i) => (
                                         <FormControlLabel
+                                            sx={{
+                                                color: '#4D4639',
+                                                fontSize: '12px',
+                                                fontWeight: '400'
+                                            }}
                                             key={i}
                                             value={option.value}
                                             control={<Radio />}
