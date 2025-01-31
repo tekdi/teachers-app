@@ -24,13 +24,16 @@ const VolunteerListCard: React.FC<CardProps> = ({
   return (
     <Card
       variant="outlined"
+      onClick={onActionClick || (() => { })}
       sx={{
-        mt: 2,
+        // mt: 2,
         borderRadius: '8px',
         boxShadow: 1,
         '&:hover': { boxShadow: 3 },
         overflow: 'hidden',
         position: 'relative',
+        cursor:'pointer',
+        
       }}
     >
       <CardContent
@@ -49,29 +52,33 @@ const VolunteerListCard: React.FC<CardProps> = ({
             {entries} {t('YOUTHNET_VOLUNTEERLIST.ENTRIES')}
           </Typography>
         </Box>
-        <ArrowForwardIosIcon fontSize="small" color="action" />
+        <ArrowForwardIosIcon fontSize="small" color="action" sx={{ color:'#4D4639'}} />
       </CardContent>
       <Box
         sx={{
-          backgroundColor: '#f5f0ff',
+          backgroundColor: '#F3EDF7',
           px: 2,
           py: 1,
+          borderTopLeftRadius:'12px',
+           borderTopRightRadius: '12px'
         }}
       >
-        <Typography
-          variant="body2"
-          sx={{
-            color: '#6d6d6d',
-            display: 'flex',
-            alignItems: 'center',
-            fontSize: '14px',
-          }}
-        >
-          <Box component="span" sx={{ color: 'red' }}>
-            <PriorityHighIcon />
+       <Box sx={{display:'flex' , alignItems:'center', gap:'3px'}}>
+          <Box sx={{ color: '#BA1A1A', fontSize: '18px' }}>
+            !
           </Box>
-          {volunteerCount} {t('YOUTHNET_VOLUNTEERLIST.VOLUNTEERS_ASSIGNED')}
-        </Typography>
+          <Typography
+            sx={{
+              color: '#7C766F',
+              display: 'flex',
+              alignItems: 'center',
+              fontSize: '14px',
+              fontWeight:'500'
+            }}
+          >
+            {volunteerCount} {t('YOUTHNET_VOLUNTEERLIST.VOLUNTEERS_ASSIGNED')}
+          </Typography>
+       </Box>
         <Box
           sx={{
             display: 'flex',
@@ -80,19 +87,16 @@ const VolunteerListCard: React.FC<CardProps> = ({
             mt: 0.5,
           }}
         >
-          <Link
-            component="button"
-            variant="body2"
-            color="primary"
-            onClick={onActionClick || (() => { })}
+          <Box
+            
             sx={{
               fontWeight: '500',
               color: '#0D599E',
-              textDecoration: 'none',
+              fontSize:'14px'
             }}
           >
             {actionLabel}
-          </Link>
+          </Box>
 
           <ArrowForwardIcon
             fontSize="small"

@@ -144,6 +144,7 @@
     "SORT_BY_NAMES": "Sort by Names",
     "INCORRECT_DATA_ENTRY": "Incorrect Data Entry",
     "DUPLICATED_USER": "Duplicated User",
+    "RESIGNATION": "Resignation",
     "FACILITATOR_COUNT": "Facilitators Total count: {{count}}",
     "LEARNER_COUNT": "Learners Total count: {{count}}",
     "FILTER_BY_ATTENDANCE_PERCENTAGE": "Filters By Attendance Percentage",
@@ -235,6 +236,7 @@
     "BLOCK": "Block",
     "ATTENDANCE": "Attendance (%)",
     "VILLAGES_AND_YOUTH": "Villages and Youth",
+    "USERS_&_VILLAGES": "Users & Villages",
     "VILLAGES": "Villages",
     "YOUTH_VOLUNTEERS": "Youth/Volunteers",
     "SEARCH_VILLAGES": "Search Villages"
@@ -748,14 +750,36 @@
     "VOLUNTEERING_DETAILS": "Volunteering details",
     "MARK_AS_VOLUNTEER": "Mark as Volunteer"
   },
+
+  "YOUTHNET_USERS_AND_VILLAGES": {
+    "MENTORS": "Mentors",
+    "CSV": "CSV",
+    "SEARCH_MENTORS": "Search Mentors...",
+    "MARK_AS_VOLUNTEER": "Mark as Volunteer",
+    "ADD_OR_REASSIGN_VILLAGES": "Add or Re-assign Villages",
+    "REQUEST_TO_REASSIGN_DISTRICT": "Request to Re-assign District",
+    "DELETE_USER_PERMANENTLY": "Delete User Permanently",
+    "REQUEST_USER_TO_DIFFERENT_MENTOR": "Re-assign user to a different Mentor Leader",
+    "SAVE_PROGRESS": "Save progress",
+    "FINISH_ASSIGN": "Finish & Assign",
+    "SEND_REQUEST_TO_ADMIN_TEXT": "You are sending a request to the State Admin to re-assign this user to another district",
+    "SELECT_STATE": "Select State",
+    "SELECT_DISTRICT": "Select District",
+    "SELECT": "Select",
+    "ASSIGN_VILLAGES_FROM_BLOCK": "Assign Villages from Block",
+    "ASSIGN_VILLAGES_FROM_BLOCK_INFO": "You can complete this later at your own pace. However, the villages will only be assigned once you click on ‘Finish.’"
+  },
+
   "YOUTHNET_CAMP_DETAILS": {
     "SUBMISSION": "Submission",
     "SUMMARY": "Summary"
   },
   "SURVEYS": {
-    "SURVEYS": "Surveys",
-    "ACTIVE_SURVEYS": "Active Surveys",
-    "PREVIOUS_SURVEYS": "Previous Surveys",
-    "VILLAGES": "Villages"
+    "SURVEYS" :"Surveys",
+    "ACTIVE_SURVEYS" :"Active Surveys",
+    "PREVIOUS_SURVEYS" :"Previous Surveys",
+    "VILLAGES":"Villages",
+    "SUBMISSION":"Submissions",
+    "SUMMARY":"Summary"
   }
 }

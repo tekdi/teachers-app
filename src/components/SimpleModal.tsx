@@ -68,11 +68,7 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
   return (
     <Modal
       open={open}
-      onClose={(event, reason) => {
-        if (reason !== 'backdropClick') {
-          onClose();
-        }
-      }}
+      onClose={onClose}
       aria-labelledby="child-modal-title"
       aria-describedby="child-modal-description"
     >
@@ -107,8 +103,12 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
               <Button
                 variant="outlined"
                 color="secondary"
-                sx={buttonStyle}
                 onClick={secondaryActionHandler}
+                className='one-line-text'
+                sx={{
+                  ...buttonStyle, 
+                  display: "-webkit-box !important",
+                }}
               >
                 {secondaryText}
               </Button>
@@ -119,6 +119,7 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
                 color="primary"
                 sx={buttonStyle}
                 onClick={primaryActionHandler}
+                className='one-line-text'
               >
                 {primaryText}
               </Button>
