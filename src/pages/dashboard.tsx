@@ -691,7 +691,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
           const state = cohortData.customField.find(
             (item: CustomField) => item.label === 'STATES'
           );
-          setState(state.value);
+          setState(state?.value);
 
           const address = `${toPascalCase(district?.value)}, ${toPascalCase(state?.value)}`;
           cohortData.address = address || '';
