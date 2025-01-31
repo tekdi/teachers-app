@@ -46,6 +46,8 @@ import AddIcon from '@mui/icons-material/Add';
 import SimpleModal from '@/components/SimpleModal';
 import Surveys from '@/components/youthNet/Surveys';
 import { useDirection } from '@/hooks/useDirection';
+import GenericForm from '@/components/youthNet/GenericForm';
+import ExamplePage from '@/components/youthNet/BlockItem';
 
 const Index = () => {
   const { isRTL } = useDirection();
@@ -62,10 +64,14 @@ const Index = () => {
 
   const [openReassignDistrict, setOpenReassignDistrict] = useState(false);
   const [openReassignVillage, setOpenReassignVillage] = useState(false);
+  const [addNew, setAddNew] = useState(false);
+  const [count, setCount] = useState(0);
+
   const [openDelete, setOpenDelete] = useState(false);
   const [selectedValue, setSelectedValue] = useState('');
   const [districtData, setDistrictData] = useState<any>(null);
   const [blockData, setBlockData] = useState<any>(null);
+
 
   useEffect(() => {
     const getData = async () => {
@@ -107,6 +113,7 @@ const Index = () => {
     setOpenDelete(false);
     setOpenReassignDistrict(false);
     setOpenReassignVillage(false);
+    setAddNew(false)
   };
 
   const handleButtonClick = (actionType: string) => {
@@ -175,6 +182,29 @@ const Index = () => {
   const handleRadioChange = (value: string) => {
     setSelectedValue(value);
   };
+
+  const formFields = [
+    { type: "text", label: "Full Name" },
+    { type: "number", label: "Contact Number" },
+    {
+      type: "radio",
+      label: "Gender",
+      options: [
+        { value: "female", label: "Female" },
+        { value: "male", label: "Male" },
+      ],
+    },
+    { type: "number", label: "Age" },
+    { type: "email", label: "Mentor's Email ID" },
+  ];
+
+  const handleOpenNew = () => {
+    setAddNew(true)
+  }
+
+  const handleNext= () => {
+    setCount(count + 1)
+  }
 
   return (
     <Box minHeight="100vh">
@@ -286,6 +316,7 @@ const Index = () => {
                 className="text-1E"
                 // onClick={handleOpenAddFaciModal}
                 endIcon={<AddIcon />}
+                onClick={handleOpenNew}
               >
                 {t('COMMON.ADD_NEW')}
               </Button>
@@ -477,6 +508,44 @@ const Index = () => {
                 </Box>
               </Box>
             </SimpleModal>
+
+            
+                <SimpleModal
+              open={addNew}
+              onClose={onClose}
+              showFooter={true}
+              modalTitle={ 
+                'New Mentor'
+              }
+              handleNext={handleNext}
+              primaryText={count === 0 ? 'Next' : 'Finish & Assign'}
+              // secondaryText={t('YOUTHNET_USERS_AND_VILLAGES.FINISH_ASSIGN')}
+
+            //pass function handler as props
+            >
+              {
+                count === 0 && (
+              <Box>
+                <Box mt={2}>
+                  <GenericForm fields={formFields}/>
+                </Box>
+              </Box>
+                )
+              }
+              {
+                count === 1 && (
+                  <Box>
+                    <Box mt={2}>
+                      <ExamplePage/> 
+                    </Box>
+                  </Box>
+                )
+              }
+            </SimpleModal>
+             
+
+             
+            
           </>
         )}
       </Box>

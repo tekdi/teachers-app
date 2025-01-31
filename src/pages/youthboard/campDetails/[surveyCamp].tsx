@@ -124,7 +124,7 @@ const SurveyClassDetails = () => {
           </Box>
         </Box>
       )}
-      {value === 2 && <Box>Tab 2</Box>}
+      {value === 2 && <Box>coming soon</Box>}
     </Box>
   );
 };
