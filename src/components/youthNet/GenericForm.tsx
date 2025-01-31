@@ -27,7 +27,6 @@ const GenericForm: React.FC<GenericFormProps> = ({ fields }) => {
                 display: "flex",
                 flexDirection: "column",
                 gap: 2,
-                padding: 2,
                 borderRadius: "8px",
             }}
         >

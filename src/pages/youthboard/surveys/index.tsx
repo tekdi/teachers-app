@@ -32,20 +32,7 @@ const Survey = () => {
     router.push('/youthboard/volunteerList');
   };
 
-  const formFields = [
-    { type: "text", label: "Full Name" },
-    { type: "number", label: "Contact Number" },
-    {
-      type: "radio",
-      label: "Gender",
-      options: [
-        { value: "female", label: "Female" },
-        { value: "male", label: "Male" },
-      ],
-    },
-    { type: "number", label: "Age" },
-    { type: "email", label: "Mentor's Email ID" },
-  ];
+ 
 
   return (
     <>

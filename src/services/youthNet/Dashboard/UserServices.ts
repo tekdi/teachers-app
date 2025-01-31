@@ -3,7 +3,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
 
 const MENTOR_DETAILS = {
   MENTOR_NAME: 'Mentor',
-  MENTOR_OPTIONS: ['Shivan Mathur', 'Mentor 2', 'Mentor 3', 'Mentor 4'],
+  MENTOR_OPTIONS: ['Shivan Mathur', 'Vivek kasture', 'Rohan Nene', 'Sanket Jadhav'],
 };
 
 export const fetchUserData = async (): Promise<any> => {
