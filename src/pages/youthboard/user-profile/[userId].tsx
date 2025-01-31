@@ -105,6 +105,9 @@ const UserId = () => {
           mentorId={user.userID || ''}
           phoneNumber={user.phone || ''}
           gender={user.gender || ''}
+          state="Maharashtra"
+          district="Pune"
+          block="Bhor"
         />
       </Box>
     </Box>
