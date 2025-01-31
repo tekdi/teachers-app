@@ -8,6 +8,7 @@ export const SURVEY_DATA = {
   CREATIVITY_MAHOTSAV: 'Creativity Mahotsav',
   TWELVE: 'Assigned to 12 Villages',
   FIFTY_TWO: '52',
+  FOUR: '4',
 };
 
 export const volunteerData = [
@@ -174,6 +175,14 @@ export const surveyData = [
   { title: 'Sports Camp', date: '3 Feb, 2024' },
 ];
 
+export const reAssignVillages = [
+  { title: 'Ambegaon', date: '0 Villages Selected' },
+  { title: 'Baramati', date: '0 Villages Selected' },
+  { title: 'Daund', date: '0 Villages Selected' },
+  { title: 'Haveli', date: '0 Villages Selected' },
+  { title: 'Indapur', date: '0 Villages Selected' },
+];
+
 export const CAMP_DATA = {
   ASSIGNED: '  Assigned to Ankita Kulkarni, Ananya Sen',
   DATE1: 'Submitted on 10 Sep, 2024 @ 2:35 pm',
@@ -218,6 +227,44 @@ export const youthList = [
   {
     name: 'Divya Sharma',
     age: 17,
+    joinOn: 'Join on 15 Jan, 2025',
+    image: '',
+    showMore: true,
+    showAvtar: true,
+  },
+];
+
+export const mentorList = [
+  {
+    name: 'Asha Shubalakshmi',
+    age: 14,
+    image: '',
+    joinOn: 'Join on 15 Jan, 2025',
+    isNew: true,
+    showMore: true,
+    showAvtar: true,
+  },
+  {
+    name: 'Bharat Sen',
+    age: 15,
+    image: '',
+    joinOn: 'Join on 15 Jan, 2025',
+    isNew: true,
+    showMore: true,
+    showAvtar: true,
+  },
+  {
+    name: 'Divyadarshan Panve',
+    age: 15,
+    image: '',
+    joinOn: 'Join on 15 Jan, 2025',
+    isNew: true,
+    showMore: true,
+    showAvtar: true,
+  },
+  {
+    name: 'Samarth Lalbagh',
+    age: 14,
     joinOn: 'Join on 15 Jan, 2025',
     image: '',
     showMore: true,
