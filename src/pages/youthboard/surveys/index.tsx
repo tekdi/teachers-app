@@ -1,8 +1,11 @@
 import NoDataFound from '@/components/common/NoDataFound';
 import Header from '@/components/Header';
 import BackHeader from '@/components/youthNet/BackHeader';
+import ExamplePage from '@/components/youthNet/BlockItem';
+import GenericForm from '@/components/youthNet/GenericForm';
 import Surveys from '@/components/youthNet/Surveys';
 import { surveysData } from '@/components/youthNet/tempConfigs';
+import VillageSelector from '@/components/youthNet/VillageSelector';
 import { Box, Grid, Tab, Tabs } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
@@ -28,6 +31,21 @@ const Survey = () => {
   const handleAddVolunteers = () => {
     router.push('/youthboard/volunteerList');
   };
+
+  const formFields = [
+    { type: "text", label: "Full Name" },
+    { type: "number", label: "Contact Number" },
+    {
+      type: "radio",
+      label: "Gender",
+      options: [
+        { value: "female", label: "Female" },
+        { value: "male", label: "Male" },
+      ],
+    },
+    { type: "number", label: "Age" },
+    { type: "email", label: "Mentor's Email ID" },
+  ];
 
   return (
     <>
@@ -104,7 +122,9 @@ const Survey = () => {
         )}
         {value === 2 && (
           <Box sx={{ mt: 4, p: 2, background: '#FBF4E4' }}>
-            coming soon
+            {/* <GenericForm fields={formFields} /> */}
+            {/* <ExamplePage/> */}
+            {/* <VillageSelector/> */}
           </Box>
         )}
         </Box>

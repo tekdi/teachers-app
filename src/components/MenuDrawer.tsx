@@ -446,12 +446,19 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                     : 'transparent',
                 },
               }}
-              startIcon={<GroupsIcon sx={{ fontSize: '24px !important' }} />}
+              startIcon={<Image
+                src={surveyForm}
+                alt="SurveyForm-Icon"
+                width={24}
+                height={24}
+              />}
               onClick={() => {
                 router.push(`/youthboard/surveys`);
               }}
             >
-              Surveys
+              {
+                t('SURVEYS.SURVEYS')
+              }
             </Button>
           </Box>
         )}

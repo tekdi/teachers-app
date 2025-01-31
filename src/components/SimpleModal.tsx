@@ -107,8 +107,12 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
               <Button
                 variant="outlined"
                 color="secondary"
-                sx={buttonStyle}
                 onClick={secondaryActionHandler}
+                className='one-line-text'
+                sx={{
+                  ...buttonStyle, 
+                  display: "-webkit-box !important",
+                }}
               >
                 {secondaryText}
               </Button>
@@ -119,6 +123,7 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
                 color="primary"
                 sx={buttonStyle}
                 onClick={primaryActionHandler}
+                className='one-line-text'
               >
                 {primaryText}
               </Button>
