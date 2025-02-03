@@ -93,7 +93,7 @@ function AssessmentsDetails() {
       const filters = {
         program: Program,
         state: stateName as string,
-        board: board,
+        board: board ? [board] : [],
         status: ['Live'],
         assessmentType: getAssessmentType(assessmentType),
         primaryCategory: [

@@ -269,7 +269,7 @@ export interface ICohort {
   name: string;
   value: string;
   state: string;
-  customField?: any;
+  customField: any[];
   firstName?: string;
 }
 
@@ -312,7 +312,7 @@ export interface CohortAttendancePercentParam {
 export interface GetDoIdServiceParam {
   filters: {
     program?: string | string[];
-    boards?: (string | null)[];
+    board?: string[];
     subject?: string | string[];
     assessmentType?: string | string[];
     state: string;

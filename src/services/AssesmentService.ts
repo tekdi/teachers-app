@@ -33,7 +33,7 @@ export const getDoIdForAssessmentDetails = async ({
     request: {
       filters: {
         program: filters.program,
-        board: filters.boards,
+        board: filters.board,
         // state: filters.state,
         assessmentType: filters.assessmentType,
         status: ['Live'],

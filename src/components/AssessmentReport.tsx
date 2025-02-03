@@ -36,19 +36,21 @@ const AssessmentReport: React.FC<AssessmentReportProp> = ({
     type: AssessmentType,
     setList: React.Dispatch<React.SetStateAction<string[]>>
   ) => {
-    const stateName = localStorage.getItem('stateName');
+    const stateName = localStorage.getItem('stateName') as string;
 
-    const filters = {
-      program: Program,
-      state: stateName as string,
-      board: board,
-      status: ['Live'],
-      primaryCategory: [
-        "Practice Question Set"
-      ],
-      assessmentType: type,
-    };
-
+    let filters: any;
+    if (stateName) {
+      filters = {
+        program: Program,
+        state: [stateName],
+        board: [board],
+        status: ['Live'],
+        primaryCategory: [
+          "Practice Question Set"
+        ],
+        assessmentType: type,
+      };
+    }
     try {
       if (stateName && filters) {
         setIsLoading(true);
@@ -165,41 +167,42 @@ const AssessmentReport: React.FC<AssessmentReportProp> = ({
   }, [otherAssessmentList]);
 
   return (
-    <Box
-      sx={{
-        background: '#ffffff',
-        padding: '0px',
-      }}
-    >
-      <Typography
+    board && (
+      <Box
         sx={{
-          color: theme.palette.warning['A200'],
-          fontWeight: 600,
-          fontSize: '16px',
-          pb: '0.75rem',
+          background: '#ffffff',
+          padding: '0px',
         }}
-        variant="h5"
-        gutterBottom
       >
-        {t('COMMON.ASSESSMENT_REPORT')}
-      </Typography>
-      <Box sx={{ background: '#ffffff', pb: '1rem' }}>
-        <Grid container spacing={2}>
-          {assessmentData?.map((assessment: any) => (
-            <AssessmentReportCard
-              key={assessment.userId}
-              assessmentStatus={assessment.progress}
-              cardTitle={assessment.type}
-              overallPercentage={assessment.score}
-              userId={assessment.userId}
-              classId={classId}
-              assessmentType={assessment.type}
-              board={board}
-            />
-          ))}
-        </Grid>
-      </Box>
-    </Box>
+        <Typography
+          sx={{
+            color: theme.palette.warning['A200'],
+            fontWeight: 600,
+            fontSize: '16px',
+            pb: '0.75rem',
+          }}
+          variant="h5"
+          gutterBottom
+        >
+          {t('COMMON.ASSESSMENT_REPORT')}
+        </Typography>
+        <Box sx={{ background: '#ffffff', pb: '1rem' }}>
+          <Grid container spacing={2}>
+            {assessmentData?.map((assessment: any) => (
+              <AssessmentReportCard
+                key={assessment.userId}
+                assessmentStatus={assessment.progress}
+                cardTitle={assessment.type}
+                overallPercentage={assessment.score}
+                userId={assessment.userId}
+                classId={classId}
+                assessmentType={assessment.type}
+                board={board}
+              />
+            ))}
+          </Grid>
+        </Box>
+      </Box>)
   );
 };
 

@@ -248,9 +248,10 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                   parentId: item?.parentId,
                   name: item?.cohortName || item?.name,
                   status: item?.cohortStatus,
+                  customField: item?.customField,
                 }))
                 ?.filter(Boolean);
-              setCohortsData(filteredData);
+              setCohortsData([...filteredData]);
               setCohorts(filteredData);
               if (filteredData.length > 0) {
                 if (typeof window !== 'undefined' && window.localStorage) {

@@ -24,7 +24,7 @@ const fetchCohortMemberList = async ({
     return response?.data;
   } catch (error) {
     console.error('error in cohort member list API ', error);
-    // throw error;
+    throw error;
   }
 };
 

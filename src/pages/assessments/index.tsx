@@ -38,7 +38,6 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import {
   accessControl,
-  AssessmentType,
   AttendanceAPILimit,
   Program,
 } from '../../../app.config';
@@ -117,14 +116,15 @@ const Assessments = () => {
         if (resp) {
           const userDetails = resp.map((user: any) => ({
             ...user,
-            name: toPascalCase(user?.firstName || '') + ' ' + (user?.lastName ? toPascalCase(user.lastName) : ""),            userId: user.userId,
+            name: toPascalCase(user?.firstName || '') + ' ' + (user?.lastName ? toPascalCase(user.lastName) : ""), userId: user.userId,
           }));
           setCohortMembers(userDetails);
         }
       } catch (error) {
         // setLoading(false);
         console.error('Error fetching cohort list:', error);
-        showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+        // showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+        resetValues();
         setIsLoading(false);
       } finally {
         // setLoading(false);
@@ -135,8 +135,8 @@ const Assessments = () => {
     if (classId) {
       setTimeout(() => {
         setLoading(false);
+        getCohortMemberList();
       }, 0);
-      getCohortMemberList();
     }
   }, [classId]);
 
@@ -146,56 +146,57 @@ const Assessments = () => {
       selectedState: string,
       selectedBoard: string
     ) => {
-      const stateName = localStorage.getItem('stateName');
+      // const stateName = localStorage.getItem('stateName');
 
       const filters = {
         program: Program,
-        board: selectedBoard || centerData?.board,
-        state: selectedState || centerData?.state,
+        board: [selectedBoard],
+        state: selectedState,
         status: ['Live'],
         assessmentType: getAssessmentType(assessmentType),
         primaryCategory: ['Practice Question Set'],
       };
       try {
-        if (stateName) {
-          if (filters) {
-            setIsLoading(true);
-            setLearnerList([]);
-            setFilteredLearnerList([]);
-            setAssessmentList([]);
+        // if (stateName) {
+        if (filters) {
+          setIsLoading(true);
+          setLearnerList([]);
+          setFilteredLearnerList([]);
+          setAssessmentList([]);
 
-            const searchResults = await queryClient.fetchQuery({
-              queryKey: ['contentSearch', { filters }],
-              queryFn: () => getDoIdForAssessmentDetails({ filters }),
-            });
+          const searchResults = await queryClient.fetchQuery({
+            queryKey: ['contentSearch', { filters }],
+            queryFn: () => getDoIdForAssessmentDetails({ filters }),
+          });
 
-            if (searchResults?.responseCode === 'OK') {
-              const result = searchResults?.result;
-              if (result) {
-                console.log(
-                  'Result found from getDoIdForAssessmentDetails ',
-                  result
-                );
-                if (result?.QuestionSet?.length > 0) {
-                  const assessmentIds = result.QuestionSet.map((item: any) => {
-                    return item?.IL_UNIQUE_ID;
-                  });
-                  setAssessmentList(assessmentIds);
-                } else {
-                  setAssessmentList([]);
-                }
+          if (searchResults?.responseCode === 'OK') {
+            const result = searchResults?.result;
+            if (result) {
+              console.log(
+                'Result found from getDoIdForAssessmentDetails ',
+                result
+              );
+              if (result?.QuestionSet?.length > 0) {
+                const assessmentIds = result.QuestionSet.map((item: any) => {
+                  return item?.IL_UNIQUE_ID;
+                });
+                setAssessmentList(assessmentIds);
               } else {
-                console.log(
-                  'NO Result found from getDoIdForAssessmentDetails '
-                );
+                setAssessmentList([]);
               }
+            } else {
+              console.log(
+                'NO Result found from getDoIdForAssessmentDetails '
+              );
             }
-          } else {
-            console.log('NO Data found from getDoIdForAssessmentDetails ');
           }
         } else {
-          console.log('NO State Found');
+          console.log('NO Data found from getDoIdForAssessmentDetails ');
         }
+        // }
+        //  else {
+        //   console.log('NO State Found');
+        // }
       } catch (error) {
         showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
         console.error(
@@ -207,21 +208,34 @@ const Assessments = () => {
       }
     };
 
-    if (assessmentType && cohortsData?.length > 0) {
-      const selectedState = cohortsData?.[0]?.customField?.filter(
+    if (assessmentType && cohortsData.length > 0) {
+      console.log('cohortsData ===>', cohortsData);
+
+      const cohort = cohortsData.find((item: any) => item.cohortId === classId);
+
+      if (!cohort?.customField) return;
+
+      const selectedState = cohort.customField.find(
         (item: any) => item.label === 'STATES'
-      )?.[0]?.value;
-      const selectedBoard = cohortsData?.[0]?.customField?.filter(
+      )?.value;
+
+      const selectedBoard = cohort.customField.find(
         (item: any) => item.label === 'BOARD'
-      )?.[0]?.value;
-      setCenterData({
-        state: selectedState,
-        board: selectedBoard,
-      });
-      getDoIdForAssessmentReport(selectedState, selectedBoard);
+      )?.value;
+
+      setCenterData({ state: selectedState, board: selectedBoard });
+
+      setLearnerList([]);
+      setFilteredLearnerList([]);
+      setAssessmentList([]);
+
+      if (selectedState && selectedBoard) {
+        getDoIdForAssessmentReport(selectedState, selectedBoard);
+      }
     }
 
-  }, [assessmentType, cohortsData]);
+
+  }, [assessmentType, classId, cohortsData]);
 
   useEffect(() => {
     const getAssessmentsForLearners = async () => {
@@ -231,7 +245,6 @@ const Assessments = () => {
           courseId: assessmentList, // temporary added here assessmentList(contentId)... if assessment is done then need to pass actual course id and unit id here
           unitId: assessmentList,
           contentId: assessmentList,
-          // batchId: classId,
         };
         const assessmentStatus = await getAssessmentStatus(options);
         let completionCount = 0;
@@ -375,7 +388,7 @@ const Assessments = () => {
   };
 
   useEffect(() => {
-    setAssessmentType(query.type === 'post' ? 'post' : (query.type === 'pre' ? 'pre' : 'other'));
+    setAssessmentType(query.type === 'post' ? 'post' : (query.type === 'other' ? 'other' : 'pre'));
   }, [query.type]);
 
   return (
@@ -477,11 +490,28 @@ const Assessments = () => {
         </Box>
       )}
 
-      {!isLoading && !assessmentList?.length && <NoDataFound />}
+      {!isLoading && (!assessmentList?.length || !filteredLearnerList?.length) && centerData?.board && <NoDataFound />}
+
+
+      { !isLoading && (!assessmentList?.length || !filteredLearnerList?.length) && !centerData?.board &&
+        (<Box
+        sx={{
+          background: theme.palette.action.selected,
+          py: 0.5,
+          borderRadius: 2,
+          m: 2.5,
+          p: 2,
+        }}
+      >
+        <Typography variant="h2" sx={{ ml: 2 }}>
+          {t('COMMON.NO_ASSIGNED_BOARDS')}
+        </Typography>
+        </Box>)
+      }
 
       {!isLoading &&
-        !!assessmentList?.length &&
-        !!filteredLearnerList?.length && (
+        // !!assessmentList?.length &&
+        filteredLearnerList?.length > 0 && (
           <Grid
             sx={{
               mt: 2,
@@ -549,17 +579,17 @@ const Assessments = () => {
           </Grid>
         </Box>
       )}
-      {!isLoading &&
-        !filteredLearnerList?.length &&
-        !!assessmentList?.length && <NoDataFound />}
 
-      <AssessmentSortModal
-        open={modalOpen}
-        onClose={handleCloseModal}
-        modalTitle={t('COMMON.SORT_BY')}
-        btnText={t('COMMON.APPLY')}
-        onFilterApply={handleSorting}
-      />
+      {modalOpen &&
+        <AssessmentSortModal
+          open={modalOpen}
+          onClose={handleCloseModal}
+          modalTitle={t('COMMON.SORT_BY')}
+          btnText={t('COMMON.APPLY')}
+          onFilterApply={handleSorting}
+        />
+      }
+
     </>
   );
 };
