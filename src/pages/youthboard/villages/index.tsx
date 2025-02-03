@@ -48,6 +48,7 @@ import Surveys from '@/components/youthNet/Surveys';
 import { useDirection } from '@/hooks/useDirection';
 import GenericForm from '@/components/youthNet/GenericForm';
 import ExamplePage from '@/components/youthNet/BlockItem';
+import VillageSelector from '@/components/youthNet/VillageSelector';
 
 const Index = () => {
   const { isRTL } = useDirection();
@@ -71,7 +72,6 @@ const Index = () => {
   const [selectedValue, setSelectedValue] = useState('');
   const [districtData, setDistrictData] = useState<any>(null);
   const [blockData, setBlockData] = useState<any>(null);
-
 
   useEffect(() => {
     const getData = async () => {
@@ -113,7 +113,8 @@ const Index = () => {
     setOpenDelete(false);
     setOpenReassignDistrict(false);
     setOpenReassignVillage(false);
-    setAddNew(false)
+    setAddNew(false);
+    setCount(0)
   };
 
   const handleButtonClick = (actionType: string) => {
@@ -184,27 +185,29 @@ const Index = () => {
   };
 
   const formFields = [
-    { type: "text", label: "Full Name" },
-    { type: "number", label: "Contact Number" },
+    { type: 'text', label: 'Full Name' },
+    { type: 'number', label: 'Contact Number' },
     {
-      type: "radio",
-      label: "Gender",
+      type: 'radio',
+      label: 'Gender',
       options: [
-        { value: "female", label: "Female" },
-        { value: "male", label: "Male" },
+        { value: 'female', label: 'Female' },
+        { value: 'male', label: 'Male' },
       ],
     },
-    { type: "number", label: "Age" },
-    { type: "email", label: "Mentor's Email ID" },
+    { type: 'number', label: 'Age' },
+    { type: 'email', label: "Mentor's Email ID" },
   ];
 
   const handleOpenNew = () => {
-    setAddNew(true)
-  }
+    setAddNew(true);
+  };
 
-  const handleNext= () => {
-    setCount(count + 1)
-  }
+  const handleNext = () => {
+    // setCount(count + 1)
+    setCount((prev) => prev + 1);
+  };
+  console.log('count', count);
 
   return (
     <Box minHeight="100vh">
@@ -509,43 +512,38 @@ const Index = () => {
               </Box>
             </SimpleModal>
 
-            
-                <SimpleModal
+            <SimpleModal
               open={addNew}
               onClose={onClose}
               showFooter={true}
-              modalTitle={ 
-                'New Mentor'
-              }
+              modalTitle={'New Mentor'}
               handleNext={handleNext}
               primaryText={count === 0 ? 'Next' : 'Finish & Assign'}
-              // secondaryText={t('YOUTHNET_USERS_AND_VILLAGES.FINISH_ASSIGN')}
-
-            //pass function handler as props
+              secondaryText={count === 1 ? 'Save Progress' : ''}
+       
             >
-              {
-                count === 0 && (
-              <Box>
-                <Box mt={2}>
-                  <GenericForm fields={formFields}/>
-                </Box>
-              </Box>
-                )
-              }
-              {
-                count === 1 && (
-                  <Box>
-                    <Box mt={2}>
-                      <ExamplePage/> 
-                    </Box>
+              {count === 0 && (
+                <Box>
+                  <Box mt={2}>
+                    <GenericForm fields={formFields} />
                   </Box>
-                )
-              }
+                </Box>
+              )}
+              {count === 1 && (
+                <Box>
+                  <Box mt={2}>
+                    <ExamplePage handleNext={handleNext} />
+                  </Box>
+                </Box>
+              )}
+              {count === 2 && (
+                <Box>
+                  <Box mt={2}>
+                    <VillageSelector />
+                  </Box>
+                </Box>
+              )}
             </SimpleModal>
-             
-
-             
-            
           </>
         )}
       </Box>
