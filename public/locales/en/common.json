@@ -160,7 +160,9 @@
     "INSTALL_APP_DESCRIPTION": "Get access to the Pratham Learning Management Portal (LMP) at your fingertips by installing on your device.",
     "RELOAD": "Update Now",
     "UPDATE_AVAILABLE": "New Update Available!",
-    "RELOAD_TO_UPDATE": "Get the latest features and improvements—update now to enjoy a smoother experience and stay up-to-date!"
+    "RELOAD_TO_UPDATE": "Get the latest features and improvements—update now to enjoy a smoother experience and stay up-to-date!",
+    "NO_ASSIGNED_BOARDS":"No assigned Board for selected Center"
+  
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
@@ -642,7 +644,7 @@
     "ASSESSMENTS": "Assessments",
     "CENTER": "Center",
     "ASSESSMENT_TYPE": "Assessment Type",
-    "COMPLETED_THE_ASSESSMENT": "completed all the assigned assessments",
+    "COMPLETED_THE_ASSESSMENT": "learners completed all the assigned assessments",
     "SUBMITTED_ON": "Submitted On",
     "CORRECT_ANSWER": "correct answers",
     "NO_DATA_FOUND": "No data found",

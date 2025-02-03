@@ -290,7 +290,7 @@ const CohortPage = () => {
           const state = cohortData.customField.find(
             (item: CustomField) => item.label === 'STATES'
           );
-          setState(state.value);
+          setState(state?.value);
           const stateCode = state?.code || '';
           const stateId = state?.fieldId || '';
 
