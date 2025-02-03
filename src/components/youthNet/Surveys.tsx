@@ -28,7 +28,7 @@ function Surveys({
           borderRadius: '8px',
           padding: '12px',
           cursor: 'pointer',
-          background: 'white',
+          background: theme.palette.warning['A400'],
           minHeight: minHeight || '100%'
         }}
         display="flex"

@@ -1,11 +1,8 @@
 import NoDataFound from '@/components/common/NoDataFound';
 import Header from '@/components/Header';
 import BackHeader from '@/components/youthNet/BackHeader';
-import ExamplePage from '@/components/youthNet/BlockItem';
-import GenericForm from '@/components/youthNet/GenericForm';
 import Surveys from '@/components/youthNet/Surveys';
 import { surveysData } from '@/components/youthNet/tempConfigs';
-import VillageSelector from '@/components/youthNet/VillageSelector';
 import { Box, Grid, Tab, Tabs } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
@@ -19,7 +16,7 @@ const Survey = () => {
   const router = useRouter();
 
   const [value, setValue] = useState<number>(1);
-  const [searchInput, setSearchInput] = useState('');
+  // const [searchInput, setSearchInput] = useState('');
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -32,63 +29,63 @@ const Survey = () => {
     router.push('/youthboard/volunteerList');
   };
 
- 
+
 
   return (
     <>
-        <Box>
-          <Header />
-        </Box>
-        <Box ml={2}>
+      <Box>
+        <Header />
+      </Box>
+      <Box ml={2}>
         <BackHeader headingOne={t('SURVEYS.SURVEYS')} />
-        </Box>
-        <Box sx={{ width: '100%' }}>
-          {value && (
-            <Tabs
-              value={value}
-              onChange={handleChange}
-              textColor="inherit" // Use "inherit" to apply custom color
-              aria-label="secondary tabs example"
-              sx={{
-                fontSize: '14px',
-                borderBottom: (theme) => `1px solid #EBE1D4`,
+      </Box>
+      <Box sx={{ width: '100%' }}>
+        {value && (
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            textColor="inherit" // Use "inherit" to apply custom color
+            aria-label="secondary tabs example"
+            sx={{
+              fontSize: '14px',
+              borderBottom: (theme) => `1px solid #EBE1D4`,
 
-                '& .MuiTab-root': {
-                  color: theme.palette.warning['A200'],
-                  padding: '0 20px',
-                  flexGrow: 1,
-                },
-                '& .Mui-selected': {
-                  color: theme.palette.warning['A200'],
-                },
-                '& .MuiTabs-indicator': {
-                  display: 'flex',
-                  justifyContent: 'center',
-                  backgroundColor: theme.palette.primary.main,
-                  borderRadius: '100px',
-                  height: '3px',
-                },
-                '& .MuiTabs-scroller': {
-                  overflowX: 'unset !important',
-                },
-              }}
-            >
+              '& .MuiTab-root': {
+                color: theme.palette.warning['A200'],
+                padding: '0 20px',
+                flexGrow: 1,
+              },
+              '& .Mui-selected': {
+                color: theme.palette.warning['A200'],
+              },
+              '& .MuiTabs-indicator': {
+                display: 'flex',
+                justifyContent: 'center',
+                backgroundColor: theme.palette.primary.main,
+                borderRadius: '100px',
+                height: '3px',
+              },
+              '& .MuiTabs-scroller': {
+                overflowX: 'unset !important',
+              },
+            }}
+          >
             <Tab value={1} label={t('SURVEYS.ACTIVE_SURVEYS')} />
             <Tab value={2} label={t('SURVEYS.PREVIOUS_SURVEYS')} />
-            </Tabs>
-          )}
+          </Tabs>
+        )}
 
 
-        </Box>
+      </Box>
 
-        <Box>
+      <Box>
         {value === 1 && (
           <Box padding={"15px"} sx={{
             background: '#FBF4E4',
           }}>
             <Grid container spacing={2}>
               {surveysData && surveysData.length > 0 ? (
-                surveysData.map((survey , index) => (
+                surveysData?.map((survey, index) => (
                   <Grid item xs={12} sm={12} md={6} lg={4} key={index}>
                     <Surveys
                       title={survey.title}
@@ -102,7 +99,7 @@ const Survey = () => {
                   </Grid>
                 ))
               ) : (
-                  <NoDataFound />
+                <NoDataFound />
               )}
             </Grid>
           </Box>
@@ -114,10 +111,10 @@ const Survey = () => {
             {/* <VillageSelector/> */}
           </Box>
         )}
-        </Box>
+      </Box>
 
-      
-      </>
+
+    </>
 
   )
 }

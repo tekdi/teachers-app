@@ -931,3 +931,29 @@ export interface VillageDetailProps {
   subtitle?: string;
   onClick?: () => void;
 }
+
+
+export interface Block {
+    id: number;
+    name: string;
+    selectedCount: number;
+    handleNext?: any;
+}
+
+export interface BlockItemProps {
+    name: string;
+    selectedCount: number;
+    onClick: () => void;
+    handleNext ? : any;
+}
+
+export interface AssignVillagesProps {
+    district: string;
+    blocks: Block[];
+    onBlockClick: (block: Block) => void;
+    handleNext?: any;
+}
+
+export interface ExamplePageProps {
+    handleNext: () => void;
+}

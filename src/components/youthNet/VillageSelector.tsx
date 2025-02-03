@@ -116,7 +116,7 @@ const VillageSelector = () => {
                     onChange={(e) => setSortOrder(e.target.value)}
                     fullWidth
                     size="small"
-                    sx={{ mt: 1, mb: 1, maxWidth: '150px' }}
+                    sx={{ mt: 1, mb: 1, maxWidth: '100px' }}
                 >
                     <MenuItem
                         sx={{ color: '#4D4639', fontWeight: '500', fontSize: '14px' }}
@@ -136,7 +136,7 @@ const VillageSelector = () => {
             <Box
                 sx={{
                     backgroundColor: '#F8EFE7',
-                    padding: '8px',
+                    padding: '0px 8px',
                     borderRadius: '8px',
                     display: 'inline-flex',
                     alignItems: 'center',
@@ -165,6 +165,7 @@ const VillageSelector = () => {
                         display: 'flex',
                         justifyContent: 'space-between',
                         width: '100%',
+                        ml: 0, // Ensures margin-left is 0
                         '& .MuiFormControlLabel-label': {
                             fontSize: '14px',
                             color: '#5a5a5a',
@@ -178,7 +179,6 @@ const VillageSelector = () => {
                     <Typography variant="subtitle1" sx={{ mt: 2, mb: 1 }}>
                         {section}
                     </Typography>
-                    <Divider />
                     <List sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
                         {villages.map((village) => (
                             <ListItem
@@ -186,31 +186,30 @@ const VillageSelector = () => {
                                 disablePadding
                                 sx={{
                                     width: 'auto',
-                                    bgcolor: selected.includes(village)
-                                        ? '#FDBE16'
-                                        : 'transparent',
+                                    bgcolor: selected.includes(village) ? '#FDBE16' : 'transparent',
                                     border: '1px solid',
-                                    borderColor: selected.includes(village)
-                                        ? '#FDBE16'
-                                        : '#DADADA',
+                                    borderColor: selected.includes(village) ? '#FDBE16' : '#DADADA',
                                     borderRadius: "8px",
                                     px: 1,
+                                    "&:hover": { backgroundColor: "transparent" } // Prevent hover effect
                                 }}
                             >
                                 <ListItemButton
                                     onClick={() => handleToggle(village)}
+                                    disableRipple // Disable Material UI ripple effect
                                     sx={{
                                         padding: 0,
                                         color: selected.includes(village) ? 'black' : 'inherit',
+                                        "&:hover": { backgroundColor: "transparent" } // Prevent hover effect
                                     }}
                                 >
                                     <Checkbox
                                         checked={selected.includes(village)}
+                                        disableRipple // Disable ripple effect
                                         sx={{
                                             color: 'black',
-                                            '&.Mui-checked': {
-                                                color: 'black',
-                                            },
+                                            '&.Mui-checked': { color: 'black' },
+                                            "&:hover": { backgroundColor: "transparent" } // Prevent hover effect
                                         }}
                                     />
                                     <ListItemText

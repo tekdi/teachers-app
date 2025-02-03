@@ -12,7 +12,7 @@ const UploadedFile: React.FC<VillageDetailProps> = ({ title }) => {
     <Box
       sx={{
         border: `1px solid ${theme.palette.warning['A100']}`,
-        bgcolor: 'white',
+        bgcolor: theme.palette.warning['A400'],
         padding: '12px',
         marginTop: '5px',
         borderRadius: '16px',
