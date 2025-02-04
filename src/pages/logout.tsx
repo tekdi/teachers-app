@@ -6,6 +6,7 @@ import ReactGA from 'react-ga4';
 import { Telemetry } from '@/utils/app.constant';
 import { useQueryClient } from '@tanstack/react-query';
 import useStore from '@/store/store';
+import { preserveLocalStorage } from '@/utils/Helper';
 
 function Logout() {
   const queryClient = useQueryClient();
@@ -15,31 +16,7 @@ function Logout() {
   const clearLocalStorage = () => {
     if (typeof window !== 'undefined' && window.localStorage) {
       // Specify the keys you want to keep
-      const keysToKeep = [
-        'preferredLanguage',
-        'mui-mode',
-        'mui-color-scheme-dark',
-        'mui-color-scheme-light',
-        'hasSeenTutorial',
-        // 'deviceID',
-      ];
-      // Retrieve the values of the keys to keep
-      const valuesToKeep: { [key: string]: any } = {};
-      keysToKeep.forEach((key: string) => {
-        valuesToKeep[key] = localStorage.getItem(key);
-      });
-
-      // Clear all local storage
-      localStorage.clear();
-      queryClient.clear();
-      setCohorts([]);
-      // Re-add the keys to keep with their values
-      keysToKeep.forEach((key: string) => {
-        if (valuesToKeep[key] !== null) {
-          // Check if the key exists and has a value
-          localStorage.setItem(key, valuesToKeep[key]);
-        }
-      });
+      preserveLocalStorage();
     }
   };
 

@@ -116,9 +116,12 @@ const LoginPage = () => {
       const token = localStorage.getItem('token');
       const tenant = localStorage.getItem('tenantName');
       if (token && (tenant?.toLocaleLowerCase() === TENANT_DATA?.SECOND_CHANCE_PROGRAM?.toLowerCase() || tenant?.toLocaleLowerCase() === TENANT_DATA?.PRATHAM_SCP?.toLowerCase())) {
+        localStorage.setItem("previousPage", "login");
         router.push('/dashboard');
       } else if (token && tenant?.toLowerCase() == TENANT_DATA?.YOUTHNET?.toLowerCase()) {
         router.push('/youthboard');
+        localStorage.setItem("previousPage", "login");
+
       }
     }
   }, []);
