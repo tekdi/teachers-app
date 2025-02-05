@@ -683,7 +683,6 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
     setIsLearnerDeleted(true);
   };
 
-  const hasAssessmentReport = Boolean(AssessmentReport);
 
   return (
     <>
@@ -1022,7 +1021,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
         </Box>
       </Box>
       {!isEliminatedFromBuild('AssessmentReport', 'component') &&
-        AssessmentReport && isActiveYear && hasAssessmentReport &&(
+        AssessmentReport && isActiveYear && (
           <Box padding={2}>
             <Card
               sx={{
