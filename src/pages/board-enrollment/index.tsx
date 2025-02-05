@@ -148,7 +148,16 @@ const BoardEnrollment = () => {
   // Use fetchFormData with await in fetchCohortMembers
   const fetchCohortMembers = async (classId: string) => {
     setLoading(true);
-
+    setDisplayStudentList([]);
+    setBoardEnrollmentList([]);
+    setTotalLearners(0);
+    setStagesCount({
+      board: 0,
+      subjects: 0,
+      registration: 0,
+      fees: 0,
+      completed: 0,
+    });
     try {
       const members = await fetchMemberList(classId);
       const filteredMembers = filterMembersByDate(members);
@@ -207,7 +216,8 @@ const BoardEnrollment = () => {
         setStagesCount(stageCounts);
       }
     } catch (error) {
-      handleFetchError(error);
+      console.log("error", error);
+      // handleFetchError(error);
     } finally {
       setLoading(false);
     }
@@ -239,7 +249,7 @@ const BoardEnrollment = () => {
       cohortMembershipId: entry.cohortMembershipId,
       name: toPascalCase(entry?.firstName || '') + ' ' + (entry?.lastName ? toPascalCase(entry.lastName) : ""),
 
-      
+
       memberStatus: entry.status,
       statusReason: entry.statusReason,
       customField: entry.customField,
@@ -450,8 +460,6 @@ const BoardEnrollment = () => {
                 manipulatedCohortData={manipulatedCohortData}
                 setManipulatedCohortData={setManipulatedCohortData}
                 isManipulationRequired={false}
-                // blockName={blockName}
-                // setBlockName={setBlockName}
                 isCustomFieldRequired={true}
                 showFloatingLabel={true}
                 showDisabledDropDown={true}
@@ -473,7 +481,7 @@ const BoardEnrollment = () => {
         {t('BOARD_ENROLMENT.TOTAL_LEARNERS')}: {totalLearners}
       </Box>
 
-      <Box sx={{mr:'20px'}}>
+      <Box sx={{ mr: '20px' }}>
         <Grid container alignItems={'end'} spacing={2}>
           <Grid item xs={8} ref={searchRef}>
             <Box sx={{ px: '16px', mt: 2 }}>
@@ -694,12 +702,12 @@ const BoardEnrollment = () => {
         )}
       </Grid>
 
-        <SortingModal
-          isModalOpen={modalOpen}
-          handleCloseModal={handleCloseModal}
-          handleSorting={handleSorting}
-          routeName={pathname}
-        />
+      <SortingModal
+        isModalOpen={modalOpen}
+        handleCloseModal={handleCloseModal}
+        handleSorting={handleSorting}
+        routeName={pathname}
+      />
     </>
   );
 };

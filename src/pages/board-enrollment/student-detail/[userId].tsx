@@ -528,11 +528,12 @@ const BoardEnrollmentDetail = () => {
                         sx={{
                           fontSize: '12px',
                           fontWeight: 600,
-                          color: theme.palette.warning['500'],
+                          color: theme.palette.warning['500']
                         }}
                       >
                         {t('BOARD_ENROLMENT.CHOOSE_BOARD')}
                       </Box>
+                      <Box sx={{maxHeight: '550px', overflowY: 'auto'}}>
                       {boardOptions?.map((boardItem) => (
                         <Box sx={{ mt: 2 }} key={boardItem.code}>
                           <Box
@@ -575,6 +576,7 @@ const BoardEnrollmentDetail = () => {
                           </Box>
                         </Box>
                       ))}
+                      </Box>
                     </>
                   )}
 
