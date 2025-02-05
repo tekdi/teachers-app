@@ -296,6 +296,10 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
           }
           if(facilitatorUserName===userData.username)
           delete userData.username;
+        else
+        {
+          userData.username=apiBody?.username
+        }
         
           userData.gender=apiBody?.gender
 
