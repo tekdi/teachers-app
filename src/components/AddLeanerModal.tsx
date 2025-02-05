@@ -146,7 +146,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
       );
       const apiBody: any = {
         username: username,
-        password: password,
+        password: username,
         tenantCohortRoleMapping: [
           {
             tenantId: tenantId,
