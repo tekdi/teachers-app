@@ -44,7 +44,7 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
   const setCohortFacilitatorsCount = useStore((state) => state.setCohortFacilitatorsCount);
 
 
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const [offset, setOffset] = useState(0);
 
   const [infinitePage, setInfinitePage] = useState(1);
@@ -93,14 +93,16 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
               };
             });
 
+
             if (isMobile) {
               setInfiniteData([...infiniteData, ...userDetails]);
               setFilteredData(userDetails);
-              
+              setUserData([...infiniteData, ...userDetails])
+
             } else {
-              setUserData(userDetails);
               setFilteredData(userDetails);
               setInfiniteData(userDetails);
+              setOffset(0)
             }
            
 
@@ -142,10 +144,6 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
     if (infiniteData && (infiniteData.length >= totalCount)) {
       return;
     }
-
-    console.log(infiniteData.length);
-    console.log(totalCount);
-
     try {
       setOffset((prev) => {
         if (totalCount && prev + PAGINATION_CONFIG.ITEMS_PER_PAGE <= totalCount) {
@@ -161,8 +159,11 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
     }
   }
   const handlePageChange = (newPage: number) => {
-    setPage(newPage-1);
-    setOffset((newPage - 1) * pagesLimit)
+    if (!isMobile) {
+      
+      setPage(newPage);
+    }
+    setOffset((newPage - 1) * PAGINATION_CONFIG.ITEMS_PER_PAGE)
   };
   
   
@@ -221,21 +222,21 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
                   justifyContent: 'end',
                 }}
               >
-                {
-                  (isMobile ? infiniteData.length > pagesLimit : (filteredData && filteredData?.length > pagesLimit)) && (
+               
+                 
                     <CustomPagination
                       count={Math.ceil(totalCount / PAGINATION_CONFIG.ITEMS_PER_PAGE)}
-                      page={page + 1}
+                      page={page }
                       onPageChange={handlePageChange}
-                      // fetchMoreData={fetchData}
+                      fetchMoreData={() => fetchData()}
+                      hasMore={hasMore}
                       TotalCount={totalCount}
-                      hasMore={infinitePage * pagesLimit < totalCount}
-                      items={(infiniteData || []).map((user: UserDataProps) => (
+                      items={infiniteData.map((user) => (
                         <Box key={user.userId}></Box>
                       ))}
                     />
-                  )
-                }
+                  
+                
                 
               </Box>
 
