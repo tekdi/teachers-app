@@ -353,30 +353,36 @@ const BoardEnrollmentDetail = () => {
         setActiveStep(nextStep);
         
         // Call delete field values api to reset subjects, registration no and fees       
-        const handleDeleteFields = async () => {
         const generateApiBody = (fieldIds: { fieldId: string; label: string }[], membershipId: string) => {
-          return {
-            fieldValues: fieldIds
-              .filter(field => field.label !== "BOARD")
-              .map(field => ({
-                fieldId: field.fieldId,
-                itemId: membershipId
-              }))
+            return {
+              fieldValues: fieldIds
+                .filter(field => field.label !== "BOARD")
+                .map(field => ({
+                  fieldId: field.fieldId,
+                  itemId: membershipId
+                }))
+            };
           };
-        };
-        const apiBody = generateApiBody(fieldIdLabel, userData?.cohortMembershipId);
-        // console.log('apiBody',apiBody);
-        try {
-            const result = await deleteFormFields(apiBody.fieldValues);
-            console.log('Deleted Successfully:', result);
-            setStageCount(nextStep);
-            setFormData({ BOARD: formData.BOARD, SUBJECTS: "", REGISTRATION: "", FEES: "" });
-          } catch (err) {
-            console.error(err);
-            throw err;
-          }
-        };
-        activeStep === 0 && handleDeleteFields();
+          
+          const handleDeleteFields = async () => {
+            if (!userData?.cohortMembershipId || !fieldIdLabel.length) {
+              console.error('Missing required data for deleting fields');
+              return;
+            }
+          
+            const apiBody = generateApiBody(fieldIdLabel, userData.cohortMembershipId);
+            try {
+              const result = await deleteFormFields(apiBody.fieldValues);
+              // console.log('Fields deleted successfully:', result);
+              setStageCount(nextStep);
+              setFormData({ BOARD: formData.BOARD, SUBJECTS: "", REGISTRATION: "", FEES: "" });
+            } catch (err) {
+              // console.error('Failed to delete fields:', err);
+              showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+              throw err;
+            }
+          };
+        (activeStep === 0 && formDataUpdated) && handleDeleteFields();
       } else {
         console.error('API response is invalid or failed.');
         showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
