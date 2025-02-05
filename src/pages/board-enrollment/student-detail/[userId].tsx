@@ -141,7 +141,7 @@ const BoardEnrollmentDetail = () => {
   }, [memoizedFieldIdLabel]);
 
   useEffect(() => {
-    if (formData.BOARD !== 'NIOS') {
+    if (!(formData.BOARD?.toUpperCase().includes("NIOS"))) {
       setFormData((prev) => ({ ...prev, FEES: 'na' }));
     }
   }, [formData.BOARD, formData.FEES, activeStep === 3]);
@@ -757,7 +757,7 @@ const BoardEnrollmentDetail = () => {
                           setFormDataUpdated(true);
                         }}
                       >
-                        {formData.BOARD === 'NIOS' ? (
+                        {formData.BOARD.toUpperCase().includes("NIOS") ? (
                           <>
                             <FormControlLabel
                               value="yes"
