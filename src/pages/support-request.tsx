@@ -49,7 +49,7 @@ const SupportRequest = () => {
       const viewportSize = `${window.innerWidth}x${window.innerHeight}`;
       const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       const screenOrientation = screen.orientation?.type || 'Unknown';
-      const referrer = document.referrer || 'Direct Access';
+      const referrer = window.location.origin;
 
       // Detect device type
       const deviceType = /Mobile|Android|iPhone|iPad/i.test(userAgent)
