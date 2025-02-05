@@ -66,7 +66,7 @@ export const sendEmailOnLearnerCreation = async (
     '{FirstName}': toPascalCase(name),
     '{UserName}': username,
     '{Password}': password,
-    '{LearnerName}': learnerName,
+    '{LearnerName}': toPascalCase(learnerName),
     "{appUrl}": window.location.origin,
   };
 
