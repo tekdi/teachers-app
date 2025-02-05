@@ -683,6 +683,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
     setIsLearnerDeleted(true);
   };
 
+
   return (
     <>
       <Header />
