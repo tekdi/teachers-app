@@ -67,7 +67,7 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
       try {
         if (cohortId) {
           const filters = { cohortId: cohortId };
-          const limit = 10
+          const limit = pagesLimit
           const page=offset
           const response = await getMyCohortFacilitatorList({
             limit,
