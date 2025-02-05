@@ -39,6 +39,7 @@ export const sendEmailOnFacilitatorCreation = async (
     '{FirstName}': toPascalCase(name),
     '{UserName}': username,
     '{Password}': password,
+    "{appUrl}": window.location.origin,
   };
 
   const sendTo = {
