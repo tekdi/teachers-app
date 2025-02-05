@@ -238,6 +238,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
           if (apiBody?.phone_number) {
             apiBody.mobile = apiBody?.phone_number;
           }
+          apiBody.password=apiBody.username
           const response = await createUser(apiBody);
           if (response) {
             showToastMessage(
