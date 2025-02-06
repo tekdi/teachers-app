@@ -102,6 +102,10 @@ const SupportRequest = () => {
       <Box display={'flex'}>
         <Box
           onClick={() => {
+            setQueryParams((prev) => ({
+              ...prev,
+              reset: Date.now().toString(), // Force re-render with a unique key
+            }));
             window.history.back();
           }}
           ml={'1rem'}
