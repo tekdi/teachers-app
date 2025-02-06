@@ -130,8 +130,6 @@ const CoursePlanner = () => {
           setMediumNew(mediumField?.value);
           setGradeNew(gradeField?.value);
 
-          console.log(boardField?.value, mediumField.value, gradeField.value);
-
           const stringFields = [
             // { label: CoursePlannerConstants.STATES, setter: setState },
             { label: CoursePlannerConstants.BOARD, setter: setBoard },
