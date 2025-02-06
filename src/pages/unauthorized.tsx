@@ -1,15 +1,43 @@
+import { preserveLocalStorage } from '@/utils/Helper';
 import WarningIcon from '@mui/icons-material/Warning';
 import { Link, useTheme } from '@mui/material';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useEffect } from 'react';
 
 
 const Unauthorized = () => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
-  
+  useEffect(() => {
+    const handleBackButton = () => {
+      console.log("User pressed the browser back button");
+     const previousPage = localStorage.getItem("previousPage");
+
+     if (previousPage === "login") {
+      {
+        const handleBackButton = () => {
+          preserveLocalStorage();
+        };
+
+        window.addEventListener("popstate", handleBackButton);
+
+        return () => {
+          window.removeEventListener("popstate", handleBackButton);
+        };
+      }
+    }
+  }
+    
+
+    window.addEventListener("popstate", handleBackButton);
+
+    return () => {
+      window.removeEventListener("popstate", handleBackButton);
+    };
+  }, []);
 
   return (
     <Box

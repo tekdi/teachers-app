@@ -34,10 +34,11 @@ import { useTheme } from '@mui/material/styles';
 import { GetStaticPaths } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { showToastMessage } from '../../../components/Toastify';
 import { useDirection } from '../../../hooks/useDirection';
+import { deleteFormFields } from '@/services/FormService';
 
 interface BoardEnrollment {
   boardEnrollmentData: {
@@ -58,18 +59,15 @@ const BoardEnrollmentDetail = () => {
   const userStore = manageUserStore();
   const boardData = boardEnrollmentStore();
   const [userData, setUserData] = useState<BoardEnrollmentData | null>(null);
-  const [stateAssociations, setStateAssociations] = useState<any[]>([]);
   const [boardOptions, setBoardOptions] = useState<any[]>([]);
   const [boardAssociations, setBoardAssociations] = useState<any[]>([]);
-  const [mainCourseAssociations, setMainCourseAssociations] = useState<any[]>(
-    []
-  );
   const [stageCount, setStageCount] = React.useState<number>(0);
   const [activeStep, setActiveStep] = React.useState<number>(0);
   const [cohortId, setCohortId] = React.useState('');
   const [subjectOptions, setSubjectOptions] = React.useState<any[]>([]);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [backButtonClicked, setBackButtonClicked] = useState<boolean>(false);
+  const [fieldIdLabel, setFieldIdLabel] = useState<any[]>([]);
 
   const [names, setNames] = useState({
     cohortName: '',
@@ -120,11 +118,30 @@ const BoardEnrollmentDetail = () => {
       },
       {}
     );
-    setFormData(fields); 
+    setFormData(fields);
   };
 
+  const extractFieldIdAndLabel = useCallback((data: any[]) => {
+    return data.flatMap((item) =>
+      item.customField.map((field: { fieldId: any; label: any }) => ({
+        fieldId: field.fieldId,
+        label: field.label,
+      }))
+    );
+  }, []);
+
+  const memoizedFieldIdLabel = useMemo(() => {
+    const data = boardData?.boardEnrollmentData || [];
+    return extractFieldIdAndLabel(data);
+  }, [extractFieldIdAndLabel]);
+
+  React.useEffect(() => {
+    setFieldIdLabel(memoizedFieldIdLabel);
+    // console.log('memoizedFieldIdLabel', memoizedFieldIdLabel);
+  }, [memoizedFieldIdLabel]);
+
   useEffect(() => {
-    if (formData.BOARD !== 'NIOS') {
+    if (!(formData.BOARD?.toUpperCase().includes("NIOS"))) {
       setFormData((prev) => ({ ...prev, FEES: 'na' }));
     }
   }, [formData.BOARD, formData.FEES, activeStep === 3]);
@@ -185,10 +202,10 @@ const BoardEnrollmentDetail = () => {
   // };
 
   useEffect(() => {
-    const userStateName =
-      typeof window !== 'undefined' && window.localStorage
-        ? localStorage.getItem('stateName')
-        : null;
+    // const userStateName =
+    //   typeof window !== 'undefined' && window.localStorage
+    //     ? localStorage.getItem('stateName')
+    //     : null;
     const handleBMGS = async () => {
       const extractExternalSource = (boardData: any): string | null => {
         for (const enrollment of boardData.boardEnrollmentData) {
@@ -219,7 +236,7 @@ const BoardEnrollmentDetail = () => {
                 formData?.BOARD
               );
               setBoardAssociations(boardAssociations);
-             
+
               const getSubjects = getOptionsByCategory(frameworks, 'subject');
 
               const commonSubjectInBoard = getSubjects
@@ -273,9 +290,7 @@ const BoardEnrollmentDetail = () => {
   const handleNext = async () => {
     setFormDataUpdated(false);
   
-    // Calculate the next step value first
-    let nextStep = activeStep;
-    nextStep = nextStep < 4 ? nextStep + 1 : nextStep;
+    let nextStep = activeStep < 4 ? activeStep + 1 : activeStep;
     if (nextStep > stageCount) {
       setStageCount(stageCount + 1);
     }
@@ -291,25 +306,7 @@ const BoardEnrollmentDetail = () => {
     }
   
     const fieldId = field.fieldId;
-  
-    let value;
-    switch (nextStep - 1) {
-      case 0:
-        value = formData?.BOARD;
-        break;
-      case 1:
-        value = formData?.SUBJECTS;
-        break;
-      case 2:
-        value = formData?.REGISTRATION;
-        break;
-      case 3:
-        value = formData?.FEES;
-        break;
-      default:
-        console.error('Invalid step');
-        return;
-    }
+    const value = formData?.[currentLabel];
   
     if (!userData?.cohortMembershipId) {
       throw new Error('Membership ID is required.');
@@ -334,7 +331,7 @@ const BoardEnrollmentDetail = () => {
     try {
       const response = await updateCohortMemberStatus(requestBody);
   
-      if (response && response.params.status === 'successful' && response.responseCode === 201) {
+      if (response && response?.params?.status === 'successful' && response?.responseCode === 201) {
         const windowUrl = window.location.pathname;
         const cleanedUrl = windowUrl.replace(/^\//, '');
         const env = cleanedUrl.split("/")[0];
@@ -354,6 +351,38 @@ const BoardEnrollmentDetail = () => {
         telemetryFactory.interact(telemetryInteract);
         // API successful, update step state to nextStep
         setActiveStep(nextStep);
+        
+        // Call delete field values api to reset subjects, registration no and fees       
+        const generateApiBody = (fieldIds: { fieldId: string; label: string }[], membershipId: string) => {
+            return {
+              fieldValues: fieldIds
+                .filter(field => field.label !== "BOARD")
+                .map(field => ({
+                  fieldId: field.fieldId,
+                  itemId: membershipId
+                }))
+            };
+          };
+          
+          const handleDeleteFields = async () => {
+            if (!userData?.cohortMembershipId || !fieldIdLabel.length) {
+              console.error('Missing required data for deleting fields');
+              return;
+            }
+          
+            const apiBody = generateApiBody(fieldIdLabel, userData.cohortMembershipId);
+            try {
+              const result = await deleteFormFields(apiBody.fieldValues);
+              // console.log('Fields deleted successfully:', result);
+              setStageCount(nextStep);
+              setFormData({ BOARD: formData.BOARD, SUBJECTS: "", REGISTRATION: "", FEES: "" });
+            } catch (err) {
+              // console.error('Failed to delete fields:', err);
+              showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+              throw err;
+            }
+          };
+        (activeStep === 0 && formDataUpdated) && handleDeleteFields();
       } else {
         console.error('API response is invalid or failed.');
         showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
@@ -363,9 +392,6 @@ const BoardEnrollmentDetail = () => {
       showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
     }
   };
-  
-  
-  
   
 
   const handleBack = () => {
@@ -502,11 +528,12 @@ const BoardEnrollmentDetail = () => {
                         sx={{
                           fontSize: '12px',
                           fontWeight: 600,
-                          color: theme.palette.warning['500'],
+                          color: theme.palette.warning['500']
                         }}
                       >
                         {t('BOARD_ENROLMENT.CHOOSE_BOARD')}
                       </Box>
+                      <Box sx={{maxHeight: '550px', overflowY: 'auto'}}>
                       {boardOptions?.map((boardItem) => (
                         <Box sx={{ mt: 2 }} key={boardItem.code}>
                           <Box
@@ -536,8 +563,9 @@ const BoardEnrollmentDetail = () => {
                                     ...prevFormData,
                                     BOARD: selectedBoard,
                                   };
-                                 
+
                                   setFormDataUpdated(true);
+                                  setActiveStep(0);
                                   return updatedFormData;
                                 });
                               }}
@@ -548,6 +576,7 @@ const BoardEnrollmentDetail = () => {
                           </Box>
                         </Box>
                       ))}
+                      </Box>
                     </>
                   )}
 
@@ -590,14 +619,14 @@ const BoardEnrollmentDetail = () => {
                                   subjectOptions.length
                               }
                               onChange={(e) => {
-                                const isChecked = e.target.checked;
-                                setFormData({
-                                  ...formData,
-                                  SUBJECTS: isChecked
-                                    ? [...subjectOptions]
-                                    : [],
-                                });
-                                setFormDataUpdated(true);
+                                  const isChecked = e.target.checked;
+                                  setFormData({
+                                    ...formData,
+                                    SUBJECTS: isChecked
+                                      ? [...subjectOptions]
+                                      : [],
+                                  });
+                                  setFormDataUpdated(true);
                               }}
                               sx={{
                                 color: theme.palette.warning['300'],
@@ -730,7 +759,7 @@ const BoardEnrollmentDetail = () => {
                           setFormDataUpdated(true);
                         }}
                       >
-                        {formData.BOARD === 'NIOS' ? (
+                        {formData.BOARD.toUpperCase().includes("NIOS") ? (
                           <>
                             <FormControlLabel
                               value="yes"

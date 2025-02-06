@@ -296,6 +296,10 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
           }
           if(facilitatorUserName===userData.username)
           delete userData.username;
+        else
+        {
+          userData.username=apiBody?.username
+        }
         
           userData.gender=apiBody?.gender
 
@@ -404,9 +408,15 @@ const AddFacilitatorModal: React.FC<AddFacilitatorModalprops> = ({
             showToastMessage(t('COMMON.PLEASE_SELECT_THE_CENTER'), 'error');
           }
         }
-      } catch (error) {
+      } catch (error: any) {
         onClose();
-        showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+        if (error?.response?.data?.params?.err === "Username is already exists in keycloak") {
+          showToastMessage(t('FORM.EMAIL_ALREADY_EXIST'), "error");
+        } 
+        else{
+          showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+
+        }
         setReloadProfile(true);
       }
     }
