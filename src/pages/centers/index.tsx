@@ -542,7 +542,7 @@ const CentersPage = () => {
                         
                         centers={filteredCenters
                           .filter((center) => center.centerType?.toUpperCase() === CenterType.REGULAR || center.centerType === '')
-                          .sort((a, b) => (a.cohortName || "").localeCompare(b.cohortName || ""))}
+                          }
                         router={router}
                         theme={theme}
                         t={t}

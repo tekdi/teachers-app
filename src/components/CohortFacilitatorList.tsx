@@ -38,6 +38,7 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [loading, setLoading] = React.useState<boolean>(false);
   const [userData, setUserData] = React.useState<UserDataProps[]>();
+  const [resData, setResData] = React.useState<UserDataProps[]>();
 
   const [filteredData, setFilteredData] =  React.useState(userData);
   const [searchTerm, setSearchTerm] =  React.useState('');
@@ -92,19 +93,18 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
                 age: ageField ? ageField.value : null,
               };
             });
-
+            // setResData(userDetails)
 
             if (isMobile) {
               setInfiniteData([...infiniteData, ...userDetails]);
               setFilteredData(userDetails);
-              setUserData([...infiniteData, ...userDetails])
 
             } else {
+              setUserData(userDetails);
               setFilteredData(userDetails);
               setInfiniteData(userDetails);
               setOffset(0)
             }
-           
 
             setTotalCount(response.result?.totalCount);
             setCohortFacilitatorsCount(userDetails.length);
@@ -126,21 +126,18 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
   }, [cohortId, reloadState, page, infinitePage]);
 
   const onDelete = () => {};
-  const handleSearch = (searchTerm: string) => {
-    
+  
 
-    const filtered = userData?.filter((data) =>
-    data?.name?.toLowerCase()?.includes(searchTerm) || data?.enrollmentNumber?.toLowerCase()?.includes(searchTerm)
-  );
-  setFilteredData(filtered);
-  };
-
+ 
+  
   const PAGINATION_CONFIG = {
     ITEMS_PER_PAGE: pagesLimit,
     INFINITE_SCROLL_INCREMENT: pagesLimit,
   };
 
   const fetchData = async () => {
+    setUserData(resData);
+    setFilteredData(resData);
     if (infiniteData && (infiniteData.length >= totalCount)) {
       return;
     }
@@ -151,13 +148,19 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
         }
         return prev;
       });
-
       setInfinitePage((prev) => prev + PAGINATION_CONFIG.INFINITE_SCROLL_INCREMENT);
     } catch (error) {
       console.error('Error fetching more data:', error);
       showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
     }
   }
+  const handleSearch = (searchTerm: string) => {
+    const filtered = userData?.filter((data) =>
+      data?.name?.toLowerCase()?.includes(searchTerm) || data?.enrollmentNumber?.toLowerCase()?.includes(searchTerm)
+    );
+    setFilteredData(filtered);
+  };
+
   const handlePageChange = (newPage: number) => {
     if (!isMobile) {
       
