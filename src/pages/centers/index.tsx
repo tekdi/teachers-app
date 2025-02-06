@@ -56,7 +56,7 @@ const CentersPage = () => {
   const [filteredCenters, setFilteredCenters] = useState(centerData);
   const [searchInput, setSearchInput] = useState('');
   const [selectedCenters, setSelectedCenters] = useState<string[]>([]);
-  const [sortOrder, setSortOrder] = useState('');
+  const [sortOrder, setSortOrder] = useState('asc');
   const [centerType, setCenterType] = useState<'regular' | 'remote' | ''>('');
   const [appliedFilters, setAppliedFilters] = useState({
     centerType: '',
@@ -557,8 +557,7 @@ const CentersPage = () => {
                       <CenterList
                         title="CENTERS.REMOTE_CENTERS"
                         centers={filteredCenters
-                          .filter((center) => center.centerType?.toUpperCase() === CenterType.REMOTE)
-                          .sort((a, b) => (a.cohortName || "").localeCompare(b.cohortName || ""))}
+                          .filter((center) => center.centerType?.toUpperCase() === CenterType.REMOTE)}
                         router={router}
                         theme={theme}
                         t={t}
