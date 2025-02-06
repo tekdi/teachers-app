@@ -11,8 +11,6 @@ import { useTranslation } from 'react-i18next';
 import ConfirmationModal from '../ConfirmationModal';
 import { showToastMessage } from '../Toastify';
 
-
-
 interface FileUploadEvent {
   data: {
     submissionId: string;
@@ -44,8 +42,9 @@ interface FileUploadData {
   [key: string]: any;
 }
 
-const ObservationComponent: React.FC<QuestionnaireAppProps> = ({ observationQuestions,observationName }) => {
+const ObservationComponent: React.FC<QuestionnaireAppProps> = ({ observationQuestions, observationName }) => {
   const questionairePlayerMainRef = useRef<HTMLElement | null>(null);
+  const [isBackConfirmationOpen, setIsBackConfirmationOpen] = useState(false);
 
   const [fileUploadResponse, setFileUploadResponse] =
     useState<FileUploadResponse | null>(null);
@@ -53,7 +52,7 @@ const ObservationComponent: React.FC<QuestionnaireAppProps> = ({ observationQues
   const router = useRouter();
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
 
-  const [currentEvent, setCurrentEvent] = useState<CustomEvent | null>(null); 
+  const [currentEvent, setCurrentEvent] = useState<CustomEvent | null>(null);
   const theme = useTheme<any>();
 
   const uploadFileToPresignedUrl = async (event: FileUploadEvent) => {
@@ -69,7 +68,6 @@ const ObservationComponent: React.FC<QuestionnaireAppProps> = ({ observationQues
 
     try {
       const response = await axios.post('your-presigned-url-endpoint', payload); // Update with your correct endpoint
-
       const presignedUrlData: PresignedUrlResponse =
         response.data.result[submissionId].files[0];
 
@@ -108,10 +106,9 @@ const ObservationComponent: React.FC<QuestionnaireAppProps> = ({ observationQues
   };
 
   const receiveUploadData = (event: any) => {
- 
+
 
     if (event.data && event.data.file) {
-     
       uploadFileToPresignedUrl(event as FileUploadEvent);
     }
   };
@@ -133,7 +130,7 @@ const ObservationComponent: React.FC<QuestionnaireAppProps> = ({ observationQues
       const playerElement = questionairePlayerMainRef.current;
 
       if (playerElement) {
-               const handlePlayerSubmitOrSaveEvent = async (event: Event) => {
+        const handlePlayerSubmitOrSaveEvent = async (event: Event) => {
           if ((event as CustomEvent).detail.status === "submit") {
             setCurrentEvent(event as CustomEvent);
             setIsConfirmationOpen(true);
@@ -148,9 +145,6 @@ const ObservationComponent: React.FC<QuestionnaireAppProps> = ({ observationQues
           const response = await updateSubmission({ submissionId, submissionData });
           showToastMessage(t('OBSERVATION.FORM_SAVED_SUCCESSFULLY'), 'success');
         };
-      
-     
-      
 
         playerElement.addEventListener(
           'submitOrSaveEvent',
@@ -187,32 +181,30 @@ const ObservationComponent: React.FC<QuestionnaireAppProps> = ({ observationQues
       console.log('Web component ref not set');
     }
   }, [questionairePlayerMainRef]);
-  const handleBackEvent = () => {
-   // setIsBackConfirmationOpen(true);
-  //  router.back();
-  //  const shouldGoBack = window.confirm("Do you want to go back?");
 
-  // // If "OK" is clicked, go back
-  // if (shouldGoBack) {
-  //   window.history.back();
-  // } else {
-  //   // Do nothing if "Cancel" is clicked
-  //   console.log("User chose not to go back");
-  // }
-  router.push(
-    `${localStorage.getItem('observationPath')}`
-  );
+  const handleBackEvent = () => {
+    const classList = document?.querySelector('questionnaire-player-main form')?.classList;
+
+    if (classList?.contains('ng-dirty')) {
+      setIsBackConfirmationOpen(true);
+    } else {
+      router.push(
+        `${localStorage.getItem('observationPath')}`
+      );
+    }
   };
-  
-  // const handleCancelBack = () => {
-  //   setIsBackConfirmationOpen(false);
-  // };
- 
-  // const handleConfirmBack = () => {
-  //   setIsBackConfirmationOpen(false);
-  //   router.back();
-  // };
-   
+
+  const handleCancelBack = () => {
+    setIsBackConfirmationOpen(false);
+  };
+
+  const handleConfirmBack = () => {
+    setIsBackConfirmationOpen(false);
+    router.push(
+      `${localStorage.getItem('observationPath')}`
+    );
+  };
+
   return (
     <>
       <Box
@@ -233,18 +225,17 @@ const ObservationComponent: React.FC<QuestionnaireAppProps> = ({ observationQues
           }}
         />
         {localStorage.getItem('observationName') && (
-        <Typography variant="h3"                   fontSize={'22px'}
-         color={'black'}>
-          {localStorage.getItem('observationName')}
-          
-        </Typography>
-      )}
+          <Typography variant="h3" fontSize={'22px'}
+            color={'black'}>
+            {localStorage.getItem('observationName')}
+
+          </Typography>
+        )}
       </Box>
 
-     
-       <Typography variant="h3"    ml="60px" color={'black'}>
-          {observationName}
-        </Typography>
+      <Typography variant="h3" ml="60px" color={'black'}>
+        {observationName}
+      </Typography>
 
       {observationQuestions && (
         <questionnaire-player-main
@@ -254,27 +245,33 @@ const ObservationComponent: React.FC<QuestionnaireAppProps> = ({ observationQues
         ></questionnaire-player-main>
       )}
 
-<ConfirmationModal
-        message={"Are you sure to submit the form?"}
-        handleAction={handleConfirmSubmit}
-        buttonNames={{
-          primary: t('submit'),
-          secondary: t('COMMON.CANCEL'),
-        }}
-        handleCloseModal={() => setIsConfirmationOpen(false)}
-        modalOpen={isConfirmationOpen}
-      />
+      {
+        isConfirmationOpen &&
+        <ConfirmationModal
+          message={t('OBSERVATION.ARE_YOU_SURE_YOU_TO_SUBMIT_FORM')}
+          handleAction={handleConfirmSubmit}
+          buttonNames={{
+            primary: t('COMMON.SUBMIT'),
+            secondary: t('COMMON.CANCEL'),
+          }}
+          handleCloseModal={() => setIsConfirmationOpen(false)}
+          modalOpen={isConfirmationOpen}
+        />
+      }
 
-{/* <ConfirmationModal
-  message={"Are you sure you want to go back?"}
-  handleAction={handleConfirmBack}
-  buttonNames={{
-    primary: t('COMMON.YES'),
-    secondary: t('NO'),
-  }}
-  handleCloseModal={handleCancelBack}
-  modalOpen={isBackConfirmationOpen}
-/> */}
+      {
+        isBackConfirmationOpen &&
+        <ConfirmationModal
+          message={t('COMMON.YOU_HAVE_UNSAVED_CHANGES')}
+          handleAction={handleConfirmBack}
+          buttonNames={{
+            primary: t('COMMON.YES'),
+            secondary: t('FORM.NO'),
+          }}
+          handleCloseModal={handleCancelBack}
+          modalOpen={isBackConfirmationOpen}
+        />
+      }
     </>
   );
 };
