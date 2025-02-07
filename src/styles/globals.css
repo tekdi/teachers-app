@@ -1257,3 +1257,24 @@ mat-radio-group.mat-mdc-radio-group {
 .MuiLinearProgress-bar {
   background-color: var(--mui-palette-error-main) !important;
 }
+
+.date-container {
+  position: relative;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: top;
+}
+
+.icon {
+  position: absolute;
+  top: -20px; 
+  right: -3px;
+}
+
+.small-icon {
+  position: absolute;
+  top: -25px;  /* Move slightly higher */
+  right: 3.5px;  /* Move slightly left */
+  transform: scale(0.7); /* Make it slightly smaller */
+  opacity: 0.9; /* Optional: Adjust visibility */
+}

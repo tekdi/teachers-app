@@ -7,6 +7,10 @@ import { useEffect, useRef, useState } from 'react';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import { dashboardDaysLimit, eventDaysLimit } from '../../app.config';
 import useDeterminePathColor from '../hooks/useDeterminePathColor';
+
+{/* If required uncomment below code for distinguishing zoom attendance marked from manual marking */}
+// import Image from 'next/image';
+// import starIcon from '../assets/images/starIcon.svg';
 const Calendar: React.FC<any> = ({
   showDetailsHandle,
   data,
@@ -15,6 +19,9 @@ const Calendar: React.FC<any> = ({
   showFromToday,
   newWidth,
   eventData,
+          
+  // If required uncomment below code for distinguishing zoom attendance marked from manual marking
+  // isZoomAttendance = true    
 }) => {
   const theme = useTheme<any>();
 
@@ -130,7 +137,27 @@ const Calendar: React.FC<any> = ({
         }}
       >
         <div className="circularProgress">
-          <div key={day + ''}>
+          <div key={day + ''} className="date-container">
+            {/* If required uncomment below code for distinguishing zoom attendance marked from manual marking */}
+            
+            {/* {isZoomAttendance && 
+            (<>
+            <span className="small-icon">
+            <Image
+                height={8.54}
+                width={8.54}
+                src={starIcon}
+                alt="Star Icon"
+              />
+          </span>
+            <span className="icon">
+              <Image
+                  height={10.68}
+                  width={10.68}
+                  src={starIcon}
+                  alt="Star Icon"
+                />
+            </span></>)} */}
             <span className="number">{formattedDate}</span>
           </div>
           <Box
