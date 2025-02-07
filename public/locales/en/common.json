@@ -272,7 +272,10 @@
     "CENTER_NAME": "Center Name",
     "ALL_CENTERS": "All Centers",
     "NO_LEARNER_WITH_LOW_ATTENDANCE": "None",
-    "ATTENDANCE_MARKED_OUT_OF_DAYS": "Attendance marked: {{count}} out of last 7 days"
+    "ATTENDANCE_MARKED_OUT_OF_DAYS": "Attendance marked: {{count}} out of last 7 days",
+    "MARK_MANUAL_ATTENDANCE_CONFIRMATION": "Are you sure you want to mark attendance manually?",
+    "MANUAL_ATTENDANCE_INFO": "Attendance is usually auto-marked after the first session of the day. Use manual marking only for technical issues, sessions on other platforms, or if not conducted online.",
+    "MANUAL_ATTENDANCE_NOTE": "Note: Manually marked attendance will override auto-attendance if it is later recorded."
   },
   "PROFILE": {
     "EDIT_PROFILE": "Edit Profile",

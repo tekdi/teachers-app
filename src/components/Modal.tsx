@@ -13,7 +13,9 @@ interface ModalProps {
   SubHeading?: string;
   children?: React.ReactNode;
   btnText: string;
-  handleApplySort: () => void;
+  handlePrimaryAction: () => void;
+  secondaryBtnText?: string; 
+  handleSecondaryAction?: () => void;
 }
 
 const ModalComponent: React.FC<ModalProps> = ({
@@ -23,7 +25,9 @@ const ModalComponent: React.FC<ModalProps> = ({
   SubHeading,
   children,
   btnText,
-  handleApplySort,
+  handlePrimaryAction,
+  secondaryBtnText='Back',
+  handleSecondaryAction=(()=>{console.log('Button2')}),
 }) => {
   const { t } = useTranslation();
 
@@ -57,8 +61,14 @@ const ModalComponent: React.FC<ModalProps> = ({
           display="flex"
           justifyContent="flex-end"
         >
+           {secondaryBtnText && handleSecondaryAction && (
+            <ButtonFunctional
+              handleClickButton={handleSecondaryAction}
+              buttonName={secondaryBtnText}
+            />
+          )}
           <ButtonFunctional
-            handleClickButton={handleApplySort}
+            handleClickButton={handlePrimaryAction}
             buttonName={btnText ?? t('COMMON.APPLY')}
           />{' '}
         </Box>
@@ -73,7 +83,10 @@ ModalComponent.propTypes = {
   heading: PropTypes.string.isRequired,
   SubHeading: PropTypes.string,
   btnText: PropTypes.string.isRequired,
+  handlePrimaryAction: PropTypes.func.isRequired,
   children: PropTypes.node,
+  secondaryBtnText: PropTypes.string,
+  handleSecondaryAction: PropTypes.func,
 };
 
 export default ModalComponent;
