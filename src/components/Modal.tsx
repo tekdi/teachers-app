@@ -1,10 +1,17 @@
-import { Box, Modal, Typography } from '@mui/material';
+import { Box, Divider, Modal, Typography } from '@mui/material';
 
+import { modalStyles } from '@/styles/modalStyles';
 import CloseSharpIcon from '@mui/icons-material/CloseSharp';
+import { useTheme } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import ButtonFunctional from './ButtonComponent';
-import { modalStyles } from '@/styles/modalStyles';
+
+import {
+  getDayMonthYearFormat,
+  shortDateFormat
+} from '../utils/Helper';
+
 
 interface ModalProps {
   open: boolean;
@@ -14,9 +21,11 @@ interface ModalProps {
   children?: React.ReactNode;
   btnText: string;
   handlePrimaryAction: () => void;
-  secondaryBtnText?: string; 
+  secondaryBtnText?: string;
   handleSecondaryAction?: () => void;
+  selectedDate?: Date; // Ensure selectedDate is always a Date if provided
 }
+
 
 const ModalComponent: React.FC<ModalProps> = ({
   open,
@@ -26,10 +35,14 @@ const ModalComponent: React.FC<ModalProps> = ({
   children,
   btnText,
   handlePrimaryAction,
+  selectedDate,
   secondaryBtnText='Back',
   handleSecondaryAction=(()=>{console.log('Button2')}),
 }) => {
   const { t } = useTranslation();
+  const theme = useTheme<any>();
+
+
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -42,9 +55,25 @@ const ModalComponent: React.FC<ModalProps> = ({
           justifyContent="space-between"
           alignItems="center"
         >
-          <Typography variant="h4" fontSize="16px" fontWeight="500" m={0}>
-            {heading}
-          </Typography>
+          <Box>
+            <Typography variant="h4" fontSize="16px" fontWeight="500" m={0}>
+              {heading}
+            </Typography>
+            <Typography
+              variant="h2"
+              sx={{
+                paddingBottom: '10px',
+                color: theme.palette.warning['A200'],
+                fontSize: '14px',
+              }}
+              component="h2"
+            >
+              {selectedDate
+                ? getDayMonthYearFormat(shortDateFormat(selectedDate))
+                : 'N/A'}
+            </Typography>
+
+          </Box>
           <CloseSharpIcon
             sx={{
               cursor: 'pointer', // Show pointer cursor on hover
@@ -53,13 +82,17 @@ const ModalComponent: React.FC<ModalProps> = ({
             aria-label="Close"
           />
         </Box>
+        <Divider/>
         <Typography variant="h6">{SubHeading}</Typography>
         <Box mt={0.6}>{children}</Box>
+        <Divider />
+
         <Box
           mt={2}
           p={'4px 20px 20px'}
           display="flex"
           justifyContent="flex-end"
+          gap={'20px'}
         >
            {secondaryBtnText && handleSecondaryAction && (
             <ButtonFunctional

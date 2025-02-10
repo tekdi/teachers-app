@@ -84,6 +84,7 @@ import useStore from '@/store/store';
 import dynamic from 'next/dynamic';
 import { isEliminatedFromBuild } from '../../featureEliminationUtil';
 import useEventDates from './../hooks/useEventDates';
+import ModalComponent from '@/components/Modal';
 
 let SessionCardFooter: ComponentType<any> | null = null;
 if (!isEliminatedFromBuild('SessionCardFooter', 'component')) {
@@ -254,6 +255,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
         (item: any) => item?.label === 'BLOCKS'
       );
       const cohortData = response?.result?.userData?.customFields;
+      
 
       const state = cohortData?.find(
         (item: CustomField) => item.label === 'STATES'
@@ -627,7 +629,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     };
     telemetryFactory.interact(telemetryInteract);
   };
-
+ 
   const viewTimeTable = () => {
     if (classId !== 'all') {
       router.push(
@@ -811,6 +813,28 @@ const Dashboard: React.FC<DashboardProps> = () => {
       ? localStorage.getItem('mui-mode')
       : null;
 
+  const remoteFields = cohortsData.flatMap((cohort) =>
+    cohort.customField.filter((field) => field.value === "REMOTE")
+  );
+   
+  console.log(classId, remoteFields, myCohortList,   "shreyas");
+
+  const isRemoteCohort = React.useMemo(() => {
+    const teacherApp = JSON.parse(localStorage.getItem("teacherApp") || "null");
+    const cohort = teacherApp?.state?.cohorts?.find(
+      (c: any) => c.cohortId === classId
+     );
+return cohort?.cohortType === "REMOTE";
+}, [classId]);
+
+
+    
+
+  // console.log("Class IDs with remoteFields:", remoteClassIds);
+
+  // console.log(cohortData ,'sunny');
+  
+  
   return (
     <>
       {
@@ -882,7 +906,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                               >
                                 {t('DASHBOARD.DAY_WISE_ATTENDANCE')}
                               </Typography>
-
+                                 
                               <CohortSelectionSection
                                 classId={classId}
                                 setClassId={setClassId}
@@ -1096,7 +1120,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
                               </Stack>
                             </Box>
                             {open && (
-                              <MarkBulkAttendance
+                            <>
+                               <MarkBulkAttendance
                                 open={open}
                                 onClose={handleClose}
                                 classId={classId}
@@ -1131,6 +1156,34 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                 dropoutCount={attendanceData?.dropoutCount}
                                 bulkStatus={attendanceData?.bulkAttendanceStatus}
                               />
+
+                              <ModalComponent
+                                  open={isRemoteCohort}
+                                  heading={t("COMMON.MARK_CENTER_ATTENDANCE")}
+                                  secondaryBtnText={t("COMMON.CANCEL")}
+                                  btnText={t('COMMON.YES_MANUALLY')}
+                                  selectedDate={selectedDate ? new Date(selectedDate) : undefined}
+                                  onClose={handleClose} 
+                                  handlePrimaryAction={() => setOpen(true)}
+                              >
+                                <Box sx={{padding:'0 16px'}}>
+                                  <p>
+                                      {t("COMMON.ARE_YOU_SURE_MANUALLY")}
+                                  </p>
+                                  <p>
+                                      {t('COMMON.ATTENDANCE_IS_USUALLY')}
+                                  </p>
+                                  <p>
+                                      {t("COMMON.USE_MANUAL")}
+                                  </p>
+                                  <p style={{ color: "orange", fontWeight: "bold" }}>
+                                      {t("COMMON.NOTE_MANUALLY")}
+                                  </p>
+                                </Box>
+                              </ModalComponent>
+
+                              </>
+
                             )}
                           </Box>
                         </Box>
