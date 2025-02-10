@@ -255,8 +255,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
         (item: any) => item?.label === 'BLOCKS'
       );
       const cohortData = response?.result?.userData?.customFields;
-
-      console.log(cohortData, "shreyas");
       
 
       const state = cohortData?.find(

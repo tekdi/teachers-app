@@ -1,16 +1,15 @@
 import { Box, Divider, Modal, Typography } from '@mui/material';
 
+import { modalStyles } from '@/styles/modalStyles';
 import CloseSharpIcon from '@mui/icons-material/CloseSharp';
+import { useTheme } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import ButtonFunctional from './ButtonComponent';
-import { modalStyles } from '@/styles/modalStyles';
-import { useTheme } from '@mui/material/styles';
 
 import {
-  deepClone,
   getDayMonthYearFormat,
-  shortDateFormat,
+  shortDateFormat
 } from '../utils/Helper';
 
 
