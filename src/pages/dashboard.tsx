@@ -165,6 +165,14 @@ const Dashboard: React.FC<DashboardProps> = () => {
     dropoutCount: 0,
     bulkAttendanceStatus: '',
   });
+  const [isRemoteCohort, setIsRemoteCohort] = React.useState<boolean>(false);
+  // const [test, setTest] = React.useState<boolean>(false);
+
+
+  // React.useEffect(() => {
+  
+    
+  // }, [classId, test]);
 
   const handleAttendanceDataUpdate = (data: any) => {
     setAttendanceData(data);
@@ -528,10 +536,21 @@ const Dashboard: React.FC<DashboardProps> = () => {
   };
 
   const handleModalToggle = () => {
-    setOpen(!open);
-    ReactGA.event('mark/modify-attendance-button-clicked-dashboard', {
-      teacherId: userId,
-    });
+    if (! isRemoteCohort) {
+      setOpen(!open);
+    }
+
+
+      const teacherApp = JSON.parse(localStorage.getItem("teacherApp") || "null");
+      const cohort = teacherApp?.state?.cohorts?.find(
+        (c: any) => c.cohortId === classId
+      );
+      setIsRemoteCohort(cohort?.cohortType === "REMOTE");
+      ReactGA.event('mark/modify-attendance-button-clicked-dashboard', {
+        teacherId: userId,
+      });
+    
+   
 
     const telemetryInteract = {
       context: {
@@ -547,6 +566,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     };
     telemetryFactory.interact(telemetryInteract);
   };
+
 
   const getMonthName = (dateString: string) => {
     try {
@@ -641,6 +661,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
   const handleClose = () => {
     setOpen(false);
+    setIsRemoteCohort(false)
+    // setTest(false)
   };
 
   const todayDate = getTodayDate();
@@ -813,19 +835,15 @@ const Dashboard: React.FC<DashboardProps> = () => {
       ? localStorage.getItem('mui-mode')
       : null;
 
-  const remoteFields = cohortsData.flatMap((cohort) =>
-    cohort.customField.filter((field) => field.value === "REMOTE")
-  );
    
-  console.log(classId, remoteFields, myCohortList,   "shreyas");
 
-  const isRemoteCohort = React.useMemo(() => {
-    const teacherApp = JSON.parse(localStorage.getItem("teacherApp") || "null");
-    const cohort = teacherApp?.state?.cohorts?.find(
-      (c: any) => c.cohortId === classId
-     );
-return cohort?.cohortType === "REMOTE";
-}, [classId]);
+  //   const isRemoteCohort = React.useMemo(() => {
+  //     const teacherApp = JSON.parse(localStorage.getItem("teacherApp") || "null");
+  //     const cohort = teacherApp?.state?.cohorts?.find(
+  //       (c: any) => c.cohortId === classId
+  //     );
+  // return cohort?.cohortType === "REMOTE";
+  // }, [classId]);
 
 
     
@@ -840,6 +858,7 @@ return cohort?.cohortType === "REMOTE";
       {
         (
           <>
+            {/* <button onClick={() => setTest(!test)}>TEsting</button> */}
             <GuideTour toggleDrawer={toggleDrawer} />
             <>
               {!isAuthenticated && (
@@ -1157,34 +1176,41 @@ return cohort?.cohortType === "REMOTE";
                                 bulkStatus={attendanceData?.bulkAttendanceStatus}
                               />
 
-                              <ModalComponent
+                            
+
+                           
+
+                              </>
+
+                            )}
+                            {
+                              isRemoteCohort && (
+                                <ModalComponent
                                   open={isRemoteCohort}
                                   heading={t("COMMON.MARK_CENTER_ATTENDANCE")}
                                   secondaryBtnText={t("COMMON.CANCEL")}
                                   btnText={t('COMMON.YES_MANUALLY')}
                                   selectedDate={selectedDate ? new Date(selectedDate) : undefined}
-                                  onClose={handleClose} 
+                                  onClose={handleClose}
                                   handlePrimaryAction={() => setOpen(true)}
-                              >
-                                <Box sx={{padding:'0 16px'}}>
-                                  <p>
+                                >
+                                  <Box sx={{ padding: '0 16px' }}>
+                                    <Box sx={{ color: theme?.palette?.warning['300'], fontSize: '16px', fontWeight: '500' }}>
                                       {t("COMMON.ARE_YOU_SURE_MANUALLY")}
-                                  </p>
-                                  <p>
+                                    </Box>
+                                    <Box sx={{ color: theme?.palette?.warning['300'], fontSize: '14px', fontWeight: '400', mt: '10px' }}>
                                       {t('COMMON.ATTENDANCE_IS_USUALLY')}
-                                  </p>
-                                  <p>
+                                    </Box>
+                                    <Box sx={{ color: theme?.palette?.warning['300'], fontSize: '14px', fontWeight: '400', mt: '10px' }}>
                                       {t("COMMON.USE_MANUAL")}
-                                  </p>
-                                  <p style={{ color: "orange", fontWeight: "bold" }}>
+                                    </Box>
+                                    <Box sx={{ color: theme?.palette?.action?.activeChannel, fontSize: '14px', fontWeight: '500', mt: '10px' }}>
                                       {t("COMMON.NOTE_MANUALLY")}
-                                  </p>
-                                </Box>
-                              </ModalComponent>
-
-                              </>
-
-                            )}
+                                    </Box>
+                                  </Box>
+                                </ModalComponent>
+                              )
+                            }
                           </Box>
                         </Box>
                         <Box sx={{ padding: '0 20px' }}>
