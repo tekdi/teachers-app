@@ -166,14 +166,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
     bulkAttendanceStatus: '',
   });
   const [isRemoteCohort, setIsRemoteCohort] = React.useState<boolean>(false);
-  // const [test, setTest] = React.useState<boolean>(false);
-
-
-  // React.useEffect(() => {
-  
-    
-  // }, [classId, test]);
-
   const handleAttendanceDataUpdate = (data: any) => {
     setAttendanceData(data);
   };
