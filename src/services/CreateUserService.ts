@@ -17,7 +17,7 @@ import { post } from './RestClient';
 // };
 
 export const createUser = async (userData: any): Promise<any> => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/user/v1/create`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/interface/v1/account/create`;
   try {
     const response = await post(apiUrl, userData);
     return response?.data?.result;
@@ -28,7 +28,7 @@ export const createUser = async (userData: any): Promise<any> => {
 };
 
 export const userNameExist = async (userData: any): Promise<any> => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/user/v1/suggestUsername`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/interface/v1/user/suggestUsername`;
   try {
     const response = await post(apiUrl, userData);
     return response?.data?.result;
@@ -39,7 +39,7 @@ export const userNameExist = async (userData: any): Promise<any> => {
 };
 
 export const createCohort = async (userData: any): Promise<any> => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/user/v1/cohort/create`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/interface/v1/cohort/create`;
   try {
     const response = await post(apiUrl, userData);
     return response?.data?.result;

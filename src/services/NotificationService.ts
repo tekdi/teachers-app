@@ -11,7 +11,7 @@ export const sendCredentialService = async ({
   email,
   push
 }: SendCredentialsRequest): Promise<any> => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/notification/send`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/interface/v1/notification/send`;
   try {
     const response = await post(apiUrl, {
       isQueue,
@@ -90,7 +90,7 @@ export const UpdateDeviceNotification = async (
   userId: string,
   headers: { tenantId: any; Authorization: string }
 ): Promise<any> => {
-  const apiUrl = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/user/v1/update/${userId}`;
+  const apiUrl = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/interface/v1/user/update/${userId}`;
 
   try {
     const response = await axios.patch(apiUrl, { userData }, { headers });
@@ -107,7 +107,7 @@ export const readUserId = async (
   userId?: string | string[],
   fieldValue?: boolean
 ): Promise<any> => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/user/v1/read/${userId}?fieldvalue=false`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/interface/v1/user/read/${userId}?fieldvalue=false`;
   try {
     const response = await get(apiUrl);
     return response?.data;
@@ -124,7 +124,7 @@ export const sendNotification = async ({
   key,
   push
 }: SendCredentialsRequest): Promise<any> => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/notification/send`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/interface/v1/notification/send`;
   try {
     const response = await post(apiUrl, {
       isQueue,

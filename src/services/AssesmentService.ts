@@ -12,7 +12,7 @@ export const getAssessmentList = async ({
   pagination,
   filters,
 }: AssessmentListParam): Promise<any> => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/v1/tracking/assessment/list`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/interface/v1/tracking/assessment/list`;
   try {
     const response = await post(apiUrl, { pagination, filters, sort });
     return response?.data;
@@ -52,7 +52,7 @@ export const getDoIdForAssessmentDetails = async ({
 };
 
 export const getAssessmentStatus = async (body: IAssessmentStatusOptions) => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/v1/tracking/assessment/search/status`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/interface/v1/tracking/assessment/search/status`;
   try {
     const response = await post(apiUrl, body);
     return response?.data?.data;
@@ -64,7 +64,7 @@ export const getAssessmentStatus = async (body: IAssessmentStatusOptions) => {
 };
 
 export const searchAssessment = async (body: ISearchAssessment) => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/v1/tracking/assessment/search`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/interface/v1/tracking/assessment/search`;
   try {
     const response = await post(apiUrl, body);
     return response?.data?.data;

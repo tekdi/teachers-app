@@ -30,7 +30,7 @@ export const getContentTrackingStatus = async (reqBody: ContentStatus) => {
 };
 
 export const createContentTracking = async (reqBody: ContentCreate) => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/v1/tracking/content/create`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/interface/v1/tracking/content/create`;
   try {
     const response = await post(apiUrl, reqBody);
     return response?.data;
