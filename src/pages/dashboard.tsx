@@ -1162,25 +1162,25 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
                               <ModalComponent
                                   open={selectedCohortType}
-                                  heading={'Mark Center Attendance'}
-                                  secondaryBtnText={"Cancel"}
-                                  btnText={"Yes, Mark Manually"}
+                                  heading={t("COMMON.MARK_CENTER_ATTENDANCE")}
+                                  secondaryBtnText={t("COMMON.CANCEL")}
+                                  btnText={t('COMMON.YES_MANUALLY')}
                                   selectedDate={selectedDate ? new Date(selectedDate) : undefined}
                                   onClose={handleClose} 
                                   handlePrimaryAction={() => setOpen(true)}
                               >
                                 <Box sx={{padding:'0 16px'}}>
-                                  <p>Are you sure you want to mark attendance manually?</p>
                                   <p>
-                                    Attendance is usually auto-marked after the first session of the day.
+                                      {t("COMMON.ARE_YOU_SURE_MANUALLY")}
                                   </p>
                                   <p>
-                                    Use manual marking only for technical issues, sessions on other
-                                    platforms, or if not conducted online.
+                                      {t('COMMON.ATTENDANCE_IS_USUALLY')}
+                                  </p>
+                                  <p>
+                                      {t("COMMON.USE_MANUAL")}
                                   </p>
                                   <p style={{ color: "orange", fontWeight: "bold" }}>
-                                    Note: Manually marked attendance will override auto-attendance if it is
-                                    later recorded.
+                                      {t("COMMON.NOTE_MANUALLY")}
                                   </p>
                                 </Box>
                               </ModalComponent>
