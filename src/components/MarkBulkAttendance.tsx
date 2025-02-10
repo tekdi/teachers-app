@@ -263,7 +263,7 @@ const MarkBulkAttendance: React.FC<MarkBulkAttendanceProps> = ({
                 sx={{ padding: '0 10px' }}
               >
                 <Box marginBottom={'0px'}>
-                  <Typography
+                  <Typography 
                     variant="h2"
                     component="h2"
                     marginBottom={'0px'}

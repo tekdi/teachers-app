@@ -84,6 +84,7 @@ import useStore from '@/store/store';
 import dynamic from 'next/dynamic';
 import { isEliminatedFromBuild } from '../../featureEliminationUtil';
 import useEventDates from './../hooks/useEventDates';
+import ModalComponent from '@/components/Modal';
 
 let SessionCardFooter: ComponentType<any> | null = null;
 if (!isEliminatedFromBuild('SessionCardFooter', 'component')) {
@@ -254,6 +255,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
         (item: any) => item?.label === 'BLOCKS'
       );
       const cohortData = response?.result?.userData?.customFields;
+
+      console.log(cohortData, "shreyas");
+      
 
       const state = cohortData?.find(
         (item: CustomField) => item.label === 'STATES'
@@ -627,7 +631,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     };
     telemetryFactory.interact(telemetryInteract);
   };
-
+ 
   const viewTimeTable = () => {
     if (classId !== 'all') {
       router.push(
@@ -811,6 +815,29 @@ const Dashboard: React.FC<DashboardProps> = () => {
       ? localStorage.getItem('mui-mode')
       : null;
 
+  const remoteFields = cohortsData.flatMap((cohort) =>
+    cohort.customField.filter((field) => field.value === "REMOTE")
+  );
+   
+  console.log(classId, remoteFields, myCohortList,   "shreyas");
+
+  const teacherAPP = localStorage.getItem("teacherApp");
+  const parsedData = teacherAPP ? JSON.parse(teacherAPP) : null;
+
+  const cohortData = parsedData?.state?.cohorts;
+  
+  const cohort = cohortData?.find((cohort: any) => cohort.cohortId === classId);
+  // console.log("cohortdata", cohort)
+  const selectedCohortType = cohort?.cohortType ==="REMOTE"
+
+
+    
+
+  // console.log("Class IDs with remoteFields:", remoteClassIds);
+
+  // console.log(cohortData ,'sunny');
+  
+  
   return (
     <>
       {
@@ -882,7 +909,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                               >
                                 {t('DASHBOARD.DAY_WISE_ATTENDANCE')}
                               </Typography>
-
+                                 
                               <CohortSelectionSection
                                 classId={classId}
                                 setClassId={setClassId}
@@ -1096,7 +1123,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
                               </Stack>
                             </Box>
                             {open && (
-                              <MarkBulkAttendance
+                            <>
+                               <MarkBulkAttendance
                                 open={open}
                                 onClose={handleClose}
                                 classId={classId}
@@ -1131,6 +1159,34 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                 dropoutCount={attendanceData?.dropoutCount}
                                 bulkStatus={attendanceData?.bulkAttendanceStatus}
                               />
+
+                              <ModalComponent
+                                  open={selectedCohortType}
+                                  heading={'Mark Center Attendance'}
+                                  secondaryBtnText={"Cancel"}
+                                  btnText={"Yes, Mark Manually"}
+                                  selectedDate={selectedDate ? new Date(selectedDate) : undefined}
+                                  onClose={handleClose} 
+                                  handlePrimaryAction={() => setOpen(true)}
+                              >
+                                <Box sx={{padding:'0 16px'}}>
+                                  <p>Are you sure you want to mark attendance manually?</p>
+                                  <p>
+                                    Attendance is usually auto-marked after the first session of the day.
+                                  </p>
+                                  <p>
+                                    Use manual marking only for technical issues, sessions on other
+                                    platforms, or if not conducted online.
+                                  </p>
+                                  <p style={{ color: "orange", fontWeight: "bold" }}>
+                                    Note: Manually marked attendance will override auto-attendance if it is
+                                    later recorded.
+                                  </p>
+                                </Box>
+                              </ModalComponent>
+
+                              </>
+
                             )}
                           </Box>
                         </Box>
