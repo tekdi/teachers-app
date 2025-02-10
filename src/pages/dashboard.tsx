@@ -546,11 +546,13 @@ const Dashboard: React.FC<DashboardProps> = () => {
   };
 
   const handleRemoteSession = () => {
-    const teacherApp = JSON.parse(localStorage.getItem("teacherApp") || "null");
-    const cohort = teacherApp?.state?.cohorts?.find(
-      (c: any) => c.cohortId === classId
-    );
-    if (cohort?.cohortType === "REMOTE") {
+    try {
+        const teacherApp = JSON.parse(localStorage.getItem("teacherApp") ?? "null");
+        const cohort = teacherApp?.state?.cohorts?.find?.(
+        (c: any) => c.cohortId === classId
+      );
+      const REMOTE_COHORT_TYPE = "REMOTE" as const;
+       if (cohort?.cohortType === REMOTE_COHORT_TYPE) {
       setIsRemoteCohort(true);
       ReactGA.event('mark/modify-attendance-button-clicked-dashboard', {
         teacherId: userId,
@@ -558,6 +560,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
     } else {
       handleModalToggle()
     }
+    } catch (error) {
+       console.error('Error parsing teacher app data:', error);
+       handleModalToggle();
+     }
   }
 
   const getMonthName = (dateString: string) => {
