@@ -536,21 +536,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   };
 
   const handleModalToggle = () => {
-    if (! isRemoteCohort) {
-      setOpen(!open);
-    }
-
-
-      const teacherApp = JSON.parse(localStorage.getItem("teacherApp") || "null");
-      const cohort = teacherApp?.state?.cohorts?.find(
-        (c: any) => c.cohortId === classId
-      );
-      setIsRemoteCohort(cohort?.cohortType === "REMOTE");
-      ReactGA.event('mark/modify-attendance-button-clicked-dashboard', {
-        teacherId: userId,
-      });
-    
-   
+      setOpen(!open);  
 
     const telemetryInteract = {
       context: {
@@ -567,6 +553,20 @@ const Dashboard: React.FC<DashboardProps> = () => {
     telemetryFactory.interact(telemetryInteract);
   };
 
+  const handleRemoteSession = () => {
+    const teacherApp = JSON.parse(localStorage.getItem("teacherApp") || "null");
+    const cohort = teacherApp?.state?.cohorts?.find(
+      (c: any) => c.cohortId === classId
+    );
+    if (cohort?.cohortType === "REMOTE") {
+      setIsRemoteCohort(true);
+      ReactGA.event('mark/modify-attendance-button-clicked-dashboard', {
+        teacherId: userId,
+      });
+    } else {
+      handleModalToggle()
+    }
+  }
 
   const getMonthName = (dateString: string) => {
     try {
@@ -833,32 +833,12 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const darkMode =
     typeof window !== 'undefined' && window.localStorage
       ? localStorage.getItem('mui-mode')
-      : null;
-
-   
-
-  //   const isRemoteCohort = React.useMemo(() => {
-  //     const teacherApp = JSON.parse(localStorage.getItem("teacherApp") || "null");
-  //     const cohort = teacherApp?.state?.cohorts?.find(
-  //       (c: any) => c.cohortId === classId
-  //     );
-  // return cohort?.cohortType === "REMOTE";
-  // }, [classId]);
-
-
-    
-
-  // console.log("Class IDs with remoteFields:", remoteClassIds);
-
-  // console.log(cohortData ,'sunny');
-  
-  
+      : null;  
   return (
     <>
       {
         (
           <>
-            {/* <button onClick={() => setTest(!test)}>TEsting</button> */}
             <GuideTour toggleDrawer={toggleDrawer} />
             <>
               {!isAuthenticated && (
@@ -1124,7 +1104,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                       width: '15%',
                                     },
                                   }}
-                                  onClick={handleModalToggle}
+                                  onClick={handleRemoteSession}
                                   disabled={
                                     currentAttendance === 'futureDate' ||
                                     classId === 'all' ||
@@ -1139,7 +1119,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
                               </Stack>
                             </Box>
                             {open && (
-                            <>
                                <MarkBulkAttendance
                                 open={open}
                                 onClose={handleClose}
@@ -1175,13 +1154,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                 dropoutCount={attendanceData?.dropoutCount}
                                 bulkStatus={attendanceData?.bulkAttendanceStatus}
                               />
-
-                            
-
-                           
-
-                              </>
-
                             )}
                             {
                               isRemoteCohort && (
@@ -1192,7 +1164,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                                   btnText={t('COMMON.YES_MANUALLY')}
                                   selectedDate={selectedDate ? new Date(selectedDate) : undefined}
                                   onClose={handleClose}
-                                  handlePrimaryAction={() => setOpen(true)}
+                                  handlePrimaryAction={() => handleModalToggle()}
                                 >
                                   <Box sx={{ padding: '0 16px' }}>
                                     <Box sx={{ color: theme?.palette?.warning['300'], fontSize: '16px', fontWeight: '500' }}>
