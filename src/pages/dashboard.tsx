@@ -821,14 +821,13 @@ const Dashboard: React.FC<DashboardProps> = () => {
    
   console.log(classId, remoteFields, myCohortList,   "shreyas");
 
-  const teacherAPP = localStorage.getItem("teacherApp");
-  const parsedData = teacherAPP ? JSON.parse(teacherAPP) : null;
-
-  const cohortData = parsedData?.state?.cohorts;
-  
-  const cohort = cohortData?.find((cohort: any) => cohort.cohortId === classId);
-  // console.log("cohortdata", cohort)
-  const selectedCohortType = cohort?.cohortType ==="REMOTE"
+  const isRemoteCohort = React.useMemo(() => {
+    const teacherApp = JSON.parse(localStorage.getItem("teacherApp") || "null");
+    const cohort = teacherApp?.state?.cohorts?.find(
+      (c: any) => c.cohortId === classId
+     );
+return cohort?.cohortType === "REMOTE";
+}, [classId]);
 
 
     
@@ -1161,7 +1160,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                               />
 
                               <ModalComponent
-                                  open={selectedCohortType}
+                                  open={isRemoteCohort}
                                   heading={t("COMMON.MARK_CENTER_ATTENDANCE")}
                                   secondaryBtnText={t("COMMON.CANCEL")}
                                   btnText={t('COMMON.YES_MANUALLY')}

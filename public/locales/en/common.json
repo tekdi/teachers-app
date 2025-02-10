@@ -162,7 +162,12 @@
     "UPDATE_AVAILABLE": "New Update Available!",
     "RELOAD_TO_UPDATE": "Get the latest features and improvements—update now to enjoy a smoother experience and stay up-to-date!",
     "NO_ASSIGNED_BOARDS":"No assigned Board for selected Center",
-    "YOU_HAVE_UNSAVED_CHANGES": "You have unsaved changes. Are you sure you want to go back?"
+    "YOU_HAVE_UNSAVED_CHANGES": "You have unsaved changes. Are you sure you want to go back?",
+    "ATTENDANCE_IS_USUALLY":" Attendance is usually auto-marked after the first session of the day.",
+   "ARE_YOU_SURE_MANUALLY" : "Are you sure you want to mark attendance manually?",
+   "USE_MANUAL":"Use manual marking only for technical issues, sessions on other platforms, or if not conducted online.",
+   "NOTE_MANUALLY":"Note: Manually marked attendance will override auto-attendance if it is later recorded.",
+    "YES_MANUALLY":"Yes, Mark Manually"
   
   },
   "LOGIN_PAGE": {
