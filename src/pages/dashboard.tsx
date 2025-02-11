@@ -165,7 +165,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     dropoutCount: 0,
     bulkAttendanceStatus: '',
   });
-
+  const [isRemoteCohort, setIsRemoteCohort] = React.useState<boolean>(false);
   const handleAttendanceDataUpdate = (data: any) => {
     setAttendanceData(data);
   };
@@ -528,10 +528,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   };
 
   const handleModalToggle = () => {
-    setOpen(!open);
-    ReactGA.event('mark/modify-attendance-button-clicked-dashboard', {
-      teacherId: userId,
-    });
+      setOpen(!open);  
 
     const telemetryInteract = {
       context: {
@@ -547,6 +544,27 @@ const Dashboard: React.FC<DashboardProps> = () => {
     };
     telemetryFactory.interact(telemetryInteract);
   };
+
+  const handleRemoteSession = () => {
+    try {
+        const teacherApp = JSON.parse(localStorage.getItem("teacherApp") ?? "null");
+        const cohort = teacherApp?.state?.cohorts?.find?.(
+        (c: any) => c.cohortId === classId
+      );
+      const REMOTE_COHORT_TYPE = "REMOTE" as const;
+       if (cohort?.cohortType === REMOTE_COHORT_TYPE) {
+      setIsRemoteCohort(true);
+      ReactGA.event('mark/modify-attendance-button-clicked-dashboard', {
+        teacherId: userId,
+      });
+    } else {
+      handleModalToggle()
+    }
+    } catch (error) {
+       console.error('Error parsing teacher app data:', error);
+       handleModalToggle();
+     }
+  }
 
   const getMonthName = (dateString: string) => {
     try {
@@ -641,6 +659,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
   const handleClose = () => {
     setOpen(false);
+    setIsRemoteCohort(false)
+    // setTest(false)
   };
 
   const todayDate = getTodayDate();
@@ -811,30 +831,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const darkMode =
     typeof window !== 'undefined' && window.localStorage
       ? localStorage.getItem('mui-mode')
-      : null;
-
-  const remoteFields = cohortsData.flatMap((cohort) =>
-    cohort.customField.filter((field) => field.value === "REMOTE")
-  );
-   
-  console.log(classId, remoteFields, myCohortList,   "shreyas");
-
-  const isRemoteCohort = React.useMemo(() => {
-    const teacherApp = JSON.parse(localStorage.getItem("teacherApp") || "null");
-    const cohort = teacherApp?.state?.cohorts?.find(
-      (c: any) => c.cohortId === classId
-     );
-return cohort?.cohortType === "REMOTE";
-}, [classId]);
-
-
-    
-
-  // console.log("Class IDs with remoteFields:", remoteClassIds);
-
-  // console.log(cohortData ,'sunny');
-  
-  
+      : null;  
   return (
     <>
       {
@@ -1105,7 +1102,7 @@ return cohort?.cohortType === "REMOTE";
                                       width: '15%',
                                     },
                                   }}
-                                  onClick={handleModalToggle}
+                                  onClick={handleRemoteSession}
                                   disabled={
                                     currentAttendance === 'futureDate' ||
                                     classId === 'all' ||
@@ -1120,7 +1117,6 @@ return cohort?.cohortType === "REMOTE";
                               </Stack>
                             </Box>
                             {open && (
-                            <>
                                <MarkBulkAttendance
                                 open={open}
                                 onClose={handleClose}
@@ -1156,35 +1152,35 @@ return cohort?.cohortType === "REMOTE";
                                 dropoutCount={attendanceData?.dropoutCount}
                                 bulkStatus={attendanceData?.bulkAttendanceStatus}
                               />
-
-                              <ModalComponent
+                            )}
+                            {
+                              isRemoteCohort && (
+                                <ModalComponent
                                   open={isRemoteCohort}
                                   heading={t("COMMON.MARK_CENTER_ATTENDANCE")}
                                   secondaryBtnText={t("COMMON.CANCEL")}
                                   btnText={t('COMMON.YES_MANUALLY')}
                                   selectedDate={selectedDate ? new Date(selectedDate) : undefined}
-                                  onClose={handleClose} 
-                                  handlePrimaryAction={() => setOpen(true)}
-                              >
-                                <Box sx={{padding:'0 16px'}}>
-                                  <p>
+                                  onClose={handleClose}
+                                  handlePrimaryAction={() => handleModalToggle()}
+                                >
+                                  <Box sx={{ padding: '0 16px' }}>
+                                    <Box sx={{ color: theme?.palette?.warning['300'], fontSize: '16px', fontWeight: '500' }}>
                                       {t("COMMON.ARE_YOU_SURE_MANUALLY")}
-                                  </p>
-                                  <p>
+                                    </Box>
+                                    <Box sx={{ color: theme?.palette?.warning['300'], fontSize: '14px', fontWeight: '400', mt: '10px' }}>
                                       {t('COMMON.ATTENDANCE_IS_USUALLY')}
-                                  </p>
-                                  <p>
+                                    </Box>
+                                    <Box sx={{ color: theme?.palette?.warning['300'], fontSize: '14px', fontWeight: '400', mt: '10px' }}>
                                       {t("COMMON.USE_MANUAL")}
-                                  </p>
-                                  <p style={{ color: "orange", fontWeight: "bold" }}>
+                                    </Box>
+                                    <Box sx={{ color: theme?.palette?.action?.activeChannel, fontSize: '14px', fontWeight: '500', mt: '10px' }}>
                                       {t("COMMON.NOTE_MANUALLY")}
-                                  </p>
-                                </Box>
-                              </ModalComponent>
-
-                              </>
-
-                            )}
+                                    </Box>
+                                  </Box>
+                                </ModalComponent>
+                              )
+                            }
                           </Box>
                         </Box>
                         <Box sx={{ padding: '0 20px' }}>
