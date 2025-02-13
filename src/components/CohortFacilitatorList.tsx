@@ -39,6 +39,7 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
   const [loading, setLoading] = React.useState<boolean>(false);
   const [userData, setUserData] = React.useState<UserDataProps[]>();
   const [resData, setResData] = React.useState<UserDataProps[]>();
+  console.log(userData);
 
   const [filteredData, setFilteredData] =  React.useState(userData);
   const [searchTerm, setSearchTerm] =  React.useState('');
@@ -67,9 +68,12 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
       }
       try {
         if (cohortId) {
-          const filters = { cohortId: cohortId };
-          const limit = pagesLimit
-          const page=offset
+          const filters = {
+            cohortId: cohortId,
+          };
+          const limit = pagesLimit;
+          const page = offset;
+
           const response = await getMyCohortFacilitatorList({
             limit,
             page,
@@ -93,17 +97,17 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
                 age: ageField ? ageField.value : null,
               };
             });
-            // setResData(userDetails)
 
             if (isMobile) {
               setInfiniteData([...infiniteData, ...userDetails]);
               setFilteredData(userDetails);
+              setUserData([...infiniteData, ...userDetails]);
 
             } else {
               setUserData(userDetails);
               setFilteredData(userDetails);
               setInfiniteData(userDetails);
-              setOffset(0)
+              setOffset(0);
             }
 
             setTotalCount(response.result?.totalCount);
@@ -124,6 +128,7 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
 
     getCohortMemberList();
   }, [cohortId, reloadState, page, infinitePage]);
+
 
   const onDelete = () => {};
   
@@ -154,11 +159,26 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
       showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
     }
   }
-  const handleSearch = (searchTerm: string) => {
-    const filtered = userData?.filter((data) =>
-      data?.name?.toLowerCase()?.includes(searchTerm) || data?.enrollmentNumber?.toLowerCase()?.includes(searchTerm)
+  const handleSearch = async (searchTerm: string) => {
+    const filtered = userData?.filter((data) =>{
+      return data?.name?.toLowerCase()?.includes(searchTerm.toLowerCase()) || data?.enrollmentNumber?.toLowerCase()?.includes(searchTerm)
+    }
     );
-    setFilteredData(filtered);
+    // const filters = {
+    //   cohortId: cohortId,
+    //   firstName: searchTerm
+    // };
+    // const limit = pagesLimit;
+    // const page = offset;
+    // const response = await getMyCohortFacilitatorList({
+    //   limit,
+    //   page,
+    //   filters,
+    // });
+
+    setUserData(resData || []);
+    setFilteredData(resData || []);
+
   };
 
   const handlePageChange = (newPage: number) => {
