@@ -169,7 +169,7 @@ export const bulkAttendance = async ({
   contextId,
   userAttendance,
 }: BulkAttendanceParams): Promise<any> => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/api/v1/attendance/bulkAttendance`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/interface/v1/account/attendance/bulkAttendance`;
   try {
     const response = await post(apiUrl, {
       attendanceDate,
@@ -189,7 +189,7 @@ export const markAttendance = async ({
   contextId,
   attendance,
 }: MarkAttendanceParams): Promise<any> => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/api/v1/attendance`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/interface/v1/attendance/create`;
   try {
     const response = await post(apiUrl, {
       userId,
@@ -210,7 +210,7 @@ const postAttendanceList = async ({
   filters = {},
   facets,
 }: any): Promise<any> => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/api/v1/attendance/list`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/interface/v1/account/attendance/list`;
   filters.context = "cohort"; // Ensure context is added to filters
   try {
     const response = await post(apiUrl, { limit, page, filters, facets });
@@ -308,7 +308,7 @@ export const classesMissedAttendancePercentList = async ({
   facets,
   sort,
 }: any): Promise<any> => {
-  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/api/v1/attendance/list`;
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/interface/v1/account/attendance/list`;
   filters.context = "cohort"; // Add context to filters
   try {
     const response = await post(apiUrl, { filters, facets, sort });
