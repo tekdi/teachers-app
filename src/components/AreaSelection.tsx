@@ -113,7 +113,7 @@ console.log(blocks,"blocks-------");
 
   const blockDisable = districtDefaultValue ? false : true;
   const shouldRenderSelectCheckmarks = !(
-    reAssignModal && userType === Role.TEAM_LEADERS
+    reAssignModal && userType === Role.TEAM_LEADER
   );
   return (
     <Box
