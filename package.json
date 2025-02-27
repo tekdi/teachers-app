@@ -22,6 +22,7 @@
   "dependencies": {
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
+    "@hookform/resolvers": "^4.1.2",
     "@mui/icons-material": "^5.15.15",
     "@mui/material": "^5.15.21",
     "@mui/x-date-pickers": "^7.10.0",
@@ -33,7 +34,7 @@
     "@rjsf/validator-ajv8": "^5.18.5",
     "@tanstack/react-query": "^5.45.1",
     "axios": "^1.6.8",
-    "date-fns": "^3.6.0",
+    "date-fns": "^2.29.3",
     "dayjs": "^1.11.13",
     "fingerprintjs2": "^2.1.4",
     "firebase": "^9.0.0",
@@ -41,6 +42,7 @@
     "i18next-resources-to-backend": "^1.2.1",
     "jquery": "^3.7.1",
     "jwt-decode": "^4.0.0",
+    "lucide-react": "^0.475.0",
     "next": "^14.2.3",
     "next-i18next": "^15.3.0",
     "next-pwa": "^5.6.0",
@@ -51,6 +53,7 @@
     "react-circular-progressbar": "^2.1.0",
     "react-dom": "^18",
     "react-ga4": "^2.1.0",
+    "react-hook-form": "^7.54.2",
     "react-hot-toast": "^2.4.1",
     "react-i18next": "^14.1.2",
     "react-infinite-scroll-component": "^6.1.0",
@@ -62,7 +65,9 @@
     "stylis": "^4.3.4",
     "stylis-plugin-rtl": "^2.1.1",
     "swiper": "^11.1.10",
+    "use-debounce": "^10.0.4",
     "webpack": "^5.95.0",
+    "zod": "^3.24.2",
     "zustand": "^4.5.4"
   },
   "devDependencies": {

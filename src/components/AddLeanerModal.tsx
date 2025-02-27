@@ -1,4 +1,5 @@
 import DynamicForm from '@/components/DynamicForm';
+import AreaSelection from '@/components/AreaSelection';
 import {
   GenerateSchemaAndUiSchema,
   customFields,
@@ -9,7 +10,7 @@ import { createUser } from '@/services/CreateUserService';
 import { sendEmailOnLearnerCreation } from '@/services/NotificationService';
 import { editEditUser } from '@/services/ProfileService';
 import useSubmittedButtonStore from '@/store/useSubmittedButtonStore';
-import { calculateAge, generateUsernameAndPassword } from '@/utils/Helper';
+import { calculateAge, generateUsernameAndPassword,transformArray } from '@/utils/Helper';
 import {
   FormContext,
   FormContextType,
@@ -28,6 +29,7 @@ import SendCredentialModal from './SendCredentialModal';
 import { showToastMessage } from './Toastify';
 import Loader from './Loader';
 import { Box } from '@mui/material';
+import { useLocationState } from "@/utils/UseLocation";
 
 interface AddLearnerModalProps {
   open: boolean;
@@ -59,6 +61,37 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
   const [learnerFormData, setLearnerFormData] = React.useState<any>();
   const [fullname, setFullname] = React.useState<any>();
   const [originalSchema, setOriginalSchema] = React.useState(schema);
+  const {
+    country,
+    states,
+    districts,
+    blocks,
+    allCenters,
+    isMobile,
+    isMediumScreen,
+    selectedState,
+    selectedStateCode,
+    selectedDistrict,
+    selectedDistrictCode,
+    selectedCenter,
+    dynamicForm,
+    selectedBlock,
+    selectedBlockCode,
+    handleCountryChangeWrapper,
+    handleStateChangeWrapper,
+    handleBlockChangeWrapper,
+    handleCenterChangeWrapper,
+    selectedCenterCode,
+    selectedBlockCohortId,
+    blockFieldId,
+    districtFieldId,
+    stateFieldId,
+    dynamicFormForBlock,
+    stateDefaultValue,
+    assignedTeamLeader,
+    assignedTeamLeaderNames,
+    selectedStateCohortId,
+  } = useLocationState(open, onClose, "YOUTH");
 
   const { data: formResponse, isPending } = useFormRead(
     FormContext.USERS,
@@ -168,15 +201,16 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
             }
           }
         } else {
-          if (
+          if (fieldSchema && (
             Object.hasOwn(fieldSchema, 'isDropdown') ||
             Object.hasOwn(fieldSchema, 'isCheckbox')
-          ) {
+          )            
+          ) {                        
             apiBody.customFields.push({
               fieldId: fieldId,
               value: Array.isArray(fieldValue) ? fieldValue : [fieldValue],
             });
-          } else {
+          } else if(fieldId)  {
             apiBody.customFields.push({
               fieldId: fieldId,
               value: String(fieldValue),
@@ -187,16 +221,16 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
 
       if (!isEditModal) {
         apiBody.customFields.push({
-          fieldId: fieldData?.state?.blockId,
-          value: [fieldData?.state?.blockCode],
+          fieldId: blockFieldId,
+          value: [selectedBlockCode],
         });
         apiBody.customFields.push({
-          fieldId: fieldData?.state?.stateId,
-          value: [fieldData?.state?.stateCode],
+          fieldId: stateFieldId,
+          value: [selectedStateCode],
         });
         apiBody.customFields.push({
-          fieldId: fieldData?.state?.districtId,
-          value: [fieldData?.state?.districtCode],
+          fieldId: districtFieldId,
+          value: [selectedDistrictCode],
         });
       }
 
@@ -238,6 +272,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
           if (apiBody?.phone_number) {
             apiBody.mobile = apiBody?.phone_number;
           }
+          apiBody.password=apiBody.username
           const response = await createUser(apiBody);
           if (response) {
             showToastMessage(
@@ -443,6 +478,40 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
             }}
           >
             <Loader showBackdrop={false} loadingText={t('COMMON.LOADING')} />
+          </Box>
+        )}
+
+        {!isEditModal && !isPending && (
+          <Box
+            sx={{
+              marginTop: "10px",
+            }}
+          >
+            <AreaSelection
+              country={transformArray(country)}
+              states={transformArray(states)}
+              districts={transformArray(districts)}
+              blocks={transformArray(blocks)}
+              allCenters={transformArray(allCenters)}
+              selectedState={selectedState}
+              selectedDistrict={selectedDistrict}
+              selectedBlock={selectedBlock}
+              handleCountryChangeWrapper={handleCountryChangeWrapper}
+              handleStateChangeWrapper={handleStateChangeWrapper}
+              handleBlockChangeWrapper={handleBlockChangeWrapper}
+              isMobile={isMobile}
+              isMediumScreen={isMediumScreen}
+              isCenterSelection={
+                true
+              }
+              
+              selectedCenter={selectedCenter}
+              handleCenterChangeWrapper={handleCenterChangeWrapper}
+              inModal={true}
+              userType={"YOUTH"}
+              stateDefaultValue={stateDefaultValue}
+              isUserAdd={true}
+            />
           </Box>
         )}
 

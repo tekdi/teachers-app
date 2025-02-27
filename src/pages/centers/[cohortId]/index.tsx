@@ -121,7 +121,7 @@ const CohortPage = () => {
       ? 2
       : router.query.tab
         ? Number(router.query.tab)
-        : 1;
+        : 2;
   });
   const [showDetails, setShowDetails] = React.useState(false);
   const [classId, setClassId] = React.useState('');
@@ -471,7 +471,7 @@ const CohortPage = () => {
   }, [extraSessions]);
   useEffect(() => {
     if (router.isReady) {
-      const queryParamValue = router.query.tab ? Number(router.query.tab) : 1;
+      const queryParamValue = router.query.tab ? Number(router.query.tab) : 2;
 
       if ([1, 2, 3].includes(queryParamValue)) setValue(queryParamValue);
       else setValue(1);
@@ -768,9 +768,9 @@ const CohortPage = () => {
             },
           }}
         >
-          {!isEliminatedFromBuild('Events', 'feature') && isActiveYear && (
+          {/* {!isEliminatedFromBuild('Events', 'feature') && isActiveYear && (
             <Tab value={1} label={t('COMMON.CENTER_SESSIONS')} />
-          )}
+          )} */}
 
           <Tab value={2} label={t('COMMON.LEARNER_LIST')+ 
     (cohortLearnerListCount!==undefined ?"("+ cohortLearnerListCount+")": "")} />

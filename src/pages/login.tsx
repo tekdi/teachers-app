@@ -292,21 +292,23 @@ const LoginPage = () => {
             setAccessToken(token);
 
             const tenant = localStorage.getItem('tenantName');
-            if (tenant?.toLocaleLowerCase() === TENANT_DATA?.SECOND_CHANCE_PROGRAM?.toLowerCase() || tenant?.toLocaleLowerCase() === TENANT_DATA?.PRATHAM_SCP?.toLowerCase()) {
+            
+            if (tenant === "Youth Management" || tenant?.toLocaleLowerCase() === TENANT_DATA?.PRATHAM_SCP?.toLowerCase()) {
               const userDetails = await getUserDetails(userId, true);
               if (userDetails?.result?.userData) {
                 const activeSessionId = await getAcademicYearList();
                 const customFields =
                   userDetails?.result?.userData?.customFields;
+                  
                 if (customFields?.length) {
                   const state = customFields.find(
                     (field: any) => field?.label === 'STATES'
                   );
                   const district = customFields.find(
-                    (field: any) => field?.label === 'DISTRICTS'
+                    (field: any) => field?.label === 'COUNTRY'
                   );
                   const block = customFields.find(
-                    (field: any) => field?.label === 'BLOCKS'
+                    (field: any) => field?.label === 'CITY'
                   );
 
                   if (state) {
@@ -330,7 +332,7 @@ const LoginPage = () => {
                 }
 
                 if (activeSessionId) {
-                  router.push('/dashboard');
+                  router.push('/centers');
                 }
               }
             } else if (token && tenant?.toLowerCase() === TENANT_DATA.YOUTHNET?.toLowerCase()) {
