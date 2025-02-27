@@ -6,11 +6,11 @@ import firebaseConfig from './firebaseConfig';
 const firebaseApp = initializeApp(firebaseConfig);
 let messaging;
 
-if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
-  messaging = getMessaging();
-} else {
-  console.warn('Service workers are not supported in this environment.');
-}
+// if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+//   messaging = getMessaging();
+// } else {
+//   console.warn('Service workers are not supported in this environment.');
+// }
 
 export const requestPermission = async () => {
   const permission = await Notification.requestPermission();

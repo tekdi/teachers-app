@@ -60,9 +60,9 @@ export const names = [
 ];
 
 export enum Role {
-  STUDENT = 'Student',
-  TEACHER = 'Teacher',
-  TEAM_LEADER = 'Team Leader',
+  STUDENT = 'Youth',
+  TEACHER = 'Trainer',
+  TEAM_LEADER = 'Trainer',
   ADMIN = 'Admin',
 }
 
@@ -93,11 +93,13 @@ export enum FormContext {
 }
 
 export enum FormContextType {
-  STUDENT = 'STUDENT',
+  STUDENT = 'YOUTH',
   TEACHER = 'TEACHER',
   TEAM_LEADER = 'TEAM LEADER',
   COHORT = 'COHORT',
   COHORT_MEMBER = 'COHORTMEMBER',
+  ADMIN_CENTER="ADMIN_CENTER",
+  
 }
 export enum ObservationEntityType {
   LEARNER = 'learner',
@@ -154,6 +156,12 @@ export enum AssessmentStatus {
 export enum QueryKeys {
   GET_ACTIVE_FACILITATOR = 'getActiveFacilitatorList',
   MY_COHORTS = 'myCohorts',
+  USER_READ= "userRead",
+  FIELD_OPTION_READ= "fieldOptionRead",
+  GET_COHORT_LIST= "getcohortList",
+  GET_STATE_COHORT_LIST= "getStateCohortList",
+
+  GET_COHORT_MEMBER_LIST= "getCohortMemberList",
 }
 
 export enum CoursePlannerConstants {
@@ -175,6 +183,17 @@ export enum EventStatus {
   LIVE = 'LIVE',
   PASSED = 'PASSED',
 }
+
+export enum CohortTypes {
+  COHORT = "CENTER",
+  BLOCK = "BLOCK",
+  DISTRICT = "DISTRICT",
+  STATE="STATE",
+  COUNTRY="COUNTRY",
+  CITY="CITY",
+}
+
+
 
 export const metaTags = {
   title: 'Pratham Learning Management Portal',

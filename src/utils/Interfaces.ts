@@ -81,7 +81,7 @@ export interface ParentIdFilter {
 }
 
 // Define a union type for the filters
-export type Filters = UserIdFilter | ParentIdFilter;
+export type Filters = UserIdFilter | ParentIdFilter | any;
 export interface CohortListParam {
   limit: number;
   offset: number;
@@ -724,6 +724,21 @@ export interface HorizontalLinearStepperProps {
 export interface GetCohortSearchParams {
   cohortId: string;
   limit?: number;
+  offset?: number;
+}
+
+export interface StateListParam {
+  limit?: number;
+  offset?: number;
+  controllingfieldfk?: string;
+  fieldName: string;
+  optionName?: string;
+  sort?: [string, string]; 
+}
+
+export interface CenterListParam {
+  limit?: number;
+  filters?: any;
   offset?: number;
 }
 

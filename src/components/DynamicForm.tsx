@@ -363,7 +363,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   };
 
   return (
-    <div className="form-parent">
+    <div>
       <FormWithMaterialUI
         schema={schema}
         uiSchema={uiSchema}

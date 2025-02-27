@@ -206,20 +206,22 @@ const CentersPage = () => {
             }
 
             if (accessGranted('showTeacherCohorts', accessControl, userRole) && response) {
-              const cohortData = response.map((center: any) => {
-                const cohortName = center.cohortName;
-                const cohortId = center.cohortId;
-                const centerTypeField = center?.customField.find(
-                  (field: any) => field.label === 'TYPE_OF_COHORT'
-                );
-                const centerType = centerTypeField ? centerTypeField.value : '';
-                return {
-                  cohortName,
-                  cohortId,
-                  centerType,
-                  cohortStatus: center?.cohortStatus,
-                };
-              });
+              const cohortData = response
+                .filter((center: any) => center.type === "COHORT") // Filter centers with type "cohort"
+                .map((center: any) => {
+                  const cohortName = center.cohortName;
+                  const cohortId = center.cohortId;
+                  const centerTypeField = center?.customField.find(
+                    (field: any) => field.label === 'TYPE_OF_COHORT'
+                  );
+                  const centerType = centerTypeField ? centerTypeField.value : '';
+                  return {
+                    cohortName,
+                    cohortId,
+                    centerType,
+                    cohortStatus: center?.cohortStatus,
+                  };
+                });
 
               setTimeout(() => {
                 setCenterData(cohortData);

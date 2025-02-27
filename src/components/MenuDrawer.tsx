@@ -324,7 +324,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
           )}
         </Box>
 
-        {isActiveYear && !tenantName && (
+        {/* {isActiveYear && !tenantName && (
           <Box>
             <Button
               className="fs-14"
@@ -356,7 +356,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               {t('DASHBOARD.DASHBOARD')}
             </Button>
           </Box>
-        )}
+        )} */}
 
         {tenantName && (
           <Box>
@@ -504,7 +504,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
           </Box>
         )}
 
-        {!tenantName && (
+        {/* {!tenantName && (
           <Box sx={{ marginTop: '18px' }} className="joyride-step-8">
             <Button
               className="fs-14"
@@ -541,8 +541,8 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               {t('OBSERVATION.SURVEY_FORMS')}
             </Button>
           </Box>
-        )}
-        {isActiveYear && !tenantName && (
+        )} */}
+        {/* {isActiveYear && !tenantName && (
           <Box sx={{ marginTop: '18px' }}>
             <Button
               className="fs-14 joyride-step-9"
@@ -582,8 +582,8 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               {t('COURSE_PLANNER.COURSE_PLANNER')}
             </Button>
           </Box>
-        )}
-        {!isEliminatedFromBuild('Assessments', 'feature') &&
+        )} */}
+        {/* {!isEliminatedFromBuild('Assessments', 'feature') &&
           isActiveYear &&
           !tenantName && (
             <Box sx={{ marginTop: '18px' }}>
@@ -625,9 +625,9 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                 {t('ASSESSMENTS.ASSESSMENTS')}
               </Button>
             </Box>
-          )}
+          )} */}
 
-        {isActiveYear && !tenantName && (
+        {/* {isActiveYear && !tenantName && (
           <Box sx={{ marginTop: '18px' }} className="joyride-step-11">
             <Button
               className="fs-14 joyride-step-8"
@@ -661,8 +661,8 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               {t('BOARD_ENROLMENT.BOARD_ENROLLMENT')}
             </Button>
           </Box>
-        )}
-        {isActiveYear && !tenantName && (
+        )} */}
+        {/* {isActiveYear && !tenantName && (
           <Box sx={{ marginTop: '18px' }}>
             <Button
               className="fs-14"
@@ -703,8 +703,8 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               {t('COMMON.SUPPORT_REQUEST')}
             </Button>
           </Box>
-        )}
-        {isActiveYear && !tenantName && (
+        )} */}
+        {/* {isActiveYear && !tenantName && (
           <Box sx={{ marginTop: '18px' }}>
             <Button
               className="fs-14"
@@ -736,7 +736,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               {t('GUIDE_TOUR.LEARN_HOW_TO_USE')}
             </Button>
           </Box>
-        )}
+        )} */}
       </Box>
     </Drawer>
   );

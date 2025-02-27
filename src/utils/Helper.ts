@@ -16,6 +16,11 @@ import {
   lowLearnerAttendanceLimit,
 } from '../../app.config';
 
+export interface State {
+  value: string;
+  label: string;
+}
+
 export const ATTENDANCE_ENUM = {
   PRESENT: 'present',
   ABSENT: 'absent',
@@ -939,3 +944,34 @@ export const getAssessmentType = (type: string) => {
     return AssessmentType.OTHER;
   }
 }
+
+export const capitalizeFirstLetterOfEachWordInArray = (
+  arr: string[]
+): string[] => {
+  if (!arr) {
+    return arr;
+  }
+  return arr?.map((str) =>
+    str?.replace(/\b[a-z]/g, (char) => char.toUpperCase())
+  );
+};
+
+export const transformArray = (arr: State[]): State[] => {
+  if (!arr || !Array.isArray(arr)) {
+    return arr;
+  }
+  return arr?.map((item) => ({
+    ...item,
+    label: transformLabel(item.label),
+  }));
+};
+
+export const transformLabel = (label: string): string => {
+  if (!label) {
+    return label;
+  }
+  return label
+    .toLowerCase() // Convert to lowercase to standardize
+    .replace(/_/g, " ") // Replace underscores with spaces
+    .replace(/\b\w/g, (char) => char.toUpperCase()); // Capitalize the first letter of each word
+};
