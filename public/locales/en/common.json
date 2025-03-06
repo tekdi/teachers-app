@@ -161,8 +161,12 @@
     "RELOAD": "Update Now",
     "UPDATE_AVAILABLE": "New Update Available!",
     "RELOAD_TO_UPDATE": "Get the latest features and improvements—update now to enjoy a smoother experience and stay up-to-date!",
-    "NO_ASSIGNED_BOARDS":"No assigned Board for selected Center"
-  
+    "NO_ASSIGNED_BOARDS":"No assigned Board for selected Center",
+    "COUNTRY": "Country",
+    "COUNTY":"County",
+    "SUB_COUNTY":"Sub-County",
+    "ALL_COUNTY":"All County",
+    "ALL_SUB_COUNTY":"All Sub County"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
@@ -605,7 +609,11 @@
     "AVAILABLE_SUGGESTIONS": "Available suggestions:",
     "USERNAME_ALREADY_EXIST": "This username already exists",
     "GRADUATE": "Graduate",
-    "POST_GRADUATE": "Post Graduate"
+    "POST_GRADUATE": "Post Graduate",
+    "DETAILED_ADDRESS": "Detailed Address",
+    "skill": "Skill",
+    "PASS_YEAR": "Pass Year",
+    "COURSES": "Courses"
   },
   "FORM_ERROR_MESSAGES": {
     "INVALID_INPUT": "Invalid Input.",
@@ -803,7 +811,7 @@
     "SUBCOUNTY": "Sub-County",
     "ORGANISATION": "Organisation",
     "CATEGORY": "Course",
-    "ALL_CATEGORY": "All Categories",
+    "ALL_CATEGORY": "All Courses",
     "ROLETYPE": "Role Type",
     "BENIFITS": "Benefits",
     "OTHERBENIFITS": "Other Benefits",
@@ -826,6 +834,7 @@
     "SEARCH_YOUTH": "Search Youth...",
     "ADD": "Add",
     "MAP_YOUTH_TO_OPPORTUNITY": "Map Youth to Opportunity : ",
-    "BACK_TO_OPPORTUNITY": "Back to Opportunites"
+    "BACK_TO_OPPORTUNITY": "Back to Opportunites",
+    "MAPPED_BY_ME": "Mapped by me"
   }
 }

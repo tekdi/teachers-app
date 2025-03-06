@@ -165,7 +165,7 @@ console.log(blocks,"blocks-------");
                     country.label?.toLowerCase().slice(1)
                 )}
                 codes={country?.map((country) => country.value)}
-                tagName={t("FACILITATORS.COUNTRY")}
+                tagName={t("COMMON.COUNTRY")}
                 selectedCategories={selectedState}
                 onCategoryChange={handleCountryChangeWrapper}
                 // disabled={stateDefaultValue !== t("COMMON.ALL_STATES")}
@@ -184,7 +184,7 @@ console.log(blocks,"blocks-------");
               <MultipleSelectCheckmarks
                 names={states?.map((states) => states.label)}
                 codes={states?.map((states) => states.value)}
-                tagName={t("FACILITATORS.STATE")}
+                tagName={t("COMMON.COUNTY")}
                 selectedCategories={selectedDistrict}
                 onCategoryChange={handleStateChangeWrapper}
                 // disabled={
@@ -197,8 +197,8 @@ console.log(blocks,"blocks-------");
                   reAssignModal
                     ? districtDefaultValue
                     : selectedState.length > 0 && districts?.length === 0
-                      ? t("COMMON.STATES")
-                      : t("COMMON.ALL_STATES")
+                      ? t("COMMON.COUNTY")
+                      : t("COMMON.ALL_COUNTY")
                 }
               />
             </Grid>
@@ -215,14 +215,14 @@ console.log(blocks,"blocks-------");
                       blocks?.length > 0 ? blocks.map((block) => block.label) : []
                     )}
                     codes={blocks?.length > 0 ? blocks?.map((block) => block.value) : []}
-                    tagName={t("FACILITATORS.CITY")}
+                    tagName={t("COMMON.SUB_COUNTY")}
                     selectedCategories={capitalizeFirstLetterOfEachWordInArray(selectedBlock)}
                     onCategoryChange={handleBlockChangeWrapper}
                     overall={!inModal}
                     defaultValue={
                       selectedDistrict?.length > 0 && blocks?.length === 0
-                        ? t("COMMON.NO_CITIES")
-                        : t("COMMON.ALL_CITIES")
+                        ? t("COMMON.SUB_COUNTY")
+                        : t("COMMON.ALL_SUB_COUNTY")
                     }
                   />
                 )}
