@@ -23,7 +23,7 @@ import { SearchInput } from "@/components/search-input"
 import { OpportunityFilters } from "@/components/opportunity-filters"
 import { Pagination } from "@/components/pagination"
 import type { Opportunity, OpportunityFormData,OpportunityList } from "@/types/opportunity"
-import { getOpportunities, createOpportunity, updateOpportunity, deleteOpportunity } from "@/lib/api"
+import { getOpportunities, createOpportunity, updateOpportunity, deleteOpportunity,getMappedByMe } from "@/lib/api"
 import { Switch, FormControlLabel } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -58,7 +58,7 @@ export default function OpportunitiesPage() {
     try {
         let created_by = undefined;
         let finalStatus = "approved";
-
+      if(selectedTab !== "mappedByMe") {
         if (selectedTab === "createdByMe") {
             created_by = localStorage.getItem("userId") || undefined;
             finalStatus = status as string;
@@ -73,6 +73,11 @@ export default function OpportunitiesPage() {
         });
 
         setOpportunities(result);
+      } else {
+        created_by = localStorage.getItem("userId") || undefined
+        const response = await getMappedByMe(created_by);
+        setOpportunities(response);
+      }
     } finally {
         setIsLoading(false);
     }
@@ -152,6 +157,7 @@ export default function OpportunitiesPage() {
           <Tabs value={selectedTab} onChange={(_, newValue) => setSelectedTab(newValue)}>
             <Tab label={t('OPPORTUNITY.ALL_OPPORTUNITIES')} value="all" />
             <Tab label={t('OPPORTUNITY.CREATED_BY_ME')} value="createdByMe" />
+            <Tab label={t('OPPORTUNITY.MAPPED_BY_ME')} value="mappedByMe" />
           </Tabs>
 
           <Box

@@ -141,32 +141,32 @@ export function OpportunitiesList({ data, onEdit, onDelete, onView }:Opportuniti
                     gutterBottom 
                     sx={{ fontWeight: "bold", color: "#1A0DAB", cursor: "pointer", textDecoration: "underline" }}
                   >
-                    {opportunity.title}
+                    {opportunity.title ? opportunity.title : opportunity.opportunity_title}
                   </Typography>
 
                   <Box display="flex" alignItems="center" gap={1}>
                     <BusinessIcon fontSize="small" color="disabled" />
                     <Typography variant="body2" color="text.secondary">
-                      {opportunity?.company?.name || "Unknown Company"}
+                      {opportunity?.company?.name ? opportunity?.company?.name : opportunity.company_name || "Unknown Company"}
                     </Typography>
                   </Box>
 
                   <Box display="flex" alignItems="center" gap={1} mt={1}>
                     <LocationOnIcon fontSize="small" color="disabled" />
                     <Typography variant="body2" color="text.secondary">
-                      {opportunity?.location?.city}, {opportunity?.location?.state}
+                      {opportunity?.location?.city ? opportunity?.location?.city : opportunity.location_city}, {opportunity?.location?.state ? opportunity?.location?.state : opportunity.location_state}
                     </Typography>
                   </Box>
 
                   <Box display="flex" alignItems="center" gap={1} mt={1}>
                     <WorkIcon fontSize="small" color="disabled" />
                     <Typography variant="body2" color="text.secondary">
-                      {opportunity.opportunity_type || "Full Time"} | {opportunity.experience_level || "Immediate Joiner"}
+                      {opportunity.opportunity_type ? opportunity.opportunity_type :  opportunity.opportunity_opportunity_type|| "Full Time"} | {opportunity.experience_level ? opportunity.experience_level : opportunity.opportunity_experience_level || "Immediate Joiner"}
                     </Typography>
                   </Box>
 
                   <Typography variant="body1" sx={{ mt: 1 }}>
-                    <Box component="span" sx={{ fontWeight: "bold" }}>KES</Box> {Math.floor(opportunity.min_salary)} - {Math.floor(opportunity.max_salary)}
+                    <Box component="span" sx={{ fontWeight: "bold" }}>KES</Box> {Math.floor(opportunity.min_salary ? opportunity.min_salary : opportunity.opportunity_min_salary)} - {Math.floor(opportunity.max_salary ? opportunity.max_salary : opportunity.opportunity_max_salary)}
                   </Typography>
 
                   <Box sx={{ display: "flex", justifyContent: "flex-start", mt: 1 }}>

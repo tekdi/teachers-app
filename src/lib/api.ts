@@ -155,6 +155,22 @@ export async function getAppliedUsers(opportunityId: any) {
   return fetchApi<PaginatedResponse<any>>(`/opportunity-service/opportunity-applications?${params}`);
 }
 
+export async function getMappedByMe(userId: any) {
+  const params = new URLSearchParams({
+    page: "1",
+    limit: "100",
+    created_by: userId,
+  });
+
+  const response = await fetchApi<PaginatedResponse<any>>(`/opportunity-service/opportunity-applications?${params}`);
+  return {
+    items: response.result.data,
+    total: response.total,
+    totalPages: Math.ceil(response.total / 10),
+    currentPage: 1,
+  }
+}
+
 export const updateApplicationStatus = async (applicationId:string, newStatus:string) => {
 
   const body = JSON.stringify({ status_id: newStatus });
