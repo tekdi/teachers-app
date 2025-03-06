@@ -186,6 +186,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
     '/attendance-overview',
   ].includes(router.pathname);
   const isTeacherCenter = router.pathname.includes('/centers');
+  const isOpportunity = router.pathname.includes('/opportunities');
   const isCoursePlanner = [
     '/curriculum-planner',
     '/topic-detail-view',
@@ -500,6 +501,46 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               {accessGranted('showTeachingCenter', accessControl, userRole)
                 ? t('DASHBOARD.TEACHING_CENTERS')
                 : t('DASHBOARD.MY_TEACHING_CENTERS')}
+            </Button>
+          </Box>
+        )}
+        {!tenantName && (
+          <Box sx={{ marginTop: '18px' }}>
+            <Button
+              className="fs-14 joyride-step-7"
+              sx={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'flex-start',
+                background: isOpportunity
+                  ? theme.palette.primary.main
+                  : 'transparent',
+
+                padding: isOpportunity
+                  ? '16px 18px !important'
+                  : '0px 18px !important',
+                color: isOpportunity ? '#2E1500' : theme.palette.warning.A200,
+                fontWeight: isOpportunity ? '600' : 500,
+                '&:hover': {
+                  background: isOpportunity
+                    ? theme.palette.primary.main
+                    : 'transparent',
+                },
+                marginTop: '15px',
+                gap: '10px',
+              }}
+              startIcon={
+                <LocalLibraryOutlinedIcon
+                  sx={{ fontSize: '24px !important' }}
+                />
+              }
+              onClick={() => {
+                router.push(`/opportunities`);
+              }}
+            >
+              {accessGranted('showTeachingCenter', accessControl, userRole)
+                ? t('DASHBOARD.OPPORTUNITIES')
+                : t('DASHBOARD.OPPORTUNITIES')}
             </Button>
           </Box>
         )}

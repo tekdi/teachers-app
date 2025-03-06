@@ -101,9 +101,9 @@ function App({ Component, pageProps }: AppProps) {
     }
   }, [i18n.language]);
 
-  useEffect(() => {
-    telemetryFactory.init();
-  }, []);
+  // useEffect(() => {
+  //   telemetryFactory.init();
+  // }, []);
 
   useEffect(() => {
     // Initialize GA only once
