@@ -1,4 +1,4 @@
-const API_BASE = process.env.NEXT_PUBLIC_MIDDLEWARE_URL || "http://localhost:4000/opportunity-service"
+const API_BASE = process.env.NEXT_PUBLIC_MIDDLEWARE_URL
 
 // API Configuration type
 export type ApiConfig = {
