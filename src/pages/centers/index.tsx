@@ -165,8 +165,7 @@ const CentersPage = () => {
             if (
               accessGranted('showBlockLevelCohort', accessControl, userRole) && response
             ) {
-                console.log(response, 'response');
-                
+
                 const blockData = response
                   .filter((block: any) => block.type === "CENTER")
                   .map((block: any) => {
@@ -185,7 +184,6 @@ const CentersPage = () => {
                     const district = districtField ? districtField.value : '';
                     return { blockName, blockId, state, district };
                   });
-                console.log('blockData', blockData);
                 
                 setBlockData(blockData);
               }
@@ -236,7 +234,6 @@ const CentersPage = () => {
           }
         }
       } catch (error) {
-        console.log("error", error);
         showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
       }
     };
