@@ -62,9 +62,7 @@ export default function OpportunitiesPage() {
         if (selectedTab === "createdByMe") {
             created_by = localStorage.getItem("userId") || undefined;
             finalStatus = status as string;
-        }
-        console.log(status,"status");
-        
+        }        
 
         const result = await getOpportunities(search as string, Number(page), {
             category: category as string,
@@ -112,6 +110,7 @@ export default function OpportunitiesPage() {
   }
 
   function handleFilterChange(name: string, value: string) {
+    
     const query = { ...router.query, [name]: value, page: "1" }
     if (value === "all") delete query?.[name]
     router.push({

@@ -29,20 +29,20 @@ const formSchema = z.object({
   description: z.string().min(1, "Description is required"),
   min_experience: z.number().min(0, "Minimum experience cannot be negative"),
   min_salary: z.number().min(0, "Minimum salary cannot be negative"),
-  max_salary: z.string().min(1, "Maximum salary cannot be negative"),
+  max_salary: z.string().min(1, "Stipend cannot be negative"),
   category: z.string().min(1, "At least one category is required"),
-  company: z.string().min(1, "Company is required"),
+  company: z.string().min(1, "Organisation is required"),
   skills: z.array(z.string()).min(1, "At least one skill is required"),
   no_of_candidates: z.string().min(1, "Number of candidates is required"),
   status: z.string().min(1, "Status is required"),
-  organisation: z.string().min(1, "At least one organisation is required"),
+  // organisation: z.string().min(1, "At least one organisation is required"),
   role_type: z.string().min(1, "Role type is required"),
   work_nature: z.string().min(1, "Work nature is required"),
   benefits: z.string().min(1, "Benefits are required"),
   country: z.string().min(1, "Country is required"),
   state: z.string().min(1, "State is required"),
   city: z.string().min(1, "City is required"),
-  stipend: z.string().min(1, "Stipend is required"),
+  // stipend: z.string().min(1, "Stipend is required"),
   otherBenefits: z.string().optional(),
 }).superRefine((data, ctx) => {
   if (data.benefits === "51d25808-371b-4ba3-9d85-a16e3a5793be" && !data.otherBenefits) {
@@ -259,7 +259,7 @@ console.log("Submitting form data:", transformedData);
                 name="company"
                 control={control}
                 render={({ field }) => (
-                    <FormControl fullWidth error={!!errors.organisation}>
+                    <FormControl fullWidth error={!!errors.company}>
                     <InputLabel>{t('OPPORTUNITY.ORGANISATION')}</InputLabel>
                     <Select
                         {...field}
@@ -272,7 +272,7 @@ console.log("Submitting form data:", transformedData);
                         </MenuItem>
                         ))}
                     </Select>
-                    {errors.organisation && <FormHelperText>{errors.organisation.message}</FormHelperText>}
+                    {errors.company && <FormHelperText>{errors.company.message}</FormHelperText>}
                     </FormControl>
                 )}
                 />
@@ -374,7 +374,7 @@ console.log("Submitting form data:", transformedData);
 
           <Grid item xs={12}>
             <Controller
-              name="stipend"
+              name="max_salary"
               control={control}
               render={({ field }) => (
                 <TextField {...field} fullWidth label={t('OPPORTUNITY.STIPEND')} error={!!errors.title} helperText={errors.title?.message} />

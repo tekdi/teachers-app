@@ -16,12 +16,12 @@ export interface Opportunity {
   status: string;
   created_at: string;
   updated_at: string;
-  organisation: string;
+  // organisation: string;
   role_type: string;
   // salary: string;
   work_nature:string;
   benefits:string;
-  stipend:string;
+  // stipend:string;
   // skillDetails:Array<any>;
   // work_experience:string;
   otherBenefits?:string;

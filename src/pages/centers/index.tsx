@@ -165,24 +165,28 @@ const CentersPage = () => {
             if (
               accessGranted('showBlockLevelCohort', accessControl, userRole) && response
             ) {
-              const blockData = response.map((block: any) => {
-                const blockName = block.cohortName;
-                const blockId = block.cohortId;
-                localStorage.setItem('blockParentId', blockId);
 
-                const stateField = block?.customField.find(
-                  (field: any) => field.label === 'STATES'
-                );
-                const state = stateField ? stateField.value : '';
+                const blockData = response
+                  .filter((block: any) => block.type === "CENTER")
+                  .map((block: any) => {
+                    const blockName = block.cohortName;
+                    const blockId = block.cohortId;
+                    localStorage.setItem('blockParentId', blockId);
 
-                const districtField = block?.customField.find(
-                  (field: any) => field.label === 'DISTRICTS'
-                );
-                const district = districtField ? districtField.value : '';
-                return { blockName, blockId, state, district };
-              });
-              setBlockData(blockData);
-            }
+                    const stateField = block?.customField.find(
+                      (field: any) => field.label === 'STATES'
+                    );
+                    const state = stateField ? stateField.value : '';
+
+                    const districtField = block?.customField.find(
+                      (field: any) => field.label === 'DISTRICTS'
+                    );
+                    const district = districtField ? districtField.value : '';
+                    return { blockName, blockId, state, district };
+                  });
+                
+                setBlockData(blockData);
+              }
 
             if (
               accessGranted('showBlockLevelCohort', accessControl, userRole) && response
@@ -230,7 +234,6 @@ const CentersPage = () => {
           }
         }
       } catch (error) {
-        console.log("error", error);
         showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
       }
     };
@@ -367,7 +370,7 @@ const CentersPage = () => {
                 }}
               >
                 <Tab value={1} label={t('CENTERS.CENTERS')} />
-                <Tab value={2} label={t('COMMON.FACILITATORS')} />
+                {/* <Tab value={2} label={t('COMMON.FACILITATORS')} /> */}
               </Tabs>
             )}
           </Box>
@@ -452,7 +455,7 @@ const CentersPage = () => {
                         },
                       }}
                     >
-                      <Button
+                      {/* <Button
                         variant="outlined"
                         onClick={() => {
                           // setSearchInput('');
@@ -471,7 +474,7 @@ const CentersPage = () => {
                         className="one-line-text"
                       >
                         {t('COMMON.FILTERS')}
-                      </Button>
+                      </Button> */}
                     </FormControl>
                   </Box>
                 </Grid>
@@ -587,7 +590,7 @@ const CentersPage = () => {
           </Box>
         ) : null}
       </Box>
-      <FilterModalCenter
+      {/* <FilterModalCenter
         open={filterModalOpen}
         handleClose={handleFilterModalClose}
         centers={centerData.map((center) => center.cohortName)}
@@ -598,7 +601,7 @@ const CentersPage = () => {
         centerType={centerType}
         setCenterType={setCenterType}
         onApply={handleFilterApply}
-      />
+      /> */}
     </>
   );
 };

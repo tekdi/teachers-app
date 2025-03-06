@@ -758,120 +758,120 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
         </Grid>
       </Grid>
 
-      {isActiveYear && (
-        <Box>
-          <Box padding={'22px 18px'} className="linerGradient br-md-8">
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                gap: '5px',
-              }}
-            >
-              <Typography
+        {/* {isActiveYear && (
+          <Box>
+            <Box padding={'22px 18px'} className="linerGradient br-md-8">
+              <Box
                 sx={{
-                  color: theme.palette.warning['300'],
-                  fontWeight: 500,
-                  fontSize: '14px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  gap: '5px',
                 }}
-                variant="h6"
-                gutterBottom
               >
-                {t('ATTENDANCE.ATTENDANCE_OVERVIEW')}
-              </Typography>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <Typography
                   sx={{
-                    color: theme.palette.secondary.main,
-                    marginRight: '4px',
+                    color: theme.palette.warning['300'],
+                    fontWeight: 500,
                     fontSize: '14px',
-                    cursor: 'pointer',
                   }}
                   variant="h6"
                   gutterBottom
-                  onClick={getLearnerAttendance}
                 >
-                  {t('PROFILE.VIEW_DAY_WISE')}
+                  {t('ATTENDANCE.ATTENDANCE_OVERVIEW')}
                 </Typography>
-                <EastIcon
-                  fontSize="inherit"
-                  sx={{
-                    color: theme.palette.secondary.main,
-                    marginBottom: '5px',
-                    transform: isRTL ? ' rotate(180deg)' : 'unset',
-                    marginTop: '5px',
-                  }}
-                />
-              </Box>
-            </Box>
-
-            <Box sx={{ mt: '10px' }}>
-              <Box>
-                <DateRangePopup
-                  menuItems={menuItems}
-                  selectedValue={selectedValue}
-                  setSelectedValue={setSelectedValue}
-                  onDateRangeSelected={handleDateRangeSelected}
-                  dateRange={dateRange}
-                />
-              </Box>
-            </Box>
-            <Box
-              sx={{
-                // background: 'linear-gradient(180deg, #FFFDF7 0%, #F8EFDA 100%)',
-                borderRadius: theme.spacing(3),
-                boxShadow: 'none',
-              }}
-            >
-              <Box sx={{ mt: 2 }}>
-                {selectedValue ===
-                  t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
-                    date_range: dateRange,
-                  }) || selectedValue === '' ? (
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                   <Typography
-                    color={theme.palette.warning['400']}
-                    fontSize={'0.75rem'}
-                    fontWeight={'500'}
-                    // pt={'1rem'}
+                    sx={{
+                      color: theme.palette.secondary.main,
+                      marginRight: '4px',
+                      fontSize: '14px',
+                      cursor: 'pointer',
+                    }}
+                    variant="h6"
+                    gutterBottom
+                    onClick={getLearnerAttendance}
                   >
-                    {t('ATTENDANCE.ATTENDANCE_MARKED_OUT_OF_DAYS', {
-                      count: numberOfDaysAttendanceMarked,
-                    })}
+                    {t('PROFILE.VIEW_DAY_WISE')}
                   </Typography>
-                ) : null}
-                <Box
-                  gap={1}
-                  sx={{
-                    bgcolor: 'transparent',
-                    justifyContent: 'center',
-                    display: 'flex',
-                    marginTop: 2,
-                  }}
-                >
-                  <Grid container spacing={2}>
-                    <Grid item xs={6}>
-                      <StudentStatsCard
-                        label1={t('COMMON.ATTENDANCE') + ' (%)'}
-                        value1={`${Math.round(overallAttendance?.present_percentage || 0)}%`}
-                        label2={false}
-                        value2=""
-                      />
+                  <EastIcon
+                    fontSize="inherit"
+                    sx={{
+                      color: theme.palette.secondary.main,
+                      marginBottom: '5px',
+                      transform: isRTL ? ' rotate(180deg)' : 'unset',
+                      marginTop: '5px',
+                    }}
+                  />
+                </Box>
+              </Box>
+
+              <Box sx={{ mt: '10px' }}>
+                <Box>
+                  <DateRangePopup
+                    menuItems={menuItems}
+                    selectedValue={selectedValue}
+                    setSelectedValue={setSelectedValue}
+                    onDateRangeSelected={handleDateRangeSelected}
+                    dateRange={dateRange}
+                  />
+                </Box>
+              </Box>
+              <Box
+                sx={{
+                  // background: 'linear-gradient(180deg, #FFFDF7 0%, #F8EFDA 100%)',
+                  borderRadius: theme.spacing(3),
+                  boxShadow: 'none',
+                }}
+              >
+                <Box sx={{ mt: 2 }}>
+                  {selectedValue ===
+                    t('DASHBOARD.LAST_SEVEN_DAYS_RANGE', {
+                      date_range: dateRange,
+                    }) || selectedValue === '' ? (
+                    <Typography
+                      color={theme.palette.warning['400']}
+                      fontSize={'0.75rem'}
+                      fontWeight={'500'}
+                      // pt={'1rem'}
+                    >
+                      {t('ATTENDANCE.ATTENDANCE_MARKED_OUT_OF_DAYS', {
+                        count: numberOfDaysAttendanceMarked,
+                      })}
+                    </Typography>
+                  ) : null}
+                  <Box
+                    gap={1}
+                    sx={{
+                      bgcolor: 'transparent',
+                      justifyContent: 'center',
+                      display: 'flex',
+                      marginTop: 2,
+                    }}
+                  >
+                    <Grid container spacing={2}>
+                      <Grid item xs={6}>
+                        <StudentStatsCard
+                          label1={t('COMMON.ATTENDANCE') + ' (%)'}
+                          value1={`${Math.round(overallAttendance?.present_percentage || 0)}%`}
+                          label2={false}
+                          value2=""
+                        />
+                      </Grid>
+                      <Grid item xs={6}>
+                        <StudentStatsCard
+                          label1={t('COMMON.CLASS_MISSED')}
+                          value1={overallAttendance?.absent || 0}
+                          label2={false}
+                          value2=""
+                        />
+                      </Grid>
                     </Grid>
-                    <Grid item xs={6}>
-                      <StudentStatsCard
-                        label1={t('COMMON.CLASS_MISSED')}
-                        value1={overallAttendance?.absent || 0}
-                        label2={false}
-                        value2=""
-                      />
-                    </Grid>
-                  </Grid>
+                  </Box>
                 </Box>
               </Box>
             </Box>
           </Box>
-        </Box>
-      )}
+        )} */}
 
       <Box
         boxShadow={'none'}

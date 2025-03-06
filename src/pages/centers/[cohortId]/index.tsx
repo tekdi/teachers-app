@@ -645,7 +645,7 @@ const CohortPage = () => {
                   fontSize={'11px'}
                   fontWeight={500}
                 >
-                  {cohortDetails?.address}
+                  {/* {cohortDetails?.address} */}
                 </Typography>
               </Box>
             </Box>
@@ -768,21 +768,11 @@ const CohortPage = () => {
             },
           }}
         >
-          {/* {!isEliminatedFromBuild('Events', 'feature') && isActiveYear && (
-            <Tab value={1} label={t('COMMON.CENTER_SESSIONS')} />
-          )} */}
-
-          <Tab value={2} label={t('COMMON.LEARNER_LIST')+ 
-    (cohortLearnerListCount!==undefined ?"("+ cohortLearnerListCount+")": "")} />
-          {role === Role.TEAM_LEADER && (
-            <Tab 
-  value={3} 
-  label={
-    t('COMMON.FACILITATOR_LIST') + 
-    (cohortFacilitatorListCount!==undefined ? "("+cohortFacilitatorListCount+")": "")
-  } 
-/>
-          )}
+          <Tab 
+            value={2} 
+            label={t('COMMON.LEARNER_LIST') + 
+            (cohortLearnerListCount !== undefined ? `(${cohortLearnerListCount})` : "")} 
+          />
         </Tabs>
       </Box>
       {!isEliminatedFromBuild('SessionCardFooter', 'component') &&
@@ -1089,7 +1079,7 @@ const CohortPage = () => {
                     {t('COMMON.ADD_NEW')}
                   </Button>
                 </Box>
-                <Box
+                {/* <Box
                   px={'18px'}
                   mt={2}
                   sx={{ display: 'flex', gap: '4px', alignItems: 'center' }}
@@ -1113,7 +1103,7 @@ const CohortPage = () => {
                       transform: isRTL ? ' rotate(180deg)' : 'unset',
                     }}
                   />
-                </Box>
+                </Box> */}
               </Box>
             )}
             <Box>

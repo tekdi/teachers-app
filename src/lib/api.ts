@@ -1,4 +1,4 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/opportunity-service"
+const API_BASE = process.env.NEXT_PUBLIC_MIDDLEWARE_URL
 
 // API Configuration type
 export type ApiConfig = {
@@ -65,7 +65,7 @@ export async function getOpportunities(search = "", page = 1, filters: Opportuni
     ...Object.fromEntries(Object.entries(filters).filter(([_, v]) => v !== undefined)),
   })
 
-  const response = await fetchApi<PaginatedResponse<any>>(`/opportunities?${params}`)
+  const response = await fetchApi<PaginatedResponse<any>>(`/opportunity-service/opportunities?${params}`)
 
   return {
     items: response.result.data,
@@ -76,25 +76,25 @@ export async function getOpportunities(search = "", page = 1, filters: Opportuni
 }
 
 export async function getOpportunity(id: string) {
-  return fetchApi<any>(`/opportunities/${id}`)
+  return fetchApi<any>(`/opportunity-service/opportunities/${id}`)
 }
 
 export async function createOpportunity(data: any) {
-  return fetchApi<any>("/opportunities", {
+  return fetchApi<any>("/opportunity-service/opportunities", {
     method: "POST",
     body: JSON.stringify(data),
   })
 }
 
 export async function updateOpportunity(id: string, data: any) {
-  return fetchApi<any>(`/opportunities/${id}`, {
+  return fetchApi<any>(`/opportunity-service/opportunities/${id}`, {
     method: "PUT",
     body: JSON.stringify(data),
   })
 }
 
 export async function deleteOpportunity(id: string) {
-  return fetchApi<void>(`/opportunities/${id}/archive`, {
+  return fetchApi<void>(`/opportunity-service/opportunities/${id}/archive`, {
     method: "PATCH",
   })
 }
@@ -103,28 +103,28 @@ export async function getLocations(search = "") {
   const params = new URLSearchParams({
     ...(search && { search }),
   })
-  return fetchApi<any>(`/locations?${params}`)
+  return fetchApi<any>(`/opportunity-service/locations?${params}`)
 }
 
 export async function getOrganizations() {
-  return fetchApi<any>("/organizations")
+  return fetchApi<any>("/opportunity-service/organizations")
 }
 
 export async function getSkills() {
-  return fetchApi<any>(`/skills`)
+  return fetchApi<any>(`/opportunity-service/skills`)
 }
 
 export async function getCategories() {
-  return fetchApi<any>(`/categories`)
+  return fetchApi<any>(`/opportunity-service/categories`)
 }
 
 export async function getBenefits() {
-  return fetchApi<any>(`/benefits`)
+  return fetchApi<any>(`/opportunity-service/benefits`)
 }
 
 export async function getLocation(params?: { country?: any; state?: any }) {
   const queryParams = new URLSearchParams(params as Record<string, string>).toString();
-  const url = queryParams ? `/locations/list?${queryParams}` : `/locations/list`;
+  const url = queryParams ? `/opportunity-service/locations/list?${queryParams}` : `/opportunity-service/locations/list`;
 
   return fetchApi<any>(url, {
     method: "POST",
@@ -133,13 +133,13 @@ export async function getLocation(params?: { country?: any; state?: any }) {
 
 export async function getLocationCode(params?: { country?: any; state?: any; city?:any }) {
   const queryParams = new URLSearchParams(params as Record<string, string>).toString();
-  const url = queryParams ? `/locations?${queryParams}` : `/locations/list`;
+  const url = queryParams ? `/opportunity-service/locations?${queryParams}` : `/opportunity-service/locations/list`;
 
   return fetchApi<any>(url);
 }
 
 export async function applyToOpportunity(requestData?:any) {
-  return fetchApi<any>("/opportunity-applications", {
+  return fetchApi<any>("/opportunity-service/opportunity-applications", {
     method: "POST",
     body: JSON.stringify(requestData),
   });
@@ -152,14 +152,14 @@ export async function getAppliedUsers(opportunityId: any) {
     opportunity_id: opportunityId,
   });
 
-  return fetchApi<PaginatedResponse<any>>(`/opportunity-applications?${params}`);
+  return fetchApi<PaginatedResponse<any>>(`/opportunity-service/opportunity-applications?${params}`);
 }
 
 export const updateApplicationStatus = async (applicationId:string, newStatus:string) => {
 
   const body = JSON.stringify({ status_id: newStatus });
 
-  return fetchApi<any>(`/opportunity-applications/${applicationId}`, {
+  return fetchApi<any>(`/opportunity-service/opportunity-applications/${applicationId}`, {
     method: "PUT",
     body: body,
   });
@@ -167,5 +167,5 @@ export const updateApplicationStatus = async (applicationId:string, newStatus:st
 };
 
 export async function fetchApplicationStatuses() {
-  return fetchApi<any>(`/application-statuses`)
+  return fetchApi<any>(`/opportunity-service/application-statuses`)
 }
