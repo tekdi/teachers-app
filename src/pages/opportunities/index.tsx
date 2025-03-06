@@ -112,6 +112,8 @@ export default function OpportunitiesPage() {
   }
 
   function handleFilterChange(name: string, value: string) {
+    console.log(value,"value");
+    
     const query = { ...router.query, [name]: value, page: "1" }
     if (value === "all") delete query?.[name]
     router.push({

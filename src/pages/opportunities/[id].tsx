@@ -24,6 +24,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import type { OpportunityList } from "@/types/opportunity"
 import { getOpportunity } from "@/lib/api"
 import { GetStaticPaths } from 'next';
+import Header from '@/components/Header';
 
 export default function OpportunityDetailPage() {
   const router = useRouter()
@@ -68,6 +69,8 @@ export default function OpportunityDetailPage() {
   }
 
   return (
+    <>
+    <Header />
     <Container maxWidth="lg" sx={{ py: 4 }}>
       <Box sx={{ mb: 4 }}>
         <Button startIcon={<ArrowBackIcon />} onClick={() => router.push("/opportunities")} sx={{ mb: 2 }}>
@@ -183,9 +186,9 @@ export default function OpportunityDetailPage() {
                   variant="contained"
                   color="primary"
                   fullWidth
-                  onClick={() => router.push(`/opportunities/${id}/apply`)}
+                  onClick={() => router.push(`/opportunities/map-youth/${id}`)}
                 >
-                  Apply Now
+                  {t('OPPORTUNITY.MAP_YOUTH_TO_OPPORTUNITY')}
                 </Button>
               </CardContent>
             </Card>
@@ -193,6 +196,8 @@ export default function OpportunityDetailPage() {
         </Grid>
       </Grid>
     </Container>
+    </>
+    
   )
 }
 

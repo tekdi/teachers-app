@@ -5,6 +5,7 @@ import { limit } from '@/utils/app.constant';
 import useStore from '@/store/store';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import { Container, Typography, Box, List, ListItem, ListItemAvatar, ListItemText, Checkbox, Button, Avatar, MenuItem, Select, FormControl, InputLabel } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack"
 import { showToastMessage } from '@/components/Toastify';
 import { toPascalCase } from '@/utils/Helper';
 import SearchBar from '@/components/Searchbar';
@@ -169,6 +170,9 @@ export default function MapYouth() {
     <>
       <Header />
       <Container maxWidth="sm">
+        <Button startIcon={<ArrowBackIcon />} onClick={() => router.push("/opportunities")} sx={{ mb: 2 }}>
+          {t('OPPORTUNITY.BACK_TO_OPPORTUNITY')}
+        </Button>
         <Typography variant="h5" gutterBottom textAlign="center">
           {t('OPPORTUNITY.MAP_YOUTH_TO_OPPORTUNITY')} {opportunityId}
         </Typography>

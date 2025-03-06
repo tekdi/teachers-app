@@ -664,26 +664,26 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
               //   ),
               //   name: 'reassign-block-request',
               // },
-              {
-                label: t('COMMON.REASSIGN_CENTERS'),
-                icon: (
-                  <ApartmentIcon
-                    sx={{ color: theme.palette.warning['300'] }}
-                  />
-                ),
-                name: 'reassign-centers',
-              },
-              {
-                label: isDropout
-                  ? t('COMMON.UNMARK_DROP_OUT')
-                  : t('COMMON.MARK_DROP_OUT'),
-                icon: (
-                  <NoAccountsIcon
-                    sx={{ color: theme.palette.warning['300'] }}
-                  />
-                ),
-                name: isDropout ? 'unmark-drop-out' : 'mark-drop-out',
-              },
+              // {
+              //   label: t('COMMON.REASSIGN_CENTERS'),
+              //   icon: (
+              //     <ApartmentIcon
+              //       sx={{ color: theme.palette.warning['300'] }}
+              //     />
+              //   ),
+              //   name: 'reassign-centers',
+              // },
+              // {
+              //   label: isDropout
+              //     ? t('COMMON.UNMARK_DROP_OUT')
+              //     : t('COMMON.MARK_DROP_OUT'),
+              //   icon: (
+              //     <NoAccountsIcon
+              //       sx={{ color: theme.palette.warning['300'] }}
+              //     />
+              //   ),
+              //   name: isDropout ? 'unmark-drop-out' : 'mark-drop-out',
+              // },
               {
                 label: t('COMMON.DELETE_USER'),
                 icon: (
@@ -702,26 +702,26 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
                   option.name !== 'reassign-centers')
             )
             : [
-              {
-                label: t('COMMON.REASSIGN_CENTERS'),
-                icon: (
-                  <ApartmentIcon
-                    sx={{ color: theme.palette.warning['300'] }}
-                  />
-                ),
-                name: 'reassign-centers',
-              },
-              {
-                label: isDropout
-                  ? t('COMMON.UNMARK_DROP_OUT')
-                  : t('COMMON.MARK_DROP_OUT'),
-                icon: (
-                  <NoAccountsIcon
-                    sx={{ color: theme.palette.warning['300'] }}
-                  />
-                ),
-                name: isDropout ? 'unmark-drop-out' : 'mark-drop-out',
-              },
+              // {
+              //   label: t('COMMON.REASSIGN_CENTERS'),
+              //   icon: (
+              //     <ApartmentIcon
+              //       sx={{ color: theme.palette.warning['300'] }}
+              //     />
+              //   ),
+              //   name: 'reassign-centers',
+              // },
+              // {
+              //   label: isDropout
+              //     ? t('COMMON.UNMARK_DROP_OUT')
+              //     : t('COMMON.MARK_DROP_OUT'),
+              //   icon: (
+              //     <NoAccountsIcon
+              //       sx={{ color: theme.palette.warning['300'] }}
+              //     />
+              //   ),
+              //   name: isDropout ? 'unmark-drop-out' : 'mark-drop-out',
+              // },
               {
                 label: t('COMMON.DELETE_USER_FROM_CENTER'),
                 icon: (
