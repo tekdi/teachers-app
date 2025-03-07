@@ -1,0 +1,28 @@
+name: DEVPYM-Deployment Pratham-OU Mumbai Region
+on:
+  push:
+    branches:
+      - east-africa-1.0
+jobs:
+  DEVPYM-DEPLOYMENT:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Extract Branch Name
+        run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+
+      - name: Deploy Stack
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST_NAME_DEVPYM }}
+          username: ${{ secrets.USERNAME_DEVPYM }}
+          key: ${{ secrets.EC2_SSH_KEY_DEVPYM }}
+          port: ${{ secrets.PORT_DEVPYM }}
+          script: |
+            cd ${{ secrets.TARGET_DIR_DEVPYM }}
+            if [ -f .env ]; then
+              rm .env
+            fi
+            echo "${{ secrets.DEVPYM_ENV }}" > .env
+            ls -ltra
+            ./deploy.sh ${{ env.BRANCH_NAME }}
