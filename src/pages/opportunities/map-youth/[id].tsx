@@ -220,8 +220,20 @@ export default function MapYouth(oppId: any) {
           {t('OPPORTUNITY.MAP_YOUTH_TO_OPPORTUNITY')} {opportunityId}
         </Typography>
 
+        {/* Search Box */}
+        <Box mb={2}>
+          <SearchBar
+            fullWidth
+            onSearch={handleSearch}
+            value={searchTerm}
+            placeholder={t('OPPORTUNITY.SEARCH_YOUTH')}
+          />
+        </Box>
+
         {/* Cohort Filter Dropdown */}
-        <FormControl fullWidth>
+        <FormControl fullWidth sx={{
+          mb: 2
+        }}>
           <InputLabel>{t('OPPORTUNITY.SELECT_BATCH')}</InputLabel>
           <Select
             label={t('OPPORTUNITY.SELECT_BATCH')}
@@ -235,14 +247,6 @@ export default function MapYouth(oppId: any) {
             ))}
           </Select>
         </FormControl>
-
-        {/* Search Box */}
-        <SearchBar
-          fullWidth
-          onSearch={handleSearch}
-          value={searchTerm}
-          placeholder={t('OPPORTUNITY.SEARCH_YOUTH')}
-        />
 
         <List>
           {filteredData.map((user) => (
@@ -302,7 +306,7 @@ export default function MapYouth(oppId: any) {
             variant="contained"
             sx={{
               p: '10px',
-              fontWeight: '500'
+              fontWeight: '500',
             }}
             color="primary"
             onClick={handleSubmit}

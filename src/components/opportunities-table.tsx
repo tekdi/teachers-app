@@ -376,6 +376,8 @@ export function OpportunitiesList({
                     </Button>
                   </Box>
                 )}
+
+
               </Card>
             </Grid>
           ))
@@ -436,7 +438,7 @@ export function OpportunitiesList({
               color: '#313131',
               fontWeight: '500',
             }}
-            fullWidth
+
             variant="text"
             endIcon={<PersonAddAltIcon />}
             onClick={() =>

@@ -71,13 +71,13 @@ const SearchBar: React.FC<SearchBarProps> = ({
       };
       telemetryFactory.interact(telemetryInteract);
     }
-  
+
   };
 
   return (
     <Grid container>
       <Grid item xs={12} md={fullWidth ?  12 : 6}>
-        <Box sx={{ mt: 2, px: theme.spacing(2.5) }}>
+        <Box>
           <Paper
             component="form"
             sx={{
