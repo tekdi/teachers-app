@@ -298,13 +298,16 @@ export default function OpportunitiesPage() {
           open={isDialogOpen}
           onClose={() => setIsDialogOpen(false)}
           fullWidth
-          maxWidth="md"
+          PaperProps={{
+            sx: { maxWidth: '650px' },
+          }}
         >
           <DialogTitle
             sx={{
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
+              borderBottom: '1px solid #D0C5B4',
             }}
           >
             <Typography
@@ -319,10 +322,15 @@ export default function OpportunitiesPage() {
 
             <CloseIcon
               onClick={() => setIsDialogOpen(false)}
-              sx={{ ml: 2, fontSize: '24px', color: '#4D4639' }}
+              sx={{
+                ml: 2,
+                fontSize: '24px',
+                color: '#4D4639',
+                cursor: 'pointer',
+              }}
             />
           </DialogTitle>
-          <DialogContent>
+          <DialogContent sx={{p: 0}}>
             <OpportunityForm
               initialData={selectedOpportunity || undefined}
               onSubmit={selectedOpportunity ? handleUpdate : handleCreate}
