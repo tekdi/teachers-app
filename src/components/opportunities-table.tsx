@@ -30,7 +30,6 @@ import {
   fetchApplicationStatuses,
 } from '@/lib/api'; // Import API functions
 import { getUserDetails } from '@/services/ProfileService';
-import { Avatar } from '@mui/material';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { useTranslation } from 'next-i18next';
 import type { OpportunityList } from '@/types/opportunity';

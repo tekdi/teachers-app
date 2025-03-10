@@ -13,8 +13,9 @@ import {
   Paper,
   CircularProgress,
   Tabs,
-  IconButton,
   Tab,
+  Switch,
+  FormControlLabel,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
@@ -36,7 +37,6 @@ import {
   deleteOpportunity,
   getMappedByMe,
 } from '@/lib/api';
-import { Switch, FormControlLabel } from '@mui/material';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
