@@ -476,9 +476,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                   ? theme.palette.primary.main
                   : 'transparent',
 
-                padding: isTeacherCenter
-                  ? '16px 18px !important'
-                  : '0px 18px !important',
+                padding: '16px 18px !important',
                 color: isTeacherCenter ? '#2E1500' : theme.palette.warning.A200,
                 fontWeight: isTeacherCenter ? '600' : 500,
                 '&:hover': {
@@ -516,9 +514,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                   ? theme.palette.primary.main
                   : 'transparent',
 
-                padding: isOpportunity
-                  ? '16px 18px !important'
-                  : '0px 18px !important',
+                padding:'16px 18px !important',
                 color: isOpportunity ? '#2E1500' : theme.palette.warning.A200,
                 fontWeight: isOpportunity ? '600' : 500,
                 '&:hover': {

@@ -822,7 +822,7 @@
     "NUMBER_OF_VACUNCIES": "Number of Vacancies",
     "CANCEL": "Cancel",
     "MAP_OR_UPDATE_STATUS":"Map or Update Youth Status",
-    "MAPPED_USERS": "Mapped Youth",
+    "MAPPED_USERS": "Youth mapped",
     "STATUS": "Status",
     "ALL_STATUS": "All Status",
     "ADD_NEW":"Add New",
@@ -835,6 +835,7 @@
     "ADD": "Add",
     "MAP_YOUTH_TO_OPPORTUNITY": "Map Youth to Opportunity : ",
     "BACK_TO_OPPORTUNITY": "Back to Opportunites",
-    "MAPPED_BY_ME": "Mapped by me"
+    "MAPPED_BY_ME": "Mapped by me",
+    "CREATE_NEW_OPPORTUNITY": " Create a New Opportunity"
   }
 }
