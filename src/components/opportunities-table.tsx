@@ -8,6 +8,7 @@ import {
   Tooltip,
   Box,
   CardActions,
+  Avatar,
   Button,
   Chip,
   Modal,
@@ -24,13 +25,14 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import WorkIcon from '@mui/icons-material/Work';
 import BusinessIcon from '@mui/icons-material/Business';
 import { useRouter } from 'next/router';
+import CloseIcon from '@mui/icons-material/Close';
 import {
   getAppliedUsers,
   updateApplicationStatus,
   fetchApplicationStatuses,
 } from '@/lib/api'; // Import API functions
 import { getUserDetails } from '@/services/ProfileService';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import { useTranslation } from 'next-i18next';
 import type { OpportunityList } from '@/types/opportunity';
 
@@ -131,6 +133,19 @@ export function OpportunitiesList({
     }
   };
 
+  const openAddYouth = ()=>{
+
+  }
+
+  // Function to get user initials
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map((word) => word[0])
+      .join('')
+      .toUpperCase();
+  };
+
   const handleUpdateStatus = async () => {
     try {
       const updatePromises = userList.map(async (user: any) => {
@@ -171,6 +186,7 @@ export function OpportunitiesList({
                   // '&:hover': { boxShadow: 10 },
                   borderRadius: 4,
                   padding: 1,
+                  minHeight: { sm: '355px' },
                 }}
                 onClick={() => onView(opportunity)}
               >
@@ -183,6 +199,13 @@ export function OpportunitiesList({
                       color: '#101828',
                       cursor: 'pointer',
                       textDecoration: 'underline',
+                      minHeight: '48px',
+                      display: '-webkit-box',
+                      WebkitBoxOrient: 'vertical',
+                      WebkitLineClamp: 2,
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      wordBreak: 'break-word',
                     }}
                   >
                     {opportunity.title
@@ -293,7 +316,7 @@ export function OpportunitiesList({
                     <Chip
                       label={` ${opportunity?.stats?.mapped || 0} ${t('OPPORTUNITY.MAPPED_USERS')}`}
                       sx={{
-                        backgroundColor: '#E0E0E0',
+                        backgroundColor: '#E0E0E0 !important',
                         color: '#1F1B13',
                         borderRadius: '8px',
                         p: '8px',
@@ -341,7 +364,7 @@ export function OpportunitiesList({
                       fullWidth
                       sx={{
                         backgroundColor: 'var',
-                        p : '10px',
+                        p: '10px',
                         color: '#1F1B13',
                       }}
                       onClick={(e) => {
@@ -365,34 +388,57 @@ export function OpportunitiesList({
         )}
       </Grid>
 
-      <Modal open={openModal} onClose={() => setOpenModal(false)}>
+      <Modal open={openModal}>
         <Box
+          pt={3}
+          position={'absolute'}
+          top={'50%'}
+          left={'50%'}
+          maxWidth={'400px'}
+          width={'100%'}
+          bgcolor={'white'}
+          borderRadius={'16px'}
           sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
             transform: 'translate(-50%, -50%)',
-            width: 400,
-            bgcolor: 'background.paper',
-            boxShadow: 24,
-            p: 4,
-            borderRadius: 2,
           }}
         >
-          <Typography variant="h4" gutterBottom>
-            {t('OPPORTUNITY.MAP_OR_UPDATE_STATUS')}
-          </Typography>
+          <Box
+            display={'flex'}
+            justifyContent={'space-between'}
+            borderBottom={'1px solid #D0C5B4'}
+            paddingBottom={2}
+            px={2}
+          >
+            <Typography
+              variant="h3"
+              lineHeight={'24px'}
+              color={'#4D4639'}
+              fontWeight={'500'}
+              gutterBottom
+            >
+              {t('OPPORTUNITY.MAP_OR_UPDATE_STATUS')}
+            </Typography>
+            <CloseIcon
+              onClick={() => setOpenModal(false)}
+              sx={{
+                ml: 2,
+                fontSize: '24px',
+                color: '#4D4639',
+                cursor: 'pointer',
+              }}
+            />
+          </Box>
+
           <Button
+            sx={{
+              p: '24px 16px',
+              justifyContent: 'start',
+              color: '#313131',
+              fontWeight: '500',
+            }}
             fullWidth
             variant="text"
-            startIcon={<PersonAddIcon />}
-            sx={{
-              justifyContent: 'flex-start',
-              color: 'black',
-              fontWeight: 'bold',
-              textTransform: 'none',
-              mb: 2,
-            }}
+            endIcon={<PersonAddAltIcon />}
             onClick={() =>
               router.push(`opportunities/map-youth/${selectedOpportunity}`)
             } // Navigate to youth mapping page
@@ -400,28 +446,63 @@ export function OpportunitiesList({
             {t('OPPORTUNITY.ADD_YOUTH')}
           </Button>
           {loadingUsers ? (
-            <Box
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              p={2}
-            >
+            <Box display="flex" justifyContent="center" alignItems="center">
               <CircularProgress />
             </Box>
           ) : userList.length > 0 ? (
-            <List>
+            <List sx={{ p: 0 }}>
               {userList.map((user: any) => (
-                <ListItem key={user.applicationId}>
-                  <ListItemText primary={user.name} />
+                <ListItem
+                  key={user.applicationId}
+                  sx={{
+                    p: '12px 16px',
+                    borderTop: '1px solid #0000001A',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                  }}
+                >
+                  <Box display={'flex'} alignItems={'center'} gap={'8px'}>
+                    <Avatar
+                      sx={{
+                        boxShadow:
+                          '0px 2px 6px 2px #00000026, 0px 1px 2px 0px #0000004D',
+                        border: '1.5px solid #B3B3B3',
+                        background: 'white',
+                        color: '#1F1B13',
+                        fontSize: '16px',
+                        lineHeight: '24px',
+                        fontWeight: '500',
+                      }}
+                    >
+                      {getInitials(user.name)}
+                    </Avatar>
+                    <ListItemText primary={user.name} />
+                  </Box>
                   <Select
                     value={user.status}
+                    sx={{
+                      fontSize: '14px',
+                      fontWeight: 500,
+                      textTransform: 'capitalize',
+                      color: '#313131',
+                      '& fieldset': {
+                        border: 'none',
+                      },
+                      '& .MuiSvgIcon-root': {
+                        color: '#313131', // Change dropdown arrow color
+                      },
+                    }}
                     onChange={(e) =>
                       handleStatusChange(user.applicationId, e.target.value)
                     }
                     size="small"
                   >
                     {statusOptions.map((status: any) => (
-                      <MenuItem key={status.value} value={status.value}>
+                      <MenuItem
+                        key={status.value}
+                        value={status.value}
+                        sx={{ textTransform: 'capitalize' }}
+                      >
                         {status.label}
                       </MenuItem>
                     ))}
@@ -433,13 +514,14 @@ export function OpportunitiesList({
             <Typography>{t('OPPORTUNITY.NO_YOUTH_FOUND')}</Typography>
           )}
 
-          <Box mt={2} textAlign="center">
+          <Box textAlign="center" p={2} borderTop={'1px solid #D0C5B4'} mt={3}>
             <Button
               variant="contained"
+              sx={{ py: '10px', width: '100%', fontWeight: '500' }}
               color="primary"
               onClick={handleUpdateStatus}
             >
-              {t('OPPORTUNITY.UPDATE')}
+              {t('OPPORTUNITY.SAVE')}
             </Button>
           </Box>
         </Box>
