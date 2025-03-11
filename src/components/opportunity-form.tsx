@@ -232,6 +232,7 @@ export function OpportunityForm({
                   label={t('OPPORTUNITY.TITLE')}
                   error={!!errors.title}
                   helperText={errors.title?.message}
+                  required
                 />
               )}
             />
