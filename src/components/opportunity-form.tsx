@@ -232,6 +232,7 @@ export function OpportunityForm({
                   label={t('OPPORTUNITY.TITLE')}
                   error={!!errors.title}
                   helperText={errors.title?.message}
+                  required
                 />
               )}
             />
@@ -262,7 +263,7 @@ export function OpportunityForm({
               render={({ field }) => (
                 <FormControl fullWidth error={!!errors.country}>
                   <InputLabel>{t('OPPORTUNITY.COUNTRY')}</InputLabel>
-                  <Select {...field}>
+                  <Select label={t('OPPORTUNITY.COUNTRY')} {...field}>
                     {countries.map((item) => (
                       <MenuItem key={item.country} value={item.country}>
                         {item.country}
@@ -280,7 +281,11 @@ export function OpportunityForm({
               render={({ field }) => (
                 <FormControl fullWidth error={!!errors.state}>
                   <InputLabel>{t('OPPORTUNITY.COUNTY')}</InputLabel>
-                  <Select {...field} disabled={!selectedCountry}>
+                  <Select
+                    {...field}
+                    disabled={!selectedCountry}
+                    label={t('OPPORTUNITY.COUNTY')}
+                  >
                     {states.map((item) => (
                       <MenuItem key={item.state} value={item.state}>
                         {item.state}
@@ -298,7 +303,11 @@ export function OpportunityForm({
               render={({ field }) => (
                 <FormControl fullWidth error={!!errors.city}>
                   <InputLabel>{t('OPPORTUNITY.SUBCOUNTY')}</InputLabel>
-                  <Select {...field} disabled={!selectedState}>
+                  <Select
+                    {...field}
+                    disabled={!selectedState}
+                    label={t('OPPORTUNITY.SUBCOUNTY')}
+                  >
                     {cities.map((item) => (
                       <MenuItem key={item.city} value={item.city}>
                         {item.city}
@@ -343,7 +352,7 @@ export function OpportunityForm({
                   <InputLabel>{t('OPPORTUNITY.CATEGORY')}</InputLabel>
                   <Select
                     {...field}
-                    label="Category"
+                    label={t('OPPORTUNITY.CATEGORY')}
                     onChange={(event) => field.onChange(event.target.value)} // Store single value
                   >
                     {categories.map((category) => (
@@ -365,7 +374,7 @@ export function OpportunityForm({
               render={({ field }) => (
                 <FormControl fullWidth error={!!errors.role_type}>
                   <InputLabel>{t('OPPORTUNITY.ROLETYPE')}</InputLabel>
-                  <Select {...field}>
+                  <Select {...field} label={t('OPPORTUNITY.ROLETYPE')}>
                     {['Part-time', 'Full-time', 'Mid', 'Contract'].map(
                       (role) => (
                         <MenuItem key={role} value={role}>
@@ -459,7 +468,10 @@ export function OpportunityForm({
                   <InputLabel>
                     {t('OPPORTUNITY.WORK_EXPERIENCE_NATURE')}
                   </InputLabel>
-                  <Select {...field}>
+                  <Select
+                    {...field}
+                    label={t('OPPORTUNITY.WORK_EXPERIENCE_NATURE')}
+                  >
                     {['Remote', 'On-site', 'Hybrid', 'Work From Home'].map(
                       (role) => (
                         <MenuItem key={role} value={role}>

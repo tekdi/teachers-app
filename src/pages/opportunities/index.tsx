@@ -296,7 +296,12 @@ export default function OpportunitiesPage() {
 
         <Dialog
           open={isDialogOpen}
-          onClose={() => setIsDialogOpen(false)}
+          onClose={(event, reason) => {
+            if (reason === 'backdropClick') {
+              return;
+            }
+            setIsDialogOpen(false);
+          }}
           fullWidth
           PaperProps={{
             sx: { maxWidth: '650px' },
@@ -330,7 +335,7 @@ export default function OpportunitiesPage() {
               }}
             />
           </DialogTitle>
-          <DialogContent sx={{p: 0}}>
+          <DialogContent sx={{ p: 0 }}>
             <OpportunityForm
               initialData={selectedOpportunity || undefined}
               onSubmit={selectedOpportunity ? handleUpdate : handleCreate}
