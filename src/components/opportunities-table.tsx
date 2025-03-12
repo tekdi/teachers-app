@@ -35,7 +35,7 @@ import { getUserDetails } from '@/services/ProfileService';
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import { useTranslation } from 'next-i18next';
 import type { OpportunityList } from '@/types/opportunity';
-
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 interface Status {
   status: string;
   id: string;
@@ -67,6 +67,8 @@ export function OpportunitiesList({
   const [statusOptions, setStatusOptions] = useState<StatusOption[]>([]);
   const [loadingStatus, setLoadingStatus] = useState(true);
   const [selectedOpportunity, setSelectedOpportunity] = useState<string>();
+  const [openRejectmodal, setOpponRejectmodal] = useState(false);
+  const [reason, setReason] = useState('');
   const { t } = useTranslation();
 
   // Fetch application statuses from API
@@ -133,9 +135,7 @@ export function OpportunitiesList({
     }
   };
 
-  const openAddYouth = ()=>{
-
-  }
+  const openAddYouth = () => {};
 
   // Function to get user initials
   const getInitials = (name: string) => {
@@ -182,15 +182,15 @@ export function OpportunitiesList({
               <Card
                 sx={{
                   cursor: 'pointer',
+                  position: 'relative',
                   boxShadow: ' rgba(0, 0, 0, 0.1) 0px 4px 12px;',
                   // '&:hover': { boxShadow: 10 },
                   borderRadius: 4,
-                  padding: 1,
-                  minHeight: { sm: '305px' },
+                  minHeight: { sm: '317px' },
                 }}
                 onClick={() => onView(opportunity)}
               >
-                <CardContent>
+                <CardContent sx={{ p: 3 }}>
                   <Box
                     display={'flex'}
                     justifyContent={'space-between'}
@@ -219,33 +219,35 @@ export function OpportunitiesList({
                         : opportunity.opportunity_title}
                     </Typography>
 
-                    <CardActions sx={{ p: 0, whiteSpace: 'nowrap' }}>
-                      <Box sx={{ ml: 'auto' }}>
-                        <Tooltip title="Edit">
-                          <IconButton
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onEdit(opportunity);
-                            }}
-                            size="small"
-                          >
-                            <EditIcon fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Delete">
-                          <IconButton
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onDelete(opportunity);
-                            }}
-                            size="small"
-                            color="error"
-                          >
-                            <DeleteIcon fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
-                      </Box>
-                    </CardActions>
+                    {opportunity.status !== 'approved' && (
+                      <CardActions sx={{ p: 0, whiteSpace: 'nowrap' }}>
+                        <Box sx={{ ml: 'auto' }}>
+                          <Tooltip title="Edit">
+                            <IconButton
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onEdit(opportunity);
+                              }}
+                              size="small"
+                            >
+                              <EditIcon fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title="Delete">
+                            <IconButton
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onDelete(opportunity);
+                              }}
+                              size="small"
+                              color="error"
+                            >
+                              <DeleteIcon fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
+                        </Box>
+                      </CardActions>
+                    )}
                   </Box>
 
                   <Box display="flex" alignItems="center" gap={'12px'}>
@@ -365,9 +367,8 @@ export function OpportunitiesList({
                   </Box>
                 </CardContent>
 
-
                 {opportunity.status === 'approved' && (
-                  <Box p={1} textAlign="center">
+                  <Box p={2} pt={1} textAlign="center">
                     <Button
                       variant="contained"
                       fullWidth
@@ -383,6 +384,39 @@ export function OpportunitiesList({
                     >
                       {t('OPPORTUNITY.MAP_OR_UPDATE_STATUS')}
                     </Button>
+                  </Box>
+                )}
+                {opportunity.status === 'rejected' && (
+                  <Box
+                    p={1}
+                    textAlign="center"
+                    position={{ sm: 'absolute' }}
+                    bottom={0}
+                    padding={'14px 16px'}
+                    width={'100%'}
+                    bgcolor={'#E3E3E3'}
+                  >
+                    <Box
+                      color={'#000000'}
+                      letterSpacing={'0.32px'}
+                      fontSize={'12px'}
+                      fontWeight={'400'}
+                      gap={'4px'}
+                      alignItems={'center'}
+                      display={'flex'}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setOpponRejectmodal(true);
+                        setReason(opportunity.rejection_reason);
+                      }}
+                    >
+                      {t('Reason')}{' '}
+                      <InfoOutlinedIcon
+                        sx={{
+                          fontSize: '13.62px',
+                        }}
+                      ></InfoOutlinedIcon>
+                    </Box>
                   </Box>
                 )}
               </Card>
@@ -532,6 +566,108 @@ export function OpportunitiesList({
               onClick={handleUpdateStatus}
             >
               {t('OPPORTUNITY.SAVE')}
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
+      <Modal
+        open={openRejectmodal}
+        onClose={(e, reason) => {
+          if (reason == 'backdropClick') {
+            return;
+          }
+          setOpponRejectmodal(false);
+        }}
+      >
+        <Box
+          pt={3}
+          position={'absolute'}
+          top={'50%'}
+          left={'50%'}
+          maxWidth={'400px'}
+          width={'100%'}
+          bgcolor={'white'}
+          borderRadius={'16px'}
+          sx={{
+            transform: 'translate(-50%, -50%)',
+          }}
+        >
+          <Box
+            display={'flex'}
+            justifyContent={'space-between'}
+            borderBottom={'1px solid #D0C5B4'}
+            paddingBottom={2}
+            px={2}
+          >
+            <Typography
+              variant="h3"
+              lineHeight={'24px'}
+              color={'#4D4639'}
+              fontWeight={'500'}
+              gutterBottom
+            >
+              {t('OPPORTUNITY.REJECTED')}
+            </Typography>
+
+            <CloseIcon
+              onClick={(e) => {
+                e.stopPropagation();
+                setOpponRejectmodal(false);
+              }}
+              sx={{
+                ml: 2,
+                fontSize: '24px',
+                color: '#4D4639',
+                cursor: 'pointer',
+              }}
+            />
+          </Box>
+          <Box p={'24px 16px'}>
+            <Typography
+              variant="h2"
+              lineHeight={'24px'}
+              color={'#4D4639'}
+              fontWeight={'400'}
+              gutterBottom
+            >
+              {reason}
+            </Typography>
+          </Box>
+          <Box
+            textAlign="center"
+            display={'flex'}
+            gap={2}
+            p={2}
+            borderTop={'1px solid #D0C5B4'}
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{
+                py: '10px',
+                width: '100%',
+                fontWeight: '500',
+                bgcolor: 'transparent !important',
+                boxShadow: 'none',
+                border: '1px solid #0000008a',
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+                // handleReject(selected);
+              }}
+            >
+              {t('OPPORTUNITY.DELETE')}
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{ py: '10px', width: '100%', fontWeight: '500' }}
+              onClick={(e) => {
+                e.stopPropagation();
+                // handleReject(selected);
+              }}
+            >
+              {t('OPPORTUNITY.EDIT_OPPORTUNITY')}
             </Button>
           </Box>
         </Box>

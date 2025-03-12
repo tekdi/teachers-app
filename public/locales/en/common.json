@@ -161,12 +161,12 @@
     "RELOAD": "Update Now",
     "UPDATE_AVAILABLE": "New Update Available!",
     "RELOAD_TO_UPDATE": "Get the latest features and improvements—update now to enjoy a smoother experience and stay up-to-date!",
-    "NO_ASSIGNED_BOARDS":"No assigned Board for selected Center",
+    "NO_ASSIGNED_BOARDS": "No assigned Board for selected Center",
     "COUNTRY": "Country",
-    "COUNTY":"County",
-    "SUB_COUNTY":"Sub-County",
-    "ALL_COUNTY":"All County",
-    "ALL_SUB_COUNTY":"All Sub County"
+    "COUNTY": "County",
+    "SUB_COUNTY": "Sub-County",
+    "ALL_COUNTY": "All County",
+    "ALL_SUB_COUNTY": "All Sub County"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
@@ -244,7 +244,7 @@
     "VILLAGES": "Villages",
     "YOUTH_VOLUNTEERS": "Youth/Volunteers",
     "SEARCH_VILLAGES": "Search Villages",
-    "OPPORTUNITIES":"Opportunities"
+    "OPPORTUNITIES": "Opportunities"
   },
   "ATTENDANCE": {
     "TOTAL_STUDENTS": "Total: {{count}}",
@@ -784,12 +784,12 @@
     "SUMMARY": "Summary"
   },
   "SURVEYS": {
-    "SURVEYS" :"Surveys",
-    "ACTIVE_SURVEYS" :"Active Surveys",
-    "PREVIOUS_SURVEYS" :"Previous Surveys",
-    "VILLAGES":"Villages",
-    "SUBMISSION":"Submissions",
-    "SUMMARY":"Summary"
+    "SURVEYS": "Surveys",
+    "ACTIVE_SURVEYS": "Active Surveys",
+    "PREVIOUS_SURVEYS": "Previous Surveys",
+    "VILLAGES": "Villages",
+    "SUBMISSION": "Submissions",
+    "SUMMARY": "Summary"
   },
   "OPPORTUNITY": {
     "OPPORTUNITIES": "Opportunities",
@@ -821,22 +821,25 @@
     "ALL_SKILLS": "All Skills",
     "NUMBER_OF_VACUNCIES": "Number of Vacancies",
     "CANCEL": "Cancel",
-    "MAP_OR_UPDATE_STATUS":"Map or Update Youth Status",
+    "MAP_OR_UPDATE_STATUS": "Map or Update Youth Status",
     "SAVE": "Save",
     "MAPPED_USERS": "Youth mapped",
     "STATUS": "Status",
     "ALL_STATUS": "All Status",
-    "ADD_NEW":"Add New",
+    "ADD_NEW": "Add New",
     "CREATED_BY_ME": "Created by me",
     "ADD_YOUTH": "Add Youth",
     "NO_YOUTH_FOUND": "No Youth found",
     "UPDATE": "Update",
     "SELECT_BATCH": "Select Batch",
     "SEARCH_YOUTH": "Search Youth...",
+    "EDIT_OPPORTUNITY": "Edit Opportunity",
+    "DELETE": "Delete",
     "ADD": "Add",
     "MAP_YOUTH_TO_OPPORTUNITY": "Map Youth to Opportunity : ",
     "BACK_TO_OPPORTUNITY": "Back to Opportunites",
     "MAPPED_BY_ME": "Mapped by me",
-    "CREATE_NEW_OPPORTUNITY": " Create a New Opportunity"
+    "CREATE_NEW_OPPORTUNITY": " Create a New Opportunity",
+    "REJECTED": "Rejected"
   }
 }

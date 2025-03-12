@@ -24,7 +24,7 @@ import { OpportunityForm } from '@/components/opportunity-form';
 import { OpportunitiesList } from '@/components/opportunities-table';
 import { SearchInput } from '@/components/search-input';
 import { OpportunityFilters } from '@/components/opportunity-filters';
-import { Pagination } from '@/components/pagination';
+import { CustomPagination } from '@/components/pagination';
 import type {
   Opportunity,
   OpportunityFormData,
@@ -286,9 +286,9 @@ export default function OpportunitiesPage() {
           )}
         </Paper>
 
-        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-          <Pagination
-            totalPages={opportunities.totalPages}
+        <Box sx={{ display: 'flex', justifyContent: 'end' }}>
+          <CustomPagination
+            totalPages={Math.ceil(opportunities.total / 9)}
             currentPage={opportunities.currentPage}
             onPageChange={handlePageChange}
           />

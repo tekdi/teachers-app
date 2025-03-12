@@ -144,12 +144,12 @@ export function OpportunityFilters({
       <FormControl size="small" sx={{ minWidth: 150 }}>
         <InputLabel>{t('OPPORTUNITY.CATEGORY')}</InputLabel>
         <Select
-          label={t('OPPORTUNITY.CATEGORY')}
+          // label={t('OPPORTUNITY.CATEGORY')}
           value={selectedCategory || 'all'}
           onChange={(e) => onFilterChange('category', e.target.value)}
         >
           <MenuItem value="all">{t('OPPORTUNITY.ALL_CATEGORY')}</MenuItem>
-          {categories.map((option: options) => (
+          {categories?.map((option: options) => (
             <MenuItem key={option.id} value={option.id}>
               {option.name}
             </MenuItem>
@@ -166,7 +166,7 @@ export function OpportunityFilters({
           onChange={(e) => onFilterChange('skills', e.target.value)}
         >
           <MenuItem value="all">{t('OPPORTUNITY.ALL_SKILLS')}</MenuItem>
-          {skills.map((option: options) => (
+          {skills?.map((option: options) => (
             <MenuItem key={option.id} value={option.id}>
               {option.name}
             </MenuItem>
@@ -183,7 +183,7 @@ export function OpportunityFilters({
           onChange={(e) => onFilterChange('status', e.target.value)}
         >
           <MenuItem value="all">{t('OPPORTUNITY.ALL_STATUS')}</MenuItem>
-          {statusOptions.map((option) => (
+          {statusOptions?.map((option) => (
             <MenuItem key={option.value} value={option.value}>
               {option.label}
             </MenuItem>
@@ -199,7 +199,7 @@ export function OpportunityFilters({
           value={selectedCountry}
           onChange={(e) => setSelectedCountry(e.target.value)}
         >
-          {countries.map((item: options) => (
+          {countries?.map((item: options) => (
             <MenuItem key={item.country} value={item.country}>
               {item.country}
             </MenuItem>
@@ -216,7 +216,7 @@ export function OpportunityFilters({
           onChange={(e) => setSelectedState(e.target.value)}
           disabled={!selectedCountry}
         >
-          {states.map((item: options) => (
+          {states?.map((item: options) => (
             <MenuItem key={item.state} value={item.state}>
               {item.state}
             </MenuItem>
@@ -233,7 +233,7 @@ export function OpportunityFilters({
           onChange={(e) => setSelectedCity(e.target.value)}
           disabled={!selectedState}
         >
-          {cities.map((item: options) => (
+          {cities?.map((item: options) => (
             <MenuItem key={item.city} value={item.city}>
               {item.city}
             </MenuItem>
