@@ -106,7 +106,7 @@ export function OpportunityForm({
     min_experience: 0,
     min_salary: 0,
     max_salary: '0',
-    category: '',
+    category: initialData?.category?.name || '',
     company: '',
     skills: [],
     no_of_candidates: '',
@@ -116,6 +116,8 @@ export function OpportunityForm({
     benefits: '',
     ...initialData,
   };
+
+  console.log(defaultValues, 'defaultValues');
 
   async function handleFormSubmit(data: OpportunityFormData) {
     const transformedData = {
@@ -305,6 +307,7 @@ export function OpportunityForm({
                   <InputLabel>{t('OPPORTUNITY.SUBCOUNTY')}</InputLabel>
                   <Select
                     {...field}
+                    value={defaultValues?.location?.city}
                     disabled={!selectedState}
                     label={t('OPPORTUNITY.SUBCOUNTY')}
                   >
@@ -327,6 +330,7 @@ export function OpportunityForm({
                   <InputLabel>{t('OPPORTUNITY.ORGANISATION')}</InputLabel>
                   <Select
                     {...field}
+                    value={defaultValues?.company?.id}
                     label="Organisation"
                     onChange={(event) => field.onChange(event.target.value)} // Store a single value
                   >
@@ -352,6 +356,7 @@ export function OpportunityForm({
                   <InputLabel>{t('OPPORTUNITY.CATEGORY')}</InputLabel>
                   <Select
                     {...field}
+                    value={defaultValues?.category?.id}
                     label={t('OPPORTUNITY.CATEGORY')}
                     onChange={(event) => field.onChange(event.target.value)} // Store single value
                   >
@@ -374,7 +379,11 @@ export function OpportunityForm({
               render={({ field }) => (
                 <FormControl fullWidth error={!!errors.role_type}>
                   <InputLabel>{t('OPPORTUNITY.ROLETYPE')}</InputLabel>
-                  <Select {...field} label={t('OPPORTUNITY.ROLETYPE')}>
+                  <Select
+                    {...field}
+                    label={t('OPPORTUNITY.ROLETYPE')}
+                    value={defaultValues?.role_type}
+                  >
                     {['Part-time', 'Full-time', 'Mid', 'Contract'].map(
                       (role) => (
                         <MenuItem key={role} value={role}>
@@ -399,7 +408,7 @@ export function OpportunityForm({
                   <InputLabel>{t('OPPORTUNITY.BENIFITS')}</InputLabel>
                   <Select
                     {...field}
-                    value={field.value || ''} // Ensure single select
+                    value={defaultValues?.benefits || ''}
                     onChange={(event) => field.onChange(event.target.value)} // Set single value
                     input={<OutlinedInput label="Benefits" />}
                     MenuProps={{
