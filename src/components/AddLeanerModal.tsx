@@ -10,7 +10,11 @@ import { createUser } from '@/services/CreateUserService';
 import { sendEmailOnLearnerCreation } from '@/services/NotificationService';
 import { editEditUser } from '@/services/ProfileService';
 import useSubmittedButtonStore from '@/store/useSubmittedButtonStore';
-import { calculateAge, generateUsernameAndPassword,transformArray } from '@/utils/Helper';
+import {
+  calculateAge,
+  generateUsernameAndPassword,
+  transformArray,
+} from '@/utils/Helper';
 import {
   FormContext,
   FormContextType,
@@ -29,7 +33,7 @@ import SendCredentialModal from './SendCredentialModal';
 import { showToastMessage } from './Toastify';
 import Loader from './Loader';
 import { Box } from '@mui/material';
-import { useLocationState } from "@/utils/UseLocation";
+import { useLocationState } from '@/utils/UseLocation';
 
 interface AddLearnerModalProps {
   open: boolean;
@@ -55,7 +59,9 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
 }) => {
   const [schema, setSchema] = React.useState<any>();
   const [uiSchema, setUiSchema] = React.useState<any>();
-  const [customFormData, setCustomFormData] = React.useState<any>(formData ?? {});
+  const [customFormData, setCustomFormData] = React.useState<any>(
+    formData ?? {}
+  );
   const [reloadProfile, setReloadProfile] = React.useState(false);
   const [openModal, setOpenModal] = React.useState(false);
   const [learnerFormData, setLearnerFormData] = React.useState<any>();
@@ -91,7 +97,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
     assignedTeamLeader,
     assignedTeamLeaderNames,
     selectedStateCohortId,
-  } = useLocationState(open, onClose, "YOUTH");
+  } = useLocationState(open, onClose, 'YOUTH');
 
   const { data: formResponse, isPending } = useFormRead(
     FormContext.USERS,
@@ -201,16 +207,16 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
             }
           }
         } else {
-          if (fieldSchema && (
-            Object.hasOwn(fieldSchema, 'isDropdown') ||
-            Object.hasOwn(fieldSchema, 'isCheckbox')
-          )            
-          ) {                        
+          if (
+            fieldSchema &&
+            (Object.hasOwn(fieldSchema, 'isDropdown') ||
+              Object.hasOwn(fieldSchema, 'isCheckbox'))
+          ) {
             apiBody.customFields.push({
               fieldId: fieldId,
               value: Array.isArray(fieldValue) ? fieldValue : [fieldValue],
             });
-          } else if(fieldId)  {
+          } else if (fieldId) {
             apiBody.customFields.push({
               fieldId: fieldId,
               value: String(fieldValue),
@@ -272,7 +278,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
           if (apiBody?.phone_number) {
             apiBody.mobile = apiBody?.phone_number;
           }
-          apiBody.password=apiBody.username
+          apiBody.password = apiBody.username;
           const response = await createUser(apiBody);
           if (response) {
             showToastMessage(
@@ -303,17 +309,17 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
             if (typeof window !== 'undefined' && window.localStorage) {
               creatorName = (localStorage.getItem('userName') as string) || '';
             }
-            if (creatorName && userEmail) {
-              sendEmail(
-                creatorName,
-                apiBody['username'],
-                apiBody['username'],
-                userEmail,
-                apiBody['firstName']
-              );
-            } else {
-              showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
-            }
+            // if (creatorName && userEmail) {
+            //   sendEmail(
+            //     creatorName,
+            //     apiBody['username'],
+            //     apiBody['username'],
+            //     userEmail,
+            //     apiBody['firstName']
+            //   );
+            // } else {
+            //   showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
+            // }
           }
         }
       } catch (error: any) {
@@ -338,7 +344,6 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
     const { formData } = event;
 
     let newFormData = { ...formData };
-
 
     console.log('Form data changed:', event.formData);
     console.log('schema:', schema);
@@ -444,7 +449,6 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
     // }
   };
 
-
   const handleError = (errors: any) => {
     console.log('Form errors:', errors);
   };
@@ -484,7 +488,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
         {!isEditModal && !isPending && (
           <Box
             sx={{
-              marginTop: "10px",
+              marginTop: '10px',
             }}
           >
             <AreaSelection
@@ -501,14 +505,11 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
               handleBlockChangeWrapper={handleBlockChangeWrapper}
               isMobile={isMobile}
               isMediumScreen={isMediumScreen}
-              isCenterSelection={
-                true
-              }
-              
+              isCenterSelection={true}
               selectedCenter={selectedCenter}
               handleCenterChangeWrapper={handleCenterChangeWrapper}
               inModal={true}
-              userType={"YOUTH"}
+              userType={'YOUTH'}
               stateDefaultValue={stateDefaultValue}
               isUserAdd={true}
             />

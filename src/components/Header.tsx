@@ -66,14 +66,8 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
   const handleProfileClick = () => {
     const tenant = localStorage.getItem('tenantName');
     if (pathname !== `/user-profile/${userId}`) {
-      if (tenant?.toLowerCase() === TENANT_DATA.YOUTHNET?.toLowerCase()) {
-        router.push(`/youthboard/user-profile/${userId}`);
-      } else if (
-        tenant?.toLowerCase() ===
-        TENANT_DATA.SECOND_CHANCE_PROGRAM?.toLowerCase()
-      ) {
-        router.push(`/user-profile/${userId}`);
-      }
+      router.push(`/user-profile/${userId}`);
+
       logEvent({
         action: 'my-profile-clicked-header',
         category: 'Dashboard',

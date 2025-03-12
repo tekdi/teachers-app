@@ -94,7 +94,7 @@
     "LEARNER_REMOVED": "Learner has been removed",
     "DROPPED_OUT": "Dropped Out",
     "DELETE_USER": "Delete User Permanently",
-    "DELETE_USER_FROM_CENTER": "Delete user from Batch",
+    "DELETE_USER_FROM_CENTER": "Delete Youth from Batch",
     "DELETE_USER_WITH_REASON": "Delete User",
     "USER_DELETED_PERMANENTLY": "User successfully deleted!",
     "CANNOT_REASSIGN_TODAY_ATTENDANCE_MARKED": "Cannot re-assign learner as attendance has already been marked for today",
@@ -294,7 +294,7 @@
     "VIEW_MORE": "View More",
     "VIEW_LESS": "View Less",
     "DATA_RANGE": "Data Range",
-    "LEARNER_DETAILS": "Learner Details",
+    "LEARNER_DETAILS": "Youth Details",
     "VIEW_DAY_WISE": "View Day-Wise",
     "SUBMITTED_ON": "Submitted On",
     "MARK_OBTAINED": "Mark Obtained",
@@ -613,7 +613,10 @@
     "DETAILED_ADDRESS": "Detailed Address",
     "skill": "Skill",
     "PASS_YEAR": "Pass Year",
-    "COURSES": "Courses"
+    "COURSES": "Courses",
+    "TVETS_ENROLLMENT_NUMBER": "TVETs Enrollment Number",
+    "highest education qualification": "Highest Education Qualification",
+    "BOARD": "Board"
   },
   "FORM_ERROR_MESSAGES": {
     "INVALID_INPUT": "Invalid Input.",
