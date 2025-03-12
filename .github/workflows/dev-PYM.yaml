@@ -2,7 +2,7 @@ name: DEVPYM-Deployment Pratham-OU Mumbai Region
 on:
   push:
     branches:
-      - east-africa-1.0
+      - east-africa-ym
 jobs:
   DEVPYM-DEPLOYMENT:
     runs-on: ubuntu-latest
