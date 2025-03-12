@@ -186,32 +186,67 @@ export function OpportunitiesList({
                   // '&:hover': { boxShadow: 10 },
                   borderRadius: 4,
                   padding: 1,
-                  minHeight: { sm: '355px' },
+                  minHeight: { sm: '305px' },
                 }}
                 onClick={() => onView(opportunity)}
               >
                 <CardContent>
-                  <Typography
-                    variant="h2"
-                    gutterBottom
-                    mb={1}
-                    sx={{
-                      color: '#101828',
-                      cursor: 'pointer',
-                      textDecoration: 'underline',
-                      minHeight: '48px',
-                      display: '-webkit-box',
-                      WebkitBoxOrient: 'vertical',
-                      WebkitLineClamp: 2,
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      wordBreak: 'break-word',
-                    }}
+                  <Box
+                    display={'flex'}
+                    justifyContent={'space-between'}
+                    alignItems={'start'}
+                    gap={2}
                   >
-                    {opportunity.title
-                      ? opportunity.title
-                      : opportunity.opportunity_title}
-                  </Typography>
+                    <Typography
+                      variant="h2"
+                      gutterBottom
+                      mb={1}
+                      sx={{
+                        color: '#101828',
+                        cursor: 'pointer',
+                        textDecoration: 'underline',
+                        minHeight: '48px',
+                        display: '-webkit-box',
+                        WebkitBoxOrient: 'vertical',
+                        WebkitLineClamp: 2,
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        wordBreak: 'break-word',
+                      }}
+                    >
+                      {opportunity.title
+                        ? opportunity.title
+                        : opportunity.opportunity_title}
+                    </Typography>
+
+                    <CardActions sx={{ p: 0, whiteSpace: 'nowrap' }}>
+                      <Box sx={{ ml: 'auto' }}>
+                        <Tooltip title="Edit">
+                          <IconButton
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onEdit(opportunity);
+                            }}
+                            size="small"
+                          >
+                            <EditIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Delete">
+                          <IconButton
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onDelete(opportunity);
+                            }}
+                            size="small"
+                            color="error"
+                          >
+                            <DeleteIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      </Box>
+                    </CardActions>
+                  </Box>
 
                   <Box display="flex" alignItems="center" gap={'12px'}>
                     <BusinessIcon fontSize="small" sx={{ color: '#484848' }} />
@@ -330,33 +365,7 @@ export function OpportunitiesList({
                   </Box>
                 </CardContent>
 
-                <CardActions>
-                  <Box sx={{ ml: 'auto' }}>
-                    <Tooltip title="Edit">
-                      <IconButton
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onEdit(opportunity);
-                        }}
-                        size="small"
-                      >
-                        <EditIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Delete">
-                      <IconButton
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onDelete(opportunity);
-                        }}
-                        size="small"
-                        color="error"
-                      >
-                        <DeleteIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  </Box>
-                </CardActions>
+
                 {opportunity.status === 'approved' && (
                   <Box p={1} textAlign="center">
                     <Button
@@ -376,8 +385,6 @@ export function OpportunitiesList({
                     </Button>
                   </Box>
                 )}
-
-
               </Card>
             </Grid>
           ))
@@ -438,7 +445,6 @@ export function OpportunitiesList({
               color: '#313131',
               fontWeight: '500',
             }}
-
             variant="text"
             endIcon={<PersonAddAltIcon />}
             onClick={() =>
@@ -460,7 +466,7 @@ export function OpportunitiesList({
                     p: '12px 16px',
                     borderTop: '1px solid #0000001A',
                     justifyContent: 'space-between',
-                    alignItems: 'center'
+                    alignItems: 'center',
                   }}
                 >
                   <Box display={'flex'} alignItems={'center'} gap={'8px'}>
@@ -513,7 +519,9 @@ export function OpportunitiesList({
               ))}
             </List>
           ) : (
-            <Typography>{t('OPPORTUNITY.NO_YOUTH_FOUND')}</Typography>
+            <Typography sx={{ p: '0px 16px' }}>
+              {t('OPPORTUNITY.NO_YOUTH_FOUND')}
+            </Typography>
           )}
 
           <Box textAlign="center" p={2} borderTop={'1px solid #D0C5B4'} mt={3}>
