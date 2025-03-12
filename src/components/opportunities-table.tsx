@@ -68,6 +68,7 @@ export function OpportunitiesList({
   const [loadingStatus, setLoadingStatus] = useState(true);
   const [selectedOpportunity, setSelectedOpportunity] = useState<string>();
   const [openRejectmodal, setOpponRejectmodal] = useState(false);
+  const [selectedOpportunityId, setSelectedOpportunityId] = useState<any>();
   const [reason, setReason] = useState('');
   const { t } = useTranslation();
 
@@ -407,10 +408,11 @@ export function OpportunitiesList({
                       onClick={(e) => {
                         e.stopPropagation();
                         setOpponRejectmodal(true);
+                        setSelectedOpportunityId(opportunity);
                         setReason(opportunity.rejection_reason);
                       }}
                     >
-                      {t('Reason')}{' '}
+                      {t('OPPORTUNITY.REJECTED')}{' '}
                       <InfoOutlinedIcon
                         sx={{
                           fontSize: '13.62px',
@@ -664,7 +666,7 @@ export function OpportunitiesList({
               sx={{ py: '10px', width: '100%', fontWeight: '500' }}
               onClick={(e) => {
                 e.stopPropagation();
-                // handleReject(selected);
+                onEdit(selectedOpportunityId);
               }}
             >
               {t('OPPORTUNITY.EDIT_OPPORTUNITY')}

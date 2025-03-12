@@ -25,7 +25,7 @@ export const refetchInterval: number = 5 * 60 * 1000; // 5 min
 export const gcTime: number = 10 * 60 * 1000; // 10 Min
 export const pagesLimit: number = 10;
 
-export const labelsToExtractForMiniProfile = [ 
+export const labelsToExtractForMiniProfile = [
   'AGE',
   'GENDER',
   'LEARNERS_PRIMARY_WORK',
@@ -95,12 +95,11 @@ export enum FormContext {
 
 export enum FormContextType {
   STUDENT = 'YOUTH',
-  TEACHER = 'TEACHER',
-  TEAM_LEADER = 'TEAM LEADER',
+  TEACHER = 'TRAINER',
+  TEAM_LEADER = 'TRAINER',
   COHORT = 'COHORT',
   COHORT_MEMBER = 'COHORTMEMBER',
-  ADMIN_CENTER="ADMIN_CENTER",
-  
+  ADMIN_CENTER = 'ADMIN_CENTER',
 }
 export enum ObservationEntityType {
   LEARNER = 'learner',
@@ -157,12 +156,12 @@ export enum AssessmentStatus {
 export enum QueryKeys {
   GET_ACTIVE_FACILITATOR = 'getActiveFacilitatorList',
   MY_COHORTS = 'myCohorts',
-  USER_READ= "userRead",
-  FIELD_OPTION_READ= "fieldOptionRead",
-  GET_COHORT_LIST= "getcohortList",
-  GET_STATE_COHORT_LIST= "getStateCohortList",
+  USER_READ = 'userRead',
+  FIELD_OPTION_READ = 'fieldOptionRead',
+  GET_COHORT_LIST = 'getcohortList',
+  GET_STATE_COHORT_LIST = 'getStateCohortList',
 
-  GET_COHORT_MEMBER_LIST= "getCohortMemberList",
+  GET_COHORT_MEMBER_LIST = 'getCohortMemberList',
 }
 
 export enum CoursePlannerConstants {
@@ -186,15 +185,13 @@ export enum EventStatus {
 }
 
 export enum CohortTypes {
-  COHORT = "CENTER",
-  BLOCK = "BLOCK",
-  DISTRICT = "DISTRICT",
-  STATE="STATE",
-  COUNTRY="COUNTRY",
-  CITY="CITY",
+  COHORT = 'CENTER',
+  BLOCK = 'BLOCK',
+  DISTRICT = 'DISTRICT',
+  STATE = 'STATE',
+  COUNTRY = 'COUNTRY',
+  CITY = 'CITY',
 }
-
-
 
 export const metaTags = {
   title: 'Pratham Learning Management Portal',
@@ -278,5 +275,5 @@ export enum sessionType {
   EXTRA = 'extra',
 }
 export enum fieldKeys {
-  GENDER="gender"
+  GENDER = 'gender',
 }

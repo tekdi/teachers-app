@@ -150,7 +150,7 @@ const CohortPage = () => {
     (state: { setBlockId: any }) => state.setBlockId
   );
 
-   const { tab} = router.query;
+  const { tab } = router.query;
   const [open, setOpen] = React.useState(false);
   const theme = useTheme<any>();
   const [selectedDate, setSelectedDate] =
@@ -186,7 +186,8 @@ const CohortPage = () => {
   const [onEditEvent, setOnEditEvent] = useState(false);
   const [sortedSessions, setSortedSessions] = useState<any>([]);
   const [initialSlideIndex, setInitialSlideIndex] = useState<any>();
-  const [cohortFacilitatorListCount, setCohortFacilitatorListCount] = useState<any>();
+  const [cohortFacilitatorListCount, setCohortFacilitatorListCount] =
+    useState<any>();
   const cohortFacilitatorsCount = useStore(
     (state: { cohortFacilitatorsCount: any }) => state.cohortFacilitatorsCount
   );
@@ -650,7 +651,7 @@ const CohortPage = () => {
               </Box>
             </Box>
           </Box>
-          {role === Role.TEAM_LEADER && isActiveYear && (
+          {/* {role === Role.TEAM_LEADER && isActiveYear && (
             <IconButton
               aria-label="more"
               aria-controls="long-menu"
@@ -660,15 +661,15 @@ const CohortPage = () => {
             >
               <MoreVertIcon sx={{ cursor: 'pointer' }} />
             </IconButton>
-          )}
-          <Menu
+          )} */}
+          {/* <Menu
             id="long-menu"
             anchorEl={anchorEl}
             keepMounted
             open={Boolean(anchorEl)}
             onClose={handleMenuClose}
-          >
-            <MenuItem
+          > */}
+          {/* <MenuItem
               onClick={() => {
                 setOpenRenameCenterModal(true);
                 handleMenuClose();
@@ -694,8 +695,8 @@ const CohortPage = () => {
                 <ModeEditOutlineOutlinedIcon fontSize="small" />
               </ListItemIcon>
               {t('CENTERS.RENAME_CENTER')}
-            </MenuItem>
-            {/* <MenuItem
+            </MenuItem> */}
+          {/* <MenuItem
               onClick={() => {
                 setOpenDeleteCenterModal(true);
                 handleMenuClose();
@@ -722,7 +723,7 @@ const CohortPage = () => {
               </ListItemIcon>
               {t('CENTERS.REQUEST_TO_DELETE')}
             </MenuItem> */}
-          </Menu>
+          {/* </Menu> */}
 
           {openRenameCenterModal && (
             <RenameCenterModal
@@ -768,10 +769,14 @@ const CohortPage = () => {
             },
           }}
         >
-          <Tab 
-            value={2} 
-            label={t('COMMON.LEARNER_LIST') + 
-            (cohortLearnerListCount !== undefined ? `(${cohortLearnerListCount})` : "")} 
+          <Tab
+            value={2}
+            label={
+              t('COMMON.LEARNER_LIST') +
+              (cohortLearnerListCount !== undefined
+                ? `(${cohortLearnerListCount})`
+                : '')
+            }
           />
         </Tabs>
       </Box>
@@ -1057,7 +1062,7 @@ const CohortPage = () => {
           <>
             {isActiveYear && (
               <Box>
-                <Box mt={3} px={'18px'}>
+                <Box my={3} px={'18px'}>
                   <Button
                     sx={{
                       border: '1px solid #1E1B16',
