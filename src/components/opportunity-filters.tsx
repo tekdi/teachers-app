@@ -144,7 +144,7 @@ export function OpportunityFilters({
       <FormControl size="small" sx={{ minWidth: 150 }}>
         <InputLabel>{t('OPPORTUNITY.CATEGORY')}</InputLabel>
         <Select
-          // label={t('OPPORTUNITY.CATEGORY')}
+          label={t('OPPORTUNITY.CATEGORY')}
           value={selectedCategory || 'all'}
           onChange={(e) => onFilterChange('category', e.target.value)}
         >
