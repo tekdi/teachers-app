@@ -177,8 +177,8 @@ export function OpportunitiesList({
   return (
     <>
       <Grid container spacing={2}>
-        {data.length > 0 ? (
-          data.map((opportunity: any) => (
+        {data?.length > 0 ? (
+          data?.map((opportunity: any) => (
             <Grid item xs={12} sm={6} lg={4} key={opportunity.id}>
               <Card
                 sx={{
@@ -344,28 +344,30 @@ export function OpportunitiesList({
                     )}
                   </Typography>
 
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'flex-start',
-                      mt: 1,
-                    }}
-                  >
-                    <Chip
-                      label={` ${opportunity?.stats?.mapped || 0} ${t('OPPORTUNITY.MAPPED_USERS')}`}
+                  {opportunity.status === 'approved' && (
+                    <Box
                       sx={{
-                        backgroundColor: '#E0E0E0 !important',
-                        color: '#1F1B13',
-                        borderRadius: '8px',
-                        p: '8px',
-                        fontWeight: '500',
+                        display: 'flex',
+                        justifyContent: 'flex-start',
+                        mt: 1,
                       }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        fetchMappedUsers(opportunity.id);
-                      }}
-                    />
-                  </Box>
+                    >
+                      <Chip
+                        label={` ${opportunity?.stats?.mapped || 0} ${t('OPPORTUNITY.MAPPED_USERS')}`}
+                        sx={{
+                          backgroundColor: '#E0E0E0 !important',
+                          color: '#1F1B13',
+                          borderRadius: '8px',
+                          p: '8px',
+                          fontWeight: '500',
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          fetchMappedUsers(opportunity.id);
+                        }}
+                      />
+                    </Box>
+                  )}
                 </CardContent>
 
                 {opportunity.status === 'approved' && (

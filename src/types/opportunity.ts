@@ -12,7 +12,7 @@ export interface Opportunity {
   category: any;
   company: any;
   skills: string[];
-  no_of_candidates: string;
+  no_of_candidates: number;
   status: string;
   created_at: string;
   updated_at: string;

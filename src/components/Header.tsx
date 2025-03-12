@@ -218,7 +218,7 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
               width={44}
               src={logoLight}
               alt="logo"
-              onClick={() => isActiveYear && router.push('/dashboard')}
+              // onClick={() => isActiveYear && router.push('/dashboard')}
               style={{ marginRight: isRTL ? '20px' : '0px', cursor: 'pointer' }}
             />
 

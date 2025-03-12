@@ -797,7 +797,7 @@
   "OPPORTUNITY": {
     "OPPORTUNITIES": "Opportunities",
     "ALL_OPPORTUNITIES": "All Opportunities",
-    "SEARCH_OPPORTUNITIES": "Search Opportunities...",
+    "SEARCH_OPPORTUNITIES": "Search...",
     "NO_OPPORTUNITIES_FOUND": "No opportunities found",
     "NO_RESULT_FOUND": "No opportunities found",
     "NO_OPPORTUNITY_EXPIRED": "No opportunities expired",
@@ -842,7 +842,8 @@
     "MAP_YOUTH_TO_OPPORTUNITY": "Map Youth to Opportunity : ",
     "BACK_TO_OPPORTUNITY": "Back to Opportunites",
     "MAPPED_BY_ME": "Mapped by me",
-    "CREATE_NEW_OPPORTUNITY": " Create a New Opportunity",
-    "REJECTED": "Rejected"
+    "CREATE_NEW_OPPORTUNITY": " Create Opportunity",
+    "REJECTED": "Rejected",
+    "CLEAR_FILTERS": "Clear Filters"
   }
 }
