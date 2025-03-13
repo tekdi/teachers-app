@@ -340,9 +340,7 @@ export function OpportunityForm({
                       </MenuItem>
                     ))}
                   </Select>
-                  {errors.company && (
-                    <FormHelperText>{errors.company.message}</FormHelperText>
-                  )}
+                  {errors.company && <FormHelperText></FormHelperText>}
                 </FormControl>
               )}
             />

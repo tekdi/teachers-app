@@ -45,7 +45,7 @@ export interface OpportunityList {
   category: any;
   company: string;
   skills: string[];
-  no_of_candidates: string;
+  no_of_candidates: number;
   status: string;
   created_at: string;
   updated_at: string;
