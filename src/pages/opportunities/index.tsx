@@ -48,7 +48,7 @@ export default function OpportunitiesPage() {
     industry,
     skills,
     category,
-    status,
+    status = 'approved',
     location,
   } = router.query;
   const { t } = useTranslation();
@@ -145,6 +145,14 @@ export default function OpportunitiesPage() {
     });
   }
 
+  function handleClearFilters() {
+    const query = { page: '1' }; // Reset to default query with page 1
+    router.push({
+      pathname: router.pathname,
+      query,
+    });
+  }
+
   function handlePageChange(newPage: number) {
     router.push({
       pathname: router.pathname,
@@ -157,7 +165,7 @@ export default function OpportunitiesPage() {
       <Header />
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <Box sx={{ mb: 4 }}>
-          <Box
+          {/* <Box
             sx={{
               display: 'flex',
               justifyContent: 'space-between',
@@ -168,7 +176,7 @@ export default function OpportunitiesPage() {
             <Typography variant="h1" component="h1" mb={0}>
               {t('OPPORTUNITY.OPPORTUNITIES')}
             </Typography>
-          </Box>
+          </Box> */}
 
           <Box
             sx={{
@@ -244,11 +252,18 @@ export default function OpportunitiesPage() {
               }}
             >
               <OpportunityFilters
-                selectedCategory={industry as string}
-                selectedSkills={status as string}
-                selectedStatus={location as string}
+                selectedCategory={category as string}
+                selectedSkills={skills as string}
+                selectedStatus={status as string}
                 onFilterChange={handleFilterChange}
               />
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={handleClearFilters}
+              >
+                {t('OPPORTUNITY.CLEAR_FILTERS')}
+              </Button>
             </Box>
           )}
         </Box>

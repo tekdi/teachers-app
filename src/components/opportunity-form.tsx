@@ -41,7 +41,7 @@ const formSchema = z
     category: z.string().min(1, 'At least one category is required'),
     company: z.string().min(1, 'Organisation is required'),
     skills: z.array(z.string()).min(1, 'At least one skill is required'),
-    no_of_candidates: z.string().min(1, 'Number of candidates is required'),
+    no_of_candidates: z.number().min(1, 'Number of candidates is required'),
     status: z.string().min(1, 'Status is required'),
     // organisation: z.string().min(1, "At least one organisation is required"),
     role_type: z.string().min(1, 'Role type is required'),
@@ -109,7 +109,7 @@ export function OpportunityForm({
     category: initialData?.category?.name || '',
     company: '',
     skills: [],
-    no_of_candidates: '',
+    no_of_candidates: 0,
     status: 'pending',
     role_type: '',
     work_nature: '',
@@ -382,15 +382,13 @@ export function OpportunityForm({
                   <Select
                     {...field}
                     label={t('OPPORTUNITY.ROLETYPE')}
-                    value={defaultValues?.role_type}
+                    // value={defaultValues?.role_type}
                   >
-                    {['Part-time', 'Full-time', 'Mid', 'Contract'].map(
-                      (role) => (
-                        <MenuItem key={role} value={role}>
-                          {role}
-                        </MenuItem>
-                      )
-                    )}
+                    {['Part-time', 'entry'].map((role) => (
+                      <MenuItem key={role} value={role}>
+                        {role}
+                      </MenuItem>
+                    ))}
                   </Select>
                   {errors.role_type && (
                     <FormHelperText>{errors.role_type.message}</FormHelperText>
@@ -408,7 +406,7 @@ export function OpportunityForm({
                   <InputLabel>{t('OPPORTUNITY.BENIFITS')}</InputLabel>
                   <Select
                     {...field}
-                    value={defaultValues?.benefits || ''}
+                    // value={defaultValues?.benefits || ''}
                     onChange={(event) => field.onChange(event.target.value)} // Set single value
                     input={<OutlinedInput label="Benefits" />}
                     MenuProps={{
@@ -442,6 +440,7 @@ export function OpportunityForm({
                 render={({ field }) => (
                   <TextField
                     {...field}
+                    required
                     fullWidth
                     label={t('OPPORTUNITY.OTHERBENIFITS')}
                     // error={!!errors.otherBenefits}
@@ -481,7 +480,7 @@ export function OpportunityForm({
                     {...field}
                     label={t('OPPORTUNITY.WORK_EXPERIENCE_NATURE')}
                   >
-                    {['Remote', 'On-site', 'Hybrid', 'Work From Home'].map(
+                    {['Remote', 'On-site', 'Hybrid', 'Work from Office'].map(
                       (role) => (
                         <MenuItem key={role} value={role}>
                           {role}
@@ -542,10 +541,13 @@ export function OpportunityForm({
               render={({ field }) => (
                 <TextField
                   {...field}
+                  type="number"
                   fullWidth
                   label={t('OPPORTUNITY.NUMBER_OF_VACUNCIES')}
                   error={!!errors.no_of_candidates}
                   helperText={errors.no_of_candidates?.message}
+                  inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                  onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
                 />
               )}
             />
