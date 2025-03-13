@@ -616,7 +616,10 @@
     "COURSES": "Courses",
     "TVETS_ENROLLMENT_NUMBER": "TVETs Enrollment Number",
     "highest education qualification": "Highest Education Qualification",
-    "BOARD": "Board"
+    "BOARD": "Board",
+    "TVETS": "TVETs",
+    "SKILL": "Skills",
+    "MIDDLE_NAME": "Middle Name"
   },
   "FORM_ERROR_MESSAGES": {
     "INVALID_INPUT": "Invalid Input.",
