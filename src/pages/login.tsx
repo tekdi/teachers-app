@@ -115,9 +115,18 @@ const LoginPage = () => {
       setLang(lang);
       const token = localStorage.getItem('token');
       const tenant = localStorage.getItem('tenantName');
-      if (token && (tenant?.toLocaleLowerCase() === TENANT_DATA?.SECOND_CHANCE_PROGRAM?.toLowerCase() || tenant?.toLocaleLowerCase() === TENANT_DATA?.PRATHAM_SCP?.toLowerCase())) {
-        router.push('/dashboard');
-      } else if (token && tenant?.toLowerCase() == TENANT_DATA?.YOUTHNET?.toLowerCase()) {
+      if (
+        token &&
+        (tenant?.toLocaleLowerCase() ===
+          TENANT_DATA?.SECOND_CHANCE_PROGRAM?.toLowerCase() ||
+          tenant?.toLocaleLowerCase() ===
+            TENANT_DATA?.PRATHAM_SCP?.toLowerCase())
+      ) {
+        router.push('/centers');
+      } else if (
+        token &&
+        tenant?.toLowerCase() == TENANT_DATA?.YOUTHNET?.toLowerCase()
+      ) {
         router.push('/youthboard');
       }
     }
@@ -261,7 +270,6 @@ const LoginPage = () => {
                     userId,
                     headers
                   );
-
                 } catch (updateError) {
                   console.error(
                     'Error updating device notification:',
@@ -292,14 +300,18 @@ const LoginPage = () => {
             setAccessToken(token);
 
             const tenant = localStorage.getItem('tenantName');
-            
-            if (tenant === "Youth Management" || tenant?.toLocaleLowerCase() === TENANT_DATA?.PRATHAM_SCP?.toLowerCase()) {
+
+            if (
+              tenant === 'Youth Management' ||
+              tenant?.toLocaleLowerCase() ===
+                TENANT_DATA?.PRATHAM_SCP?.toLowerCase()
+            ) {
               const userDetails = await getUserDetails(userId, true);
               if (userDetails?.result?.userData) {
                 const activeSessionId = await getAcademicYearList();
                 const customFields =
                   userDetails?.result?.userData?.customFields;
-                  
+
                 if (customFields?.length) {
                   const state = customFields.find(
                     (field: any) => field?.label === 'STATES'
@@ -335,7 +347,10 @@ const LoginPage = () => {
                   router.push('/centers');
                 }
               }
-            } else if (token && tenant?.toLowerCase() === TENANT_DATA.YOUTHNET?.toLowerCase()) {
+            } else if (
+              token &&
+              tenant?.toLowerCase() === TENANT_DATA.YOUTHNET?.toLowerCase()
+            ) {
               router.push('/youthboard');
             }
           }
@@ -358,22 +373,22 @@ const LoginPage = () => {
         }
 
         const windowUrl = window.location.pathname;
-    const cleanedUrl = windowUrl.replace(/^\//, '');
-    const env = cleanedUrl.split("/")[0];
-    const telemetryInteract = {
-      context: {
-        env: env,
-        cdata: [],
-      },
-      edata: {
-        id: 'failed-login',
+        const cleanedUrl = windowUrl.replace(/^\//, '');
+        const env = cleanedUrl.split('/')[0];
+        const telemetryInteract = {
+          context: {
+            env: env,
+            cdata: [],
+          },
+          edata: {
+            id: 'failed-login',
 
-        type: Telemetry.CLICK,
-        subtype: '',
-        pageid: cleanedUrl,
-      },
-    };
-    telemetryFactory.interact(telemetryInteract);
+            type: Telemetry.CLICK,
+            subtype: '',
+            pageid: cleanedUrl,
+          },
+        };
+        telemetryFactory.interact(telemetryInteract);
       }
     }
   };
@@ -540,7 +555,7 @@ const LoginPage = () => {
                     alignItems={'center'}
                     justifyContent={'center'}
                     zIndex={99}
-                  // sx={{ margin: '5px 10px 25px', }}
+                    // sx={{ margin: '5px 10px 25px', }}
                   >
                     <Box
                       sx={{

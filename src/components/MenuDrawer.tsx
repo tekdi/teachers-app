@@ -5,6 +5,7 @@ import { accessGranted } from '@/utils/Helper';
 import { AcademicYear } from '@/utils/Interfaces';
 import ClearIcon from '@mui/icons-material/Clear';
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
+import ApartmentIcon from '@mui/icons-material/Apartment';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import LocalLibraryOutlinedIcon from '@mui/icons-material/LocalLibraryOutlined';
 import {
@@ -171,7 +172,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
 
   const navigateToDashboard = () => {
     closeDrawer();
-    router.push('/dashboard');
+    router.push('/centers');
   };
 
   const navigateToObservation = () => {
@@ -180,13 +181,14 @@ const MenuDrawer: React.FC<DrawerProps> = ({
   };
 
   const isDashboard = [
-    '/dashboard',
+    '/centers',
     '/youthboard',
     '/attendance-history',
     '/attendance-overview',
   ].includes(router.pathname);
   const isTeacherCenter = router.pathname.includes('/centers');
   const isOpportunity = router.pathname.includes('/opportunities');
+  const isOrganisation = router.pathname.includes('/organisations');
   const isCoursePlanner = [
     '/curriculum-planner',
     '/topic-detail-view',
@@ -535,6 +537,40 @@ const MenuDrawer: React.FC<DrawerProps> = ({
               {accessGranted('showTeachingCenter', accessControl, userRole)
                 ? t('DASHBOARD.OPPORTUNITIES')
                 : t('DASHBOARD.OPPORTUNITIES')}
+            </Button>
+          </Box>
+        )}
+        {!tenantName && (
+          <Box sx={{ marginTop: '18px' }}>
+            <Button
+              className="fs-14 joyride-step-7"
+              sx={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'flex-start',
+                background: isOrganisation
+                  ? theme.palette.primary.main
+                  : 'transparent',
+
+                padding: '16px 18px !important',
+                color: isOrganisation ? '#2E1500' : theme.palette.warning.A200,
+                fontWeight: isOrganisation ? '600' : 500,
+                '&:hover': {
+                  background: isOrganisation
+                    ? theme.palette.primary.main
+                    : 'transparent',
+                },
+                marginTop: '15px',
+                gap: '10px',
+              }}
+              startIcon={<ApartmentIcon sx={{ fontSize: '24px !important' }} />}
+              onClick={() => {
+                router.push(`/organisations`);
+              }}
+            >
+              {accessGranted('showTeachingCenter', accessControl, userRole)
+                ? t('DASHBOARD.ORGANISATIONS')
+                : t('DASHBOARD.ORGANISATIONS')}
             </Button>
           </Box>
         )}
