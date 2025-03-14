@@ -153,7 +153,6 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
     setFilteredCohortData(filteredData);
 
     setFilteredManipulatedCohortData(filteredManipulatedData);
-
   }, [manipulatedCohortData, cohortsData]);
 
   useEffect(() => {
@@ -302,12 +301,10 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                 })
                 ?.filter(Boolean);
 
-
               setCohortsData(filteredData);
-               if(response[0].childData.length===0)
-               {
-                    setLoading(false);
-               }
+              if (response[0].childData.length === 0) {
+                setLoading(false);
+              }
               if (filteredData.length > 0) {
                 if (typeof window !== 'undefined' && window.localStorage) {
                   const cohort = localStorage.getItem('classId') || '';
@@ -378,7 +375,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
 
   const isAttendanceOverview = pathname === '/attendance-overview';
   const isAssessment = pathname === '/assessments';
-  const dashboard = pathname === '/dashboard';
+  const dashboard = pathname === '/centers';
   const isCoursePlanner = pathname === '/curriculum-planner';
 
   return (
@@ -554,22 +551,22 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                               showFloatingLabel
                                 ? { borderRadius: '4px' }
                                 : {
-                                  borderRadius: '0.5rem',
-                                  color: theme.palette.warning['200'],
-                                  width: '100%',
-                                  marginBottom: '0rem',
-                                  marginRight: '10px',
-                                  '@media (max-width: 902px)': {
-                                    width: isAttendanceOverview
-                                      ? '100%'
-                                      : '62%',
-                                  },
-                                  '@media (max-width: 702px)': {
-                                    width: isAttendanceOverview
-                                      ? '100%'
-                                      : '65%',
+                                    borderRadius: '0.5rem',
+                                    color: theme.palette.warning['200'],
+                                    width: '100%',
+                                    marginBottom: '0rem',
+                                    marginRight: '10px',
+                                    '@media (max-width: 902px)': {
+                                      width: isAttendanceOverview
+                                        ? '100%'
+                                        : '62%',
+                                    },
+                                    '@media (max-width: 702px)': {
+                                      width: isAttendanceOverview
+                                        ? '100%'
+                                        : '65%',
+                                    },
                                   }
-                                }
                             }
                           >
                             {filteredCohortData?.length !== 0 ? (
@@ -606,7 +603,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
                       ) : (
                         <>
                           {showDisabledDropDown &&
-                            filteredCohortData?.length === 1 ? (
+                          filteredCohortData?.length === 1 ? (
                             <FormControl
                               disabled={true}
                               className={

@@ -33,7 +33,6 @@ const EditForgotPassword = () => {
   };
 
   const handleResetPassword = async (newPassword: string) => {
-    
     try {
       const response = await resetPassword(newPassword);
       setForgotPassword(true);
@@ -50,16 +49,14 @@ const EditForgotPassword = () => {
         },
       };
       telemetryFactory.interact(telemetryInteract);
-    }
-
-     catch (error: any) {
+    } catch (error: any) {
       console.error('Error resetting password:', error);
       setForgotPassword(false);
       showToastMessage(error.response.data.params.err, 'error');
     }
   };
   const handlePrimaryButton = () => {
-    router.push(`/dashboard`);
+    router.push(`/centers`);
     localStorage.setItem('skipResetPassword', 'true');
   };
 
