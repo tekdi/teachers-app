@@ -244,7 +244,8 @@
     "VILLAGES": "Villages",
     "YOUTH_VOLUNTEERS": "Youth/Volunteers",
     "SEARCH_VILLAGES": "Search Villages",
-    "OPPORTUNITIES": "Opportunities"
+    "OPPORTUNITIES": "Opportunities",
+    "ORGANISATIONS": "Organisations"
   },
   "ATTENDANCE": {
     "TOTAL_STUDENTS": "Total: {{count}}",

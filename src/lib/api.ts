@@ -119,8 +119,15 @@ export async function getLocations(search = '') {
   return fetchApi<any>(`/opportunity-service/locations?${params}`);
 }
 
-export async function getOrganizations() {
-  return fetchApi<any>('/opportunity-service/organizations');
+export async function getOrganizations(params?: Record<string, any>) {
+  let url = '/opportunity-service/organizations';
+
+  if (params) {
+    const queryString = new URLSearchParams(params).toString();
+    url += `?${queryString}`;
+  }
+
+  return fetchApi<any>(url);
 }
 
 export async function getSkills() {
@@ -217,4 +224,23 @@ export const updateApplicationStatus = async (
 
 export async function fetchApplicationStatuses() {
   return fetchApi<any>(`/opportunity-service/application-statuses`);
+}
+
+export async function createOrganisation(
+  name: string,
+  description: string,
+  website: string
+) {
+  const body = JSON.stringify({ name, description, website });
+  return fetchApi<any>('/opportunity-service/organizations', {
+    method: 'POST',
+    body: body,
+  });
+}
+
+export async function updateOrganisation(requestbody: any, id: string) {
+  return fetchApi<any>(`/opportunity-service/organizations/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(requestbody),
+  });
 }
