@@ -526,9 +526,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                 gap: '10px',
               }}
               startIcon={
-                <LocalLibraryOutlinedIcon
-                  sx={{ fontSize: '24px !important' }}
-                />
+                <DashboardOutlinedIcon sx={{ fontSize: '24px !important' }} />
               }
               onClick={() => {
                 router.push(`/opportunities`);
