@@ -18,7 +18,7 @@ const Home: React.FC = () => {
       const token = localStorage.getItem('token');
       setLoading(false);
       if (token) {
-        push('/dashboard');
+        push('/centers');
       } else {
         push('/login', undefined, { locale: 'en' });
       }

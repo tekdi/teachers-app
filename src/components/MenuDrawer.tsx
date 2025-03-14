@@ -171,7 +171,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
 
   const navigateToDashboard = () => {
     closeDrawer();
-    router.push('/dashboard');
+    router.push('/centers');
   };
 
   const navigateToObservation = () => {
@@ -180,7 +180,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
   };
 
   const isDashboard = [
-    '/dashboard',
+    '/centers',
     '/youthboard',
     '/attendance-history',
     '/attendance-overview',
@@ -448,19 +448,19 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                     : 'transparent',
                 },
               }}
-              startIcon={<Image
-                src={surveyForm}
-                alt="SurveyForm-Icon"
-                width={24}
-                height={24}
-              />}
+              startIcon={
+                <Image
+                  src={surveyForm}
+                  alt="SurveyForm-Icon"
+                  width={24}
+                  height={24}
+                />
+              }
               onClick={() => {
                 router.push(`/youthboard/surveys`);
               }}
             >
-              {
-                t('SURVEYS.SURVEYS')
-              }
+              {t('SURVEYS.SURVEYS')}
             </Button>
           </Box>
         )}
@@ -514,7 +514,7 @@ const MenuDrawer: React.FC<DrawerProps> = ({
                   ? theme.palette.primary.main
                   : 'transparent',
 
-                padding:'16px 18px !important',
+                padding: '16px 18px !important',
                 color: isOpportunity ? '#2E1500' : theme.palette.warning.A200,
                 fontWeight: isOpportunity ? '600' : 500,
                 '&:hover': {
