@@ -108,7 +108,7 @@ describe('LoginPage', () => {
     });
 
     const router = useRouter();
-    expect(router.push).toHaveBeenCalledWith('/dashboard');
+    expect(router.push).toHaveBeenCalledWith('/centers');
   });
 
   xit('should handle form submission with errors', async () => {

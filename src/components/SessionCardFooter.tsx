@@ -45,7 +45,7 @@ const SessionCardFooter: React.FC<SessionCardFooterProps> = ({
   const { t } = useTranslation();
   const { isRTL } = useDirection();
   const pathname = usePathname();
-  const dashboard = pathname === '/dashboard';
+  const dashboard = pathname === '/centers';
   const [open, setOpen] = React.useState(false);
   const [editTopic, setEditTopic] = React.useState(false);
   // const [removeTopic, setRemoveTopic] = React.useState(false);

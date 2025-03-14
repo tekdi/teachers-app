@@ -31,7 +31,7 @@ const CreatePassword = () => {
   };
 
   const handlePrimaryButton = () => {
-    router.push(`/dashboard`);
+    router.push(`/centers`);
     localStorage.setItem('skipResetPassword', 'true');
   };
 

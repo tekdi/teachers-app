@@ -69,7 +69,7 @@ export async function getOpportunities(
   const params = new URLSearchParams({
     page: page.toString(),
     orderBy: 'created_at',
-    order: 'ASC',
+    order: 'DESC',
     limit: '9',
     ...(search && { search }),
     ...Object.fromEntries(

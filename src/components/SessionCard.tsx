@@ -50,7 +50,7 @@ const SessionsCard: React.FC<SessionsCardProps> = ({
   const [CohortBMG, setCohortBMG] = React.useState<any>({});
   const router = useRouter();
   const { cohortId }: any = router.query;
-  const dashboard = pathname === '/dashboard';
+  const dashboard = pathname === '/centers';
   const { getNotification } = useNotification();
 
   const handleEditSelection = (selection: string) => {
