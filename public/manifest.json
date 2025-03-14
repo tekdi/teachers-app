@@ -3,10 +3,10 @@
   "background_color": "#f69435",
   "display": "standalone",
   "scope": "/",
-  "start_url": "/",
-  "name": "Pratham Learning Management Portal",
-  "short_name": "Pratham LMP",
-  "description": "Learning Management Portal for Pratham",
+  "start_url": "/centers",
+  "name": "Pratham Youth Management Portal",
+  "short_name": "Pratham YM",
+  "description": "Youth Management Portal for Pratham",
   "icons": [
     {
       "src": "/icon-192x192.png",
