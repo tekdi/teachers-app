@@ -241,29 +241,43 @@ export default function OpportunitiesPage() {
           </Box>
 
           {showFilters && (
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: { xs: 'column', md: 'row' },
-                gap: 2,
-                alignItems: { xs: 'stretch', md: 'center' },
-                justifyContent: 'space-between',
-                mb: 2,
-              }}
-            >
-              <OpportunityFilters
-                selectedCategory={category as string}
-                selectedSkills={skills as string}
-                selectedStatus={status as string}
-                onFilterChange={handleFilterChange}
-              />
-              <Button
-                variant="outlined"
-                color="secondary"
+            <Box>
+              <Box
+                // variant="outlined"
+                // color="secondary"
+                sx={{
+                  whiteSpace: 'nowrap',
+                  p: '10px 16px',
+                  border: 'none !important',
+                  bgcolor: 'transparent !important',
+                  display: 'flex',
+                  justifyContent: 'end',
+                  width: '100%',
+                  color: '#101828',
+                  fontWeight: '500',
+                  cursor : 'pointer'
+                }}
                 onClick={handleClearFilters}
               >
                 {t('OPPORTUNITY.CLEAR_FILTERS')}
-              </Button>
+              </Box>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: { xs: 'column', md: 'row' },
+                  gap: 2,
+                  alignItems: { xs: 'stretch', md: 'start' },
+                  justifyContent: 'space-between',
+                  mb: 2,
+                }}
+              >
+                <OpportunityFilters
+                  selectedCategory={category as string}
+                  selectedSkills={skills as string}
+                  selectedStatus={status as string}
+                  onFilterChange={handleFilterChange}
+                />
+              </Box>
             </Box>
           )}
         </Box>
