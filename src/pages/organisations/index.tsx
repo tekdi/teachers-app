@@ -16,8 +16,11 @@ import {
   Stack,
   Box,
   InputAdornment,
+  Container,
+  Typography,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import CloseIcon from '@mui/icons-material/Close';
 import SearchIcon from '@mui/icons-material/Search';
 import {
   getOrganizations,
@@ -88,136 +91,192 @@ export default function Organisations() {
   return (
     <>
       <Header />
-      <div style={{ padding: '16px' }}>
-        <h1>Organisations</h1>
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Box mb={4}>
+          {/* <h1>Organisations</h1> */}
 
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            mb: 2,
-          }}
-        >
-          <TextField
-            placeholder="Search..."
-            variant="standard"
-            fullWidth
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
+          <Box
             sx={{
-              backgroundColor: '#f5f5f5',
-              borderRadius: '25px',
-              maxWidth: '300px',
-              paddingX: 2,
-              paddingY: 0.5,
+              display: 'flex',
+              flexDirection: { xs: 'column', sm: 'row' }, // Column on small screens, row on md+
+              gap: 2,
+              mb: 4,
+              alignItems: 'center',
+              justifyContent: 'space-between',
             }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-              disableUnderline: true,
-            }}
-          />
-
-          {/* Create Organisation Button */}
-          <Button
-            variant="contained"
-            sx={{
-              backgroundColor: '#ffcc00',
-              color: '#000',
-              borderRadius: '25px',
-              fontWeight: 'bold',
-              '&:hover': { backgroundColor: '#e6b800' },
-            }}
-            startIcon={<AddIcon />}
-            onClick={() => handleOpen()}
           >
-            Create Organisation
-          </Button>
-        </Box>
+            <TextField
+              placeholder="Search..."
+              variant="standard"
+              fullWidth
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              sx={{
+                backgroundColor: '#f5f5f5',
+                borderRadius: '25px',
+                maxWidth: '300px',
+                paddingX: 2,
+                paddingY: 0.5,
+              }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon />
+                  </InputAdornment>
+                ),
+                disableUnderline: true,
+              }}
+            />
 
-        <TableContainer component={Paper} sx={{ overflowX: 'auto', mt: 2 }}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ minWidth: 120 }}>Name</TableCell>
-                <TableCell sx={{ minWidth: 200 }}>Description</TableCell>
-                <TableCell sx={{ minWidth: 200 }}>Website</TableCell>
-                <TableCell sx={{ minWidth: 150 }}>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {organisations.map((org: any) => (
-                <TableRow key={org.id}>
-                  <TableCell>{org.name}</TableCell>
-                  <TableCell>{org.description}</TableCell>
-                  <TableCell>
-                    <a
-                      href={org.website}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {org.website}
-                    </a>
-                  </TableCell>
-                  <TableCell>
-                    <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
-                      <Button onClick={() => handleOpen(org)} size="small">
-                        Edit
-                      </Button>
-                    </Stack>
-                  </TableCell>
+            {/* Create Organisation Button */}
+            <Box sx={{ width: { xs: '100%', sm: 'fit-content' } }} width={{}}>
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{ fontWeight: '500', py: '10px', whiteSpace: 'nowrap' }}
+                fullWidth
+                startIcon={<AddIcon />}
+                onClick={() => handleOpen()}
+              >
+                Create Organisation
+              </Button>
+            </Box>
+          </Box>
+
+          <TableContainer component={Paper} sx={{ overflowX: 'auto', mt: 2 }}>
+            <Table>
+              <TableHead sx={{ bgcolor: '#fdbe16' }}>
+                <TableRow>
+                  <TableCell sx={{ minWidth: 120 }}>Name</TableCell>
+                  <TableCell sx={{ minWidth: 200 }}>Description</TableCell>
+                  <TableCell sx={{ minWidth: 200 }}>Website</TableCell>
+                  <TableCell sx={{ minWidth: 150 }}>Actions</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableHead>
+              <TableBody>
+                {organisations.map((org: any) => (
+                  <TableRow key={org.id}>
+                    <TableCell>{org.name}</TableCell>
+                    <TableCell>{org.description}</TableCell>
+                    <TableCell>
+                      <a
+                        href={org.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {org.website}
+                      </a>
+                    </TableCell>
+                    <TableCell>
+                      <Stack
+                        direction={{ xs: 'column', sm: 'row' }}
+                        spacing={1}
+                      >
+                        <Button onClick={() => handleOpen(org)} size="small">
+                          Edit
+                        </Button>
+                      </Stack>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
 
-        {/* Dialog for Add/Edit Organisation */}
-        <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
-          <DialogTitle>
-            {editMode ? 'Edit Organisation' : 'Add Organisation'}
-          </DialogTitle>
-          <DialogContent>
-            <TextField
-              label="Name"
-              fullWidth
-              value={currentOrg.name}
-              onChange={(e) =>
-                setCurrentOrg({ ...currentOrg, name: e.target.value })
+          {/* Dialog for Add/Edit Organisation */}
+          <Dialog
+            open={open}
+            onClose={(e, reason) => {
+              if (reason === 'backdropClick') {
+                return;
               }
-              margin="dense"
-            />
-            <TextField
-              label="Description"
-              fullWidth
-              value={currentOrg.description}
-              onChange={(e) =>
-                setCurrentOrg({ ...currentOrg, description: e.target.value })
-              }
-              margin="dense"
-            />
-            <TextField
-              label="Website"
-              fullWidth
-              value={currentOrg.website}
-              onChange={(e) =>
-                setCurrentOrg({ ...currentOrg, website: e.target.value })
-              }
-              margin="dense"
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
-            <Button onClick={handleSave} color="primary">
-              Save
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </div>
+            }}
+            fullWidth
+            maxWidth="sm"
+          >
+            <DialogTitle
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                borderBottom: '1px solid #D0C5B4',
+              }}
+            >
+              <Typography
+                variant="h2"
+                color={'#4D4639'}
+                fontWeight={'500'}
+                component="h2"
+                mb={0}
+              >
+                {editMode ? 'Edit Organisation' : 'Add Organisation'}
+              </Typography>
+
+              <CloseIcon
+                onClick={handleClose}
+                sx={{
+                  ml: 2,
+                  fontSize: '24px',
+                  color: '#4D4639',
+                  cursor: 'pointer',
+                }}
+              />
+            </DialogTitle>
+            <DialogContent
+              sx={{
+                p: '6px 16px 18px !important',
+                justifyContent: 'start',
+                color: '#313131',
+                fontWeight: '500',
+              }}
+            >
+              <TextField
+                label="Name"
+                fullWidth
+                value={currentOrg.name}
+                onChange={(e) =>
+                  setCurrentOrg({ ...currentOrg, name: e.target.value })
+                }
+                margin="normal"
+              />
+              <TextField
+                label="Description"
+                fullWidth
+                value={currentOrg.description}
+                onChange={(e) =>
+                  setCurrentOrg({ ...currentOrg, description: e.target.value })
+                }
+                margin="normal"
+              />
+              <TextField
+                label="Website"
+                fullWidth
+                value={currentOrg.website}
+                onChange={(e) =>
+                  setCurrentOrg({ ...currentOrg, website: e.target.value })
+                }
+                margin="normal"
+              />
+            </DialogContent>
+            <DialogActions
+              sx={{
+                textAlign: 'center',
+                p: '16px !important',
+                borderTop: '1px solid #D0C5B4',
+              }}
+            >
+              <Button
+                onClick={handleSave}
+                variant="contained"
+                sx={{ py: '10px', width: '100%', fontWeight: '500' }}
+                color="primary"
+              >
+                Save
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </Box>
+      </Container>
     </>
   );
 }

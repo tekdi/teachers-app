@@ -26,7 +26,7 @@ export function CustomPagination({
             {...item}
             sx={{
               '&.Mui-selected': {
-                backgroundColor: 'primary.main',
+                backgroundColor: '#fdbe16 !important',
                 color: 'white',
               },
             }}
