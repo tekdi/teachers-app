@@ -46,7 +46,7 @@ const formSchema = z
     // organisation: z.string().min(1, "At least one organisation is required"),
     role_type: z.string().min(1, 'Role type is required'),
     work_nature: z.string().min(1, 'Work nature is required'),
-    benefits: z.string().min(1, 'Benefits are required'),
+    benefits: z.array(z.string()).min(1, 'Benefits are required'),
     country: z.string().min(1, 'Country is required'),
     state: z.string().min(1, 'State is required'),
     city: z.string().min(1, 'City is required'),
@@ -55,7 +55,7 @@ const formSchema = z
   })
   .superRefine((data, ctx) => {
     if (
-      data.benefits === '51d25808-371b-4ba3-9d85-a16e3a5793be' &&
+      data.benefits.includes('51d25808-371b-4ba3-9d85-a16e3a5793be') &&
       !data.otherBenefits
     ) {
       ctx.addIssue({
@@ -113,7 +113,7 @@ export function OpportunityForm({
     status: 'pending',
     role_type: '',
     work_nature: '',
-    benefits: '',
+    benefits: [],
     ...initialData,
   };
 
@@ -404,6 +404,7 @@ export function OpportunityForm({
                   <InputLabel>{t('OPPORTUNITY.BENIFITS')}</InputLabel>
                   <Select
                     {...field}
+                    multiple
                     // value={defaultValues?.benefits || ''}
                     onChange={(event) => field.onChange(event.target.value)} // Set single value
                     input={<OutlinedInput label="Benefits" />}
@@ -430,7 +431,9 @@ export function OpportunityForm({
             />
           </Grid>
 
-          {watch('benefits') === '51d25808-371b-4ba3-9d85-a16e3a5793be' && (
+          {watch('benefits').includes(
+            '51d25808-371b-4ba3-9d85-a16e3a5793be'
+          ) && (
             <Grid item xs={12}>
               <Controller
                 name="otherBenefits"
