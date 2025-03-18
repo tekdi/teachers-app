@@ -114,13 +114,60 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
   }
 
   useEffect(() => {
-    if (formResponse) {
-      const { schema, uiSchema } = GenerateSchemaAndUiSchema(formResponse, t);
-      setSchema(schema);
-      setUiSchema(uiSchema);
-      setOriginalSchema({ ...schema });
+    async function fetchAndUpdateSchema() {
+      if (formResponse) {
+        try {
+          const updatedResponse =
+            await updateFieldsWithExternalData(formResponse);
+          const { schema, uiSchema } = GenerateSchemaAndUiSchema(
+            updatedResponse,
+            t
+          );
+          setSchema(schema);
+          setUiSchema(uiSchema);
+          setOriginalSchema({ ...schema });
+        } catch (error) {
+          console.error('Error updating schema:', error);
+        }
+      }
     }
-  }, [formResponse]);
+
+    fetchAndUpdateSchema();
+  }, [formResponse, t]);
+
+  const updateFieldsWithExternalData = async (response: any) => {
+    const updatedFields = await Promise.all(
+      response.fields.map(async (field: any) => {
+        if (field.sourceDetails?.externalsource) {
+          try {
+            const url = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}${field.sourceDetails.externalsource}`;
+
+            const apiResponse = await fetch(url, {
+              headers: {
+                tenantid: 'ef99949b-7f3a-4a5f-806a-e67e683e38f3',
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+              },
+            });
+            const data = await apiResponse.json();
+            const skillsOptions = data.result.map((skill: any) => ({
+              label: skill.name,
+              value: skill.id,
+            }));
+
+            return {
+              ...field,
+              options: skillsOptions,
+            };
+          } catch (error) {
+            console.error('Error fetching external options:', error);
+          }
+        }
+        return field;
+      })
+    );
+
+    return { ...response, fields: updatedFields };
+  };
 
   const sendEmail = async (
     name: string,
@@ -199,7 +246,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
       Object.entries(learnerFormData).forEach(([fieldKey, fieldValue]) => {
         const fieldSchema = schemaProperties[fieldKey];
         const fieldId = fieldSchema?.fieldId;
-        if (fieldId === null || fieldId === 'null') {
+        if (fieldId === null || fieldId === 'null' || fieldKey === 'gender') {
           if (typeof fieldValue !== 'object') {
             apiBody[fieldKey] = fieldValue;
             if (fieldKey === 'name') {
