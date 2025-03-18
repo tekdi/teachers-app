@@ -91,14 +91,18 @@ export default function OpportunityDetailPage() {
               alignItems: 'flex-start',
             }}
           >
-            <Box display={{md: 'flex'}} justifyContent={{sm: 'space-between'}} width={'100%'}>
+            <Box
+              display={{ md: 'flex' }}
+              justifyContent={{ sm: 'space-between' }}
+              width={'100%'}
+            >
               <Typography
                 variant="h1"
                 color={'#4D4639'}
                 component="h1"
                 gutterBottom
               >
-                {opportunity.title}
+                {opportunity?.title}
               </Typography>
               <Box
                 sx={{
@@ -111,14 +115,14 @@ export default function OpportunityDetailPage() {
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <LocationOnIcon fontSize="small" sx={{ mr: 0.5 }} />
                   <Typography variant="body2" mb={0}>
-                    {opportunity.location.city} (
-                    {opportunity.is_remote ? 'Remote' : 'On-site'})
+                    {opportunity?.location.city} (
+                    {opportunity?.is_remote ? 'Remote' : 'On-site'})
                   </Typography>
                 </Box>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <PeopleIcon fontSize="small" sx={{ mr: 0.5 }} />
                   <Typography variant="body2" mb={0}>
-                    {opportunity.no_of_candidates} openings
+                    {opportunity?.no_of_candidates} openings
                   </Typography>
                 </Box>
                 {/* <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -158,7 +162,7 @@ export default function OpportunityDetailPage() {
                 />
                 <CardContent>
                   <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
-                    {opportunity.description}
+                    {opportunity?.description}
                   </Typography>
                 </CardContent>
               </Card>
@@ -177,14 +181,14 @@ export default function OpportunityDetailPage() {
                 />
                 <CardContent>
                   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                    {opportunity.skillDetails.map((skill: any) => (
+                    {opportunity?.skillDetails.map((skill: any) => (
                       <Chip key={skill.skill_name} label={skill.skill_name} />
                     ))}
                   </Box>
                 </CardContent>
               </Card>
 
-              {opportunity.work_experience && (
+              {opportunity?.work_experience && (
                 <Card
                   sx={{
                     boxShadow: 'rgba(0, 0, 0, 0.1) 0px 4px 12px',
@@ -199,7 +203,7 @@ export default function OpportunityDetailPage() {
                   />
                   <CardContent>
                     <Typography variant="body1">
-                      {opportunity.work_experience}
+                      {opportunity?.work_experience}
                     </Typography>
                   </CardContent>
                 </Card>
@@ -210,21 +214,23 @@ export default function OpportunityDetailPage() {
                   boxShadow: 'rgba(0, 0, 0, 0.1) 0px 4px 12px',
                 }}
               >
-                <CardContent>
-                  <Button
-                    variant="contained"
-                    sx={{
-                      p: '10px',
-                    }}
-                    color="primary"
-                    fullWidth
-                    onClick={() =>
-                      router.push(`/opportunities/map-youth/${id}`)
-                    }
-                  >
-                    {t('OPPORTUNITY.MAP_YOUTH_TO_OPPORTUNITY')}
-                  </Button>
-                </CardContent>
+                {opportunity?.status === 'approved' && (
+                  <CardContent>
+                    <Button
+                      variant="contained"
+                      sx={{
+                        p: '10px',
+                      }}
+                      color="primary"
+                      fullWidth
+                      onClick={() =>
+                        router.push(`/opportunities/map-youth/${id}`)
+                      }
+                    >
+                      {t('OPPORTUNITY.MAP_YOUTH_TO_OPPORTUNITY')}
+                    </Button>
+                  </CardContent>
+                )}
               </Card>
             </Box>
           </Grid>
@@ -249,7 +255,7 @@ export default function OpportunityDetailPage() {
                       Category
                     </Typography>
                     <Typography variant="body1">
-                      {opportunity.category.name}
+                      {opportunity?.category?.name}
                     </Typography>
                   </Box>
                   <Divider />
@@ -258,7 +264,7 @@ export default function OpportunityDetailPage() {
                       Salary Range
                     </Typography>
                     <Typography variant="body1">
-                      KES {opportunity.min_salary} - ₹{opportunity.max_salary}
+                      KES {opportunity?.min_salary} - ₹{opportunity?.max_salary}
                     </Typography>
                   </Box>
                   <Divider />
@@ -267,7 +273,7 @@ export default function OpportunityDetailPage() {
                       Experience Level
                     </Typography>
                     <Typography variant="body1">
-                      {opportunity.experience_level}
+                      {opportunity?.experience_level}
                     </Typography>
                   </Box>
                   <Divider />
@@ -276,7 +282,7 @@ export default function OpportunityDetailPage() {
                       Type
                     </Typography>
                     <Typography variant="body1">
-                      {opportunity.opportunity_type}
+                      {opportunity?.opportunity_type}
                     </Typography>
                   </Box>
                 </CardContent>
