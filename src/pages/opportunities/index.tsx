@@ -25,6 +25,7 @@ import { OpportunitiesList } from '@/components/opportunities-table';
 import { SearchInput } from '@/components/search-input';
 import { OpportunityFilters } from '@/components/opportunity-filters';
 import { CustomPagination } from '@/components/pagination';
+import { showToastMessage } from '@/components/Toastify';
 import type {
   Opportunity,
   OpportunityFormData,
@@ -106,6 +107,7 @@ export default function OpportunitiesPage() {
   async function handleCreate(data: OpportunityFormData) {
     await createOpportunity(data);
     setIsDialogOpen(false);
+    showToastMessage('Opportunity created successfully');
     loadOpportunities();
   }
 
@@ -255,7 +257,7 @@ export default function OpportunitiesPage() {
                   width: '100%',
                   color: '#101828',
                   fontWeight: '500',
-                  cursor : 'pointer'
+                  cursor: 'pointer',
                 }}
                 onClick={handleClearFilters}
               >

@@ -29,6 +29,8 @@ export interface Opportunity {
   country: string;
   state: string;
   city: string;
+  offer_letter_provided: boolean;
+  pricing_type: string;
 }
 
 export interface OpportunityList {
@@ -61,6 +63,8 @@ export interface OpportunityList {
   country: string;
   state: string;
   city: string;
+  offer_letter_provided: boolean;
+  pricing_type: string;
 }
 
 export type OpportunityFormData = Omit<

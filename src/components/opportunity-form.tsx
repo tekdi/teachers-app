@@ -14,6 +14,11 @@ import {
   Chip,
   OutlinedInput,
   Stack,
+  FormControlLabel,
+  FormLabel,
+  Switch,
+  RadioGroup,
+  Radio,
 } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -36,22 +41,22 @@ const formSchema = z
     title: z.string().min(1, 'Title is required'),
     description: z.string().min(1, 'Description is required'),
     min_experience: z.number().min(0, 'Minimum experience cannot be negative'),
-    min_salary: z.number().min(0, 'Minimum salary cannot be negative'),
+    min_salary: z.number().min(0, 'Minimum salary cannot be negative'), // Add this field
     max_salary: z.string().min(1, 'Stipend cannot be negative'),
     category: z.string().min(1, 'At least one category is required'),
     company: z.string().min(1, 'Organisation is required'),
     skills: z.array(z.string()).min(1, 'At least one skill is required'),
     no_of_candidates: z.number().min(1, 'Number of candidates is required'),
     status: z.string().min(1, 'Status is required'),
-    // organisation: z.string().min(1, "At least one organisation is required"),
     role_type: z.string().min(1, 'Role type is required'),
     work_nature: z.string().min(1, 'Work nature is required'),
     benefits: z.array(z.string()).min(1, 'Benefits are required'),
     country: z.string().min(1, 'Country is required'),
     state: z.string().min(1, 'State is required'),
     city: z.string().min(1, 'City is required'),
-    // stipend: z.string().min(1, "Stipend is required"),
     otherBenefits: z.string().optional(),
+    pricing_type: z.string(),
+    offer_letter_provided: z.boolean(),
   })
   .superRefine((data, ctx) => {
     if (
@@ -114,6 +119,8 @@ export function OpportunityForm({
     role_type: '',
     work_nature: '',
     benefits: [],
+    offer_letter_provided: false,
+    pricing_type: '',
     ...initialData,
   };
 
@@ -395,6 +402,69 @@ export function OpportunityForm({
               )}
             />
           </Grid>
+
+          <Grid item xs={12}>
+            <Controller
+              name="offer_letter_provided"
+              control={control}
+              render={({ field }) => (
+                <FormControl component="fieldset">
+                  <FormLabel component="legend">
+                    {t('OPPORTUNITY.OFFER_LETTER_PROVIDED')}
+                  </FormLabel>
+                  <RadioGroup
+                    row
+                    {...field}
+                    value={field.value ? 'true' : 'false'}
+                    onChange={(e) => field.onChange(e.target.value === 'true')}
+                  >
+                    <FormControlLabel
+                      value="true"
+                      control={<Radio />}
+                      label="Yes"
+                    />
+                    <FormControlLabel
+                      value="false"
+                      control={<Radio />}
+                      label="No"
+                    />
+                  </RadioGroup>
+                </FormControl>
+              )}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <Controller
+              name="pricing_type"
+              control={control}
+              render={({ field }) => (
+                <FormControl component="fieldset">
+                  <FormLabel component="legend">
+                    {t('OPPORTUNITY.PRICING_TYPE')}
+                  </FormLabel>
+                  <RadioGroup
+                    row
+                    {...field}
+                    value={field.value}
+                    onChange={(e) => field.onChange(e.target.value)}
+                  >
+                    <FormControlLabel
+                      value="paid"
+                      control={<Radio />}
+                      label="Paid"
+                    />
+                    <FormControlLabel
+                      value="free"
+                      control={<Radio />}
+                      label="Free"
+                    />
+                  </RadioGroup>
+                </FormControl>
+              )}
+            />
+          </Grid>
+
           <Grid item xs={12}>
             <Controller
               name="benefits"
