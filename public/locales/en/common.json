@@ -848,6 +848,8 @@
     "MAPPED_BY_ME": "Mapped by me",
     "CREATE_NEW_OPPORTUNITY": " Create Opportunity",
     "REJECTED": "Rejected",
-    "CLEAR_FILTERS": "Clear Filters"
+    "CLEAR_FILTERS": "Clear Filters",
+    "PRICING_TYPE": "Pricing Type",
+    "OFFER_LETTER_PROVIDED": "Offer Letter Provided"
   }
 }
