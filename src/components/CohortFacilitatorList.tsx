@@ -2,9 +2,7 @@ import LearnersListItem from '@/components/LearnersListItem';
 import { getMyCohortFacilitatorList } from '@/services/MyClassDetailsService';
 import useStore from '@/store/store';
 import { Status, pagesLimit } from '@/utils/app.constant';
-import {
-  toPascalCase
-} from '@/utils/Helper';
+import { toPascalCase } from '@/utils/Helper';
 import { Box, Grid } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
@@ -39,10 +37,11 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
   const [loading, setLoading] = React.useState<boolean>(false);
   const [userData, setUserData] = React.useState<UserDataProps[]>();
 
-  const [filteredData, setFilteredData] =  React.useState(userData);
-  const [searchTerm, setSearchTerm] =  React.useState('');
-  const setCohortFacilitatorsCount = useStore((state) => state.setCohortFacilitatorsCount);
-
+  const [filteredData, setFilteredData] = React.useState(userData);
+  const [searchTerm, setSearchTerm] = React.useState('');
+  const setCohortFacilitatorsCount = useStore(
+    (state) => state.setCohortFacilitatorsCount
+  );
 
   const [page, setPage] = useState(0);
   const [offset, setOffset] = useState(0);
@@ -53,11 +52,7 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
   const [data, setData] = useState<any[]>([]);
   const [hasMore, setHasMore] = useState(true);
 
-
-
   const { t } = useTranslation();
-
-
 
   useEffect(() => {
     const getCohortMemberList = async () => {
@@ -67,8 +62,8 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
       try {
         if (cohortId) {
           const filters = { cohortId: cohortId };
-          const limit = pagesLimit
-          const page=offset
+          const limit = pagesLimit;
+          const page = offset;
           const response = await getMyCohortFacilitatorList({
             limit,
             page,
@@ -83,7 +78,10 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
                 (field: { label: string }) => field.label === 'AGE'
               );
               return {
-                name: toPascalCase(user?.firstName || '') + ' ' + (user?.lastName ? toPascalCase(user.lastName) : ""),
+                name:
+                  toPascalCase(user?.firstName || '') +
+                  ' ' +
+                  (user?.lastName ? toPascalCase(user.lastName) : ''),
                 userId: user?.userId,
                 memberStatus: user?.status,
                 statusReason: user?.statusReason,
@@ -96,13 +94,11 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
             if (isMobile) {
               setInfiniteData([...infiniteData, ...userDetails]);
               setFilteredData(userDetails);
-              
             } else {
               setUserData(userDetails);
               setFilteredData(userDetails);
               setInfiniteData(userDetails);
             }
-           
 
             setTotalCount(response.result?.totalCount);
             setCohortFacilitatorsCount(userDetails.length);
@@ -125,12 +121,12 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
 
   const onDelete = () => {};
   const handleSearch = (searchTerm: string) => {
-    
-
-    const filtered = userData?.filter((data) =>
-    data?.name?.toLowerCase()?.includes(searchTerm) || data?.enrollmentNumber?.toLowerCase()?.includes(searchTerm)
-  );
-  setFilteredData(filtered);
+    const filtered = userData?.filter(
+      (data) =>
+        data?.name?.toLowerCase()?.includes(searchTerm) ||
+        data?.enrollmentNumber?.toLowerCase()?.includes(searchTerm)
+    );
+    setFilteredData(filtered);
   };
 
   const PAGINATION_CONFIG = {
@@ -139,7 +135,7 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
   };
 
   const fetchData = async () => {
-    if (infiniteData && (infiniteData.length >= totalCount)) {
+    if (infiniteData && infiniteData.length >= totalCount) {
       return;
     }
 
@@ -148,99 +144,103 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
 
     try {
       setOffset((prev) => {
-        if (totalCount && prev + PAGINATION_CONFIG.ITEMS_PER_PAGE <= totalCount) {
+        if (
+          totalCount &&
+          prev + PAGINATION_CONFIG.ITEMS_PER_PAGE <= totalCount
+        ) {
           return prev + PAGINATION_CONFIG.ITEMS_PER_PAGE;
         }
         return prev;
       });
 
-      setInfinitePage((prev) => prev + PAGINATION_CONFIG.INFINITE_SCROLL_INCREMENT);
+      setInfinitePage(
+        (prev) => prev + PAGINATION_CONFIG.INFINITE_SCROLL_INCREMENT
+      );
     } catch (error) {
       console.error('Error fetching more data:', error);
       showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
     }
-  }
-  const handlePageChange = (newPage: number) => {
-    setPage(newPage-1);
-    setOffset((newPage - 1) * pagesLimit)
   };
-  
-  
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage - 1);
+    setOffset((newPage - 1) * pagesLimit);
+  };
+
   return (
     <div>
       {loading ? (
         <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
       ) : (
         <>
-        <Box mb="25px">
-        <SearchBar
-        onSearch={handleSearch}
-        value={searchTerm}
-        placeholder={t('COMMON.SEARCH_FACILITATORS')}
-      />
-        </Box>
-         
-         <Box
-          sx={{
-            '@media (min-width: 900px)': {
-              background: theme.palette.action.selected,
-              paddingBottom: '20px',
-              paddingTop: '10px',
-            },
-          }}
-        >
-         
-          
-          
-          <Grid container>
-            {(isMobile ? infiniteData : filteredData)?.map((data: any) => {
-              return (
-                <Grid xs={12} sm={12} md={6} lg={4} key={data.userId}>
-                  <LearnersListItem
-                    userId={data.userId}
-                    learnerName={data.name}
-                    enrollmentId={data.enrollmentNumber}
-                    age={data.age}
-                    cohortMembershipId={data.cohortMembershipId}
-                    isDropout={data.memberStatus === Status.DROPOUT}
-                    statusReason={data.statusReason}
-                    reloadState={reloadState}
-                    setReloadState={setReloadState}
-                    showMiniProfile={false}
-                    onLearnerDelete={onDelete}
-                  />
-                </Grid>
-              );
-            })}
-                {(isMobile ? !infiniteData.length : !filteredData?.length) && <NoDataFound />}
-          </Grid>
-              <Box
-                sx={{
-                  mt: 2,
-                  display: 'flex',
-                  justifyContent: 'end',
-                }}
-              >
-                {
-                  (isMobile ? infiniteData.length > pagesLimit : (filteredData && filteredData?.length > pagesLimit)) && (
-                    <CustomPagination
-                      count={Math.ceil(totalCount / PAGINATION_CONFIG.ITEMS_PER_PAGE)}
-                      page={page + 1}
-                      onPageChange={handlePageChange}
-                      // fetchMoreData={fetchData}
-                      TotalCount={totalCount}
-                      hasMore={infinitePage * pagesLimit < totalCount}
-                      items={(infiniteData || []).map((user: UserDataProps) => (
-                        <Box key={user.userId}></Box>
-                      ))}
-                    />
-                  )
-                }
-                
-              </Box>
+          <Box mb="25px">
+            <SearchBar
+              onSearch={handleSearch}
+              value={searchTerm}
+              placeholder={t('COMMON.SEARCH_FACILITATORS')}
+            />
+          </Box>
 
-        </Box></>
-       
+          <Box
+            sx={{
+              '@media (min-width: 900px)': {
+                background: theme.palette.action.selected,
+                paddingBottom: '20px',
+                paddingTop: '10px',
+              },
+            }}
+          >
+            <Grid container>
+              {(isMobile ? infiniteData : filteredData)?.map((data: any) => {
+                return (
+                  <Grid xs={12} sm={12} md={6} lg={4} key={data.userId}>
+                    <LearnersListItem
+                      userId={data.userId}
+                      learnerName={data.name}
+                      enrollmentId={data.enrollmentNumber}
+                      age={data.age}
+                      cohortMembershipId={data.cohortMembershipId}
+                      isDropout={data.memberStatus === Status.DROPOUT}
+                      statusReason={data.statusReason}
+                      reloadState={reloadState}
+                      setReloadState={setReloadState}
+                      showMiniProfile={false}
+                      onLearnerDelete={onDelete}
+                      cohortID={cohortId}
+                    />
+                  </Grid>
+                );
+              })}
+              {(isMobile ? !infiniteData.length : !filteredData?.length) && (
+                <NoDataFound />
+              )}
+            </Grid>
+            <Box
+              sx={{
+                mt: 2,
+                display: 'flex',
+                justifyContent: 'end',
+              }}
+            >
+              {(isMobile
+                ? infiniteData.length > pagesLimit
+                : filteredData && filteredData?.length > pagesLimit) && (
+                <CustomPagination
+                  count={Math.ceil(
+                    totalCount / PAGINATION_CONFIG.ITEMS_PER_PAGE
+                  )}
+                  page={page + 1}
+                  onPageChange={handlePageChange}
+                  // fetchMoreData={fetchData}
+                  TotalCount={totalCount}
+                  hasMore={infinitePage * pagesLimit < totalCount}
+                  items={(infiniteData || []).map((user: UserDataProps) => (
+                    <Box key={user.userId}></Box>
+                  ))}
+                />
+              )}
+            </Box>
+          </Box>
+        </>
       )}
     </div>
   );
