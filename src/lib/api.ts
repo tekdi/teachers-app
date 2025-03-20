@@ -1,5 +1,6 @@
 const API_BASE = process.env.NEXT_PUBLIC_MIDDLEWARE_URL;
 import { showToastMessage } from '@/components/Toastify';
+import Router from 'next/router';
 
 // API Configuration type
 export type ApiConfig = {
@@ -32,6 +33,10 @@ async function fetchApi<T>(
     ...options,
     headers,
   });
+
+  if (response?.status === 401) {
+    Router.push('/logout');
+  }
 
   if (!response.ok) {
     showToastMessage(`Something went wrong`, 'error');

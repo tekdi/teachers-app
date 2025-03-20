@@ -3,7 +3,7 @@ import {
   BulkCreateCohortMembersRequest,
   LearnerListProps,
   UpdateCustomField,
-  UserData
+  UserData,
 } from '@/utils/Interfaces';
 import ApartmentIcon from '@mui/icons-material/Apartment';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
@@ -15,6 +15,7 @@ import BottomDrawer from './BottomDrawer';
 import ConfirmationModal from './ConfirmationModal';
 import DeleteUserModal from './DeleteUserModal';
 import DropOutModal from './DropOutModal';
+import FeedBackModel from './feedBackModal';
 import LearnerModal from './LearnerModal';
 import Loader from './Loader';
 import ManageCentersModal from './ManageCentersModal';
@@ -53,6 +54,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
   center,
   showMiniProfile,
   onLearnerDelete,
+  cohortID,
   isFromProfile = false,
 }) => {
   const [state, setState] = React.useState({
@@ -118,20 +120,20 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
 
   const toggleDrawer =
     (anchor: Anchor, open: boolean) =>
-      (event: React.KeyboardEvent | React.MouseEvent) => {
-        setCohortLearnerDeleteId(cohortMembershipId);
-        setReassignId(userId);
+    (event: React.KeyboardEvent | React.MouseEvent) => {
+      setCohortLearnerDeleteId(cohortMembershipId);
+      setReassignId(userId);
 
-        if (
-          event.type === 'keydown' &&
-          ((event as React.KeyboardEvent).key === 'Tab' ||
-            (event as React.KeyboardEvent).key === 'Shift')
-        ) {
-          return;
-        }
+      if (
+        event.type === 'keydown' &&
+        ((event as React.KeyboardEvent).key === 'Tab' ||
+          (event as React.KeyboardEvent).key === 'Shift')
+      ) {
+        return;
+      }
 
-        setState({ ...state, bottom: open });
-      };
+      setState({ ...state, bottom: open });
+    };
 
   const setLoading = (loading: boolean) => {
     setLearnerState((prevState) => ({ ...prevState, loading }));
@@ -189,7 +191,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
           });
           throw new Error(
             response.params?.errmsg ||
-            'An error occurred while updating the user.'
+              'An error occurred while updating the user.'
           );
         } else {
           ReactGA.event('unmark-dropout-student-successful', {
@@ -208,7 +210,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
   };
 
   const listItemClick = (event: React.MouseEvent, name: string) => {
-    if (name === 'mark-drop-out') {
+    if (name === 'FeedBack') {
       setShowModal(true);
     } else if (name === 'unmark-drop-out') {
       handleUnmarkDropout();
@@ -250,7 +252,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
           });
           throw new Error(
             response.params?.errmsg ||
-            'An error occurred while updating the user.'
+              'An error occurred while updating the user.'
           );
         } else {
           ReactGA.event('remove-student-successful', {
@@ -303,7 +305,13 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
           if (data) {
             const userData = data?.userData;
             setUserData(userData);
-            setUserName(userData?.firstName+' '+userData?.middleName+' '+userData?.lastName);
+            setUserName(
+              userData?.firstName +
+                ' ' +
+                userData?.middleName +
+                ' ' +
+                userData?.lastName
+            );
             setContactNumber(userData?.mobile);
             setEnrollmentNumber(userData?.username);
             const customDataFields = userData?.customFields;
@@ -322,7 +330,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
 
   const filteredFields = filterMiniProfileFields(learnerState.customFieldsData);
 
-  const getTeamLeadersCenters = async () => { };
+  const getTeamLeadersCenters = async () => {};
 
   const handleCloseCentersModal = () => {
     setOpenCentersModal(false);
@@ -408,15 +416,15 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
   const stringAvatar = (name: string) => {
     if (name) {
       const nameParts = name.split(' ');
-  
+
       return {
         children:
           nameParts.length === 1
             ? nameParts[0][0]
-            : `${nameParts[0][0]}${nameParts[1]?.[0] || ''}`, 
+            : `${nameParts[0][0]}${nameParts[1]?.[0] || ''}`,
       };
     }
-  
+
     return '';
   };
 
@@ -654,116 +662,100 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
         optionList={
           block
             ? [
-              // TODO: Integrate todo service
-              // {
-              //   label: t('COMMON.REASSIGN_BLOCKS_REQUEST'),
-              //   icon: (
-              //     <LocationOnOutlinedIcon
-              //       sx={{ color: theme.palette.warning['300'] }}
-              //     />
-              //   ),
-              //   name: 'reassign-block-request',
-              // },
-              // {
-              //   label: t('COMMON.REASSIGN_CENTERS'),
-              //   icon: (
-              //     <ApartmentIcon
-              //       sx={{ color: theme.palette.warning['300'] }}
-              //     />
-              //   ),
-              //   name: 'reassign-centers',
-              // },
-              // {
-              //   label: isDropout
-              //     ? t('COMMON.UNMARK_DROP_OUT')
-              //     : t('COMMON.MARK_DROP_OUT'),
-              //   icon: (
-              //     <NoAccountsIcon
-              //       sx={{ color: theme.palette.warning['300'] }}
-              //     />
-              //   ),
-              //   name: isDropout ? 'unmark-drop-out' : 'mark-drop-out',
-              // },
-              {
-                label: t('COMMON.DELETE_USER'),
-                icon: (
-                  <DeleteOutlineIcon
-                    sx={{ color: theme.palette.warning['300'] }}
-                  />
-                ),
-                name: 'delete-User',
-              },
-            ].filter(
-              (option) =>
-                (type === Role.STUDENT ||
-                  (option.name !== 'mark-drop-out' &&
-                    option.name !== 'unmark-drop-out')) &&
-                (!(isFromProfile || isDropout) ||
-                  option.name !== 'reassign-centers')
-            )
+                // TODO: Integrate todo service
+                // {
+                //   label: t('COMMON.REASSIGN_BLOCKS_REQUEST'),
+                //   icon: (
+                //     <LocationOnOutlinedIcon
+                //       sx={{ color: theme.palette.warning['300'] }}
+                //     />
+                //   ),
+                //   name: 'reassign-block-request',
+                // },
+                // {
+                //   label: t('COMMON.REASSIGN_CENTERS'),
+                //   icon: (
+                //     <ApartmentIcon
+                //       sx={{ color: theme.palette.warning['300'] }}
+                //     />
+                //   ),
+                //   name: 'reassign-centers',
+                // },
+                {
+                  label: t('COMMON.FEEDBACK'),
+                  icon: (
+                    <NoAccountsIcon
+                      sx={{ color: theme.palette.warning['300'] }}
+                    />
+                  ),
+                  name: 'FeedBack',
+                },
+                {
+                  label: t('COMMON.DELETE_USER'),
+                  icon: (
+                    <DeleteOutlineIcon
+                      sx={{ color: theme.palette.warning['300'] }}
+                    />
+                  ),
+                  name: 'delete-User',
+                },
+              ].filter(
+                (option) =>
+                  (type === Role.STUDENT ||
+                    (option.name !== 'mark-drop-out' &&
+                      option.name !== 'unmark-drop-out')) &&
+                  (!(isFromProfile || isDropout) ||
+                    option.name !== 'reassign-centers')
+              )
             : [
-              // {
-              //   label: t('COMMON.REASSIGN_CENTERS'),
-              //   icon: (
-              //     <ApartmentIcon
-              //       sx={{ color: theme.palette.warning['300'] }}
-              //     />
-              //   ),
-              //   name: 'reassign-centers',
-              // },
-              // {
-              //   label: isDropout
-              //     ? t('COMMON.UNMARK_DROP_OUT')
-              //     : t('COMMON.MARK_DROP_OUT'),
-              //   icon: (
-              //     <NoAccountsIcon
-              //       sx={{ color: theme.palette.warning['300'] }}
-              //     />
-              //   ),
-              //   name: isDropout ? 'unmark-drop-out' : 'mark-drop-out',
-              // },
-              {
-                label: t('COMMON.DELETE_USER_FROM_CENTER'),
-                icon: (
-                  <DeleteOutlineIcon
-                    sx={{ color: theme.palette.warning['300'] }}
-                  />
-                ),
-                name: 'delete-User',
-              },
-            ].filter(
-              (option) =>
-                (type === Role.STUDENT ||
-                  (option.name !== 'mark-drop-out' &&
-                    option.name !== 'unmark-drop-out')) &&
-                (!(isFromProfile || isDropout) ||
-                  option.name !== 'reassign-centers')
-            )
+                // {
+                //   label: t('COMMON.REASSIGN_CENTERS'),
+                //   icon: (
+                //     <ApartmentIcon
+                //       sx={{ color: theme.palette.warning['300'] }}
+                //     />
+                //   ),
+                //   name: 'reassign-centers',
+                // },
+                {
+                  label: t('COMMON.FEEDBACK'),
+                  icon: (
+                    <ApartmentIcon
+                      sx={{ color: theme.palette.warning['300'] }}
+                    />
+                  ),
+                  name: 'FeedBack',
+                },
+                {
+                  label: t('COMMON.DELETE_USER_FROM_CENTER'),
+                  icon: (
+                    <DeleteOutlineIcon
+                      sx={{ color: theme.palette.warning['300'] }}
+                    />
+                  ),
+                  name: 'delete-User',
+                },
+              ].filter(
+                (option) =>
+                  (type === Role.STUDENT ||
+                    (option.name !== 'mark-drop-out' &&
+                      option.name !== 'unmark-drop-out')) &&
+                  (!(isFromProfile || isDropout) ||
+                    option.name !== 'reassign-centers')
+              )
         }
         renderCustomContent={renderCustomContent}
       />
 
-      {isDropout ? (
-        <DropOutModal
-          open={showModal}
-          onClose={() => setShowModal(false)}
-          cohortMembershipId={cohortMembershipId}
-          isButtonAbsent={true}
-          statusReason={statusReason}
-          userId={userId}
-          reloadState={reloadState}
-          setReloadState={setReloadState}
-        />
-      ) : (
-        <DropOutModal
-          open={showModal}
-          onClose={() => setShowModal(false)}
-          cohortMembershipId={cohortMembershipId}
-          userId={userId}
-          reloadState={reloadState}
-          setReloadState={setReloadState}
-        />
-      )}
+      <FeedBackModel
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        cohortMembershipId={cohortMembershipId}
+        cohortId={cohortID}
+        userId={userId}
+        reloadState={reloadState}
+        setReloadState={setReloadState}
+      />
 
       <ConfirmationModal
         message={t('COMMON.SURE_REASSIGN_CENTER')}

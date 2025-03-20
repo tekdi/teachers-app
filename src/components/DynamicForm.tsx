@@ -76,7 +76,6 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
     (state: any) => state.setSubmittedButtonStatus
   );
 
-  
   useEffect(() => {
     setSubmittedButtonStatus(false);
   }, []);
@@ -187,7 +186,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
               );
               break;
             }
-            case '^[0-9]{10}$': {
+            case '^[0-9]{9}$': {
               if (
                 schema.properties?.[property]?.validation?.includes('mobile')
               ) {
@@ -299,7 +298,10 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   };
   const handleChange = async (event: any) => {
     const sanitizedData = sanitizeFormData(event.formData);
-    if (event.formData?.username !== formData?.username && (formData?.username||formData?.username==="")) {
+    if (
+      event.formData?.username !== formData?.username &&
+      (formData?.username || formData?.username === '')
+    ) {
       if (event.formData?.username !== '') {
         setIsGetUserName(false);
         setSuggestions([]);
