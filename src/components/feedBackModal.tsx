@@ -58,7 +58,6 @@ function FeedBackModel({
   const handleSubmit = async () => {
     setLoading(true);
     try {
-
       const customFields = Object.keys(formData).map((fieldId) => ({
         fieldId,
         value: formData[fieldId],
@@ -73,7 +72,7 @@ function FeedBackModel({
       console.log('Submitting payload:', dynamicBody);
 
       const response = await updateCohortMemberStatus({
-        memberStatus: 'active', 
+        memberStatus: 'active',
         statusReason: 'Feedback submitted',
         membershipId: cohortMembershipId,
         dynamicBody,
@@ -82,8 +81,8 @@ function FeedBackModel({
       console.log('API Response:', response);
 
       showToastMessage('Feedback submitted successfully', 'success');
-      onClose(); 
-      setReloadState(true); /
+      onClose();
+      setReloadState(true);
     } catch (error) {
       console.error('Error submitting feedback:', error);
       showToastMessage('Failed to submit feedback', 'error');
