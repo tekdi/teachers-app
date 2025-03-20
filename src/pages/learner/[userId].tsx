@@ -748,6 +748,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
                 setReloadState={setReloadState ?? (() => {})}
                 onLearnerDelete={handleLearnerDelete}
                 isFromProfile={true}
+                cohortID={cohortId}
               />
             )}
           </Box>

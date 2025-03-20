@@ -166,7 +166,8 @@
     "COUNTY": "County",
     "SUB_COUNTY": "Sub-County",
     "ALL_COUNTY": "All County",
-    "ALL_SUB_COUNTY": "All Sub County"
+    "ALL_SUB_COUNTY": "All Sub County",
+    "FEEDBACK": "Submit Feedback"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",

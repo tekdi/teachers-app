@@ -2,9 +2,7 @@ import LearnersListItem from '@/components/LearnersListItem';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import useStore from '@/store/store';
 import { Role, Status, limit } from '@/utils/app.constant';
-import {
-  toPascalCase
-} from '@/utils/Helper';
+import { toPascalCase } from '@/utils/Helper';
 import { Box, Grid } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
@@ -40,7 +38,9 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
   const [userData, setUserData] = React.useState<UserDataProps[]>();
   const [filteredData, setFilteredData] = useState(userData);
 
-  const setCohortLearnerCount = useStore((state) => state.setCohortLearnerCount);
+  const setCohortLearnerCount = useStore(
+    (state) => state.setCohortLearnerCount
+  );
 
   const [isLearnerDeleted, setIsLearnerDeleted] =
     React.useState<boolean>(false);
@@ -67,7 +67,10 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
                 (field: { label: string }) => field.label === 'AGE'
               );
               return {
-                name: toPascalCase(user?.firstName || '') + ' ' + (user?.lastName ? toPascalCase(user.lastName) : ""),
+                name:
+                  toPascalCase(user?.firstName || '') +
+                  ' ' +
+                  (user?.lastName ? toPascalCase(user.lastName) : ''),
                 userId: user?.userId,
                 memberStatus: user?.status,
                 statusReason: user?.statusReason,
@@ -79,10 +82,9 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
             setCohortLearnerCount(userDetails.length);
             setUserData(userDetails);
             setFilteredData(userDetails);
-          }
-          else{
+          } else {
             setUserData([]);
-            setCohortLearnerCount(0)
+            setCohortLearnerCount(0);
             setFilteredData([]);
           }
         }
@@ -107,10 +109,12 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
     // const query = event.target.value.toLowerCase();
     // setSearchQuery(query);
 
-    const filtered = userData?.filter((data) =>
-    data?.name?.toLowerCase()?.includes(searchTerm) || data?.enrollmentNumber?.toLowerCase()?.includes(searchTerm)
-  );
-  setFilteredData(filtered);
+    const filtered = userData?.filter(
+      (data) =>
+        data?.name?.toLowerCase()?.includes(searchTerm) ||
+        data?.enrollmentNumber?.toLowerCase()?.includes(searchTerm)
+    );
+    setFilteredData(filtered);
   };
   const theme = useTheme<any>();
 
@@ -120,50 +124,48 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
         <Loader showBackdrop={true} loadingText={t('COMMON.LOADING')} />
       ) : (
         <>
-         <SearchBar
-        onSearch={handleSearch}
-        value={searchTerm}
-        placeholder={t('COMMON.SEARCH_STUDENT')}
-      />
+          <SearchBar
+            onSearch={handleSearch}
+            value={searchTerm}
+            placeholder={t('COMMON.SEARCH_STUDENT')}
+          />
 
-         <Box
-          sx={{
-            '@media (min-width: 900px)': {
-              background: theme.palette.action.selected,
-              marginTop: '12px',
-              paddingBottom: '20px',
-              paddingTop: '10px',
-
-            },
-          }}
-        >
-                  
-          <Grid container>
-
-            {filteredData?.map((data: any) => {
-              return (
-                <Grid xs={12} sm={12} md={6} lg={4} key={data.userId}>
-                  <LearnersListItem
-                    type={Role.STUDENT}
-                    userId={data.userId}
-                    learnerName={data.name}
-                    enrollmentId={data.enrollmentNumber}
-                    age={data.age}
-                    cohortMembershipId={data.cohortMembershipId}
-                    isDropout={data.memberStatus === Status.DROPOUT}
-                    statusReason={data.statusReason}
-                    reloadState={reloadState}
-                    setReloadState={setReloadState}
-                    showMiniProfile={true}
-                    onLearnerDelete={handleLearnerDelete}
-                  />
-                </Grid>
-              );
-            })}
-            {!filteredData?.length && <NoDataFound />}
-          </Grid>
-        </Box></>
-       
+          <Box
+            sx={{
+              '@media (min-width: 900px)': {
+                background: theme.palette.action.selected,
+                marginTop: '12px',
+                paddingBottom: '20px',
+                paddingTop: '10px',
+              },
+            }}
+          >
+            <Grid container>
+              {filteredData?.map((data: any) => {
+                return (
+                  <Grid xs={12} sm={12} md={6} lg={4} key={data.userId}>
+                    <LearnersListItem
+                      type={Role.STUDENT}
+                      userId={data.userId}
+                      learnerName={data.name}
+                      enrollmentId={data.enrollmentNumber}
+                      age={data.age}
+                      cohortMembershipId={data.cohortMembershipId}
+                      isDropout={data.memberStatus === Status.DROPOUT}
+                      statusReason={data.statusReason}
+                      reloadState={reloadState}
+                      setReloadState={setReloadState}
+                      showMiniProfile={true}
+                      onLearnerDelete={handleLearnerDelete}
+                      cohortID={cohortId}
+                    />
+                  </Grid>
+                );
+              })}
+              {!filteredData?.length && <NoDataFound />}
+            </Grid>
+          </Box>
+        </>
       )}
     </div>
   );
