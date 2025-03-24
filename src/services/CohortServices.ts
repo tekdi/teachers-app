@@ -1,5 +1,10 @@
-import { CohortListParam, GetCohortSearchParams,StateListParam,CenterListParam } from '@/utils/Interfaces';
-import { Status,CohortTypes } from '@/utils/app.constant';
+import {
+  CohortListParam,
+  GetCohortSearchParams,
+  StateListParam,
+  CenterListParam,
+} from '@/utils/Interfaces';
+import { Status, CohortTypes } from '@/utils/app.constant';
 import { get, post } from './RestClient';
 
 export const cohortList = async ({
@@ -123,19 +128,16 @@ export const getStateBlockDistrictList = async ({
     const response = await post(apiUrl, requestBody);
     return response?.data;
   } catch (error) {
-    console.error("Error in fetching state, block, and district list", error);
+    console.error('Error in fetching state, block, and district list', error);
     throw error;
   }
 };
 
 export const formatedDistricts = async () => {
   const adminState = JSON.parse(
-    localStorage.getItem("adminInfo") || "{}"
-  ).customFields.find(
-    (field: any) => field.label === "STATES"
-  );
+    localStorage.getItem('adminInfo') || '{}'
+  ).customFields.find((field: any) => field.label === 'STATES');
   try {
-   
     const reqParams = {
       limit: 0,
       offset: 0,
@@ -143,10 +145,9 @@ export const formatedDistricts = async () => {
         // name: searchKeyword,
         states: adminState.code,
         type: CohortTypes.DISTRICT,
-        status: ["active"]
-
+        status: ['active'],
       },
-      sort: ["name", "asc"],
+      sort: ['name', 'asc'],
     };
 
     const response = await cohortList(reqParams);
@@ -154,40 +155,45 @@ export const formatedDistricts = async () => {
     const cohortDetails = response?.results?.cohortDetails || [];
     const object = {
       controllingfieldfk: adminState.code,
-      fieldName: "districts",
+      fieldName: 'districts',
     };
 
-    const optionReadResponse = await getStateBlockDistrictList(object); 
-    const result = optionReadResponse?.result?.values; 
-    const uniqueResults = result.reduce((acc: any, current: any) => {
-      const isDuplicate = acc.some((item: any) => item.label === current.label);
-      if (!isDuplicate) {
+    const optionReadResponse = await getStateBlockDistrictList(object);
+    const result = optionReadResponse?.result?.values;
+    const uniqueResults = result.reduce(
+      (acc: any, current: any) => {
+        const isDuplicate = acc.some(
+          (item: any) => item.label === current.label
+        );
+        if (!isDuplicate) {
           acc.push(current);
-      }
-      return acc;
-  }, [] as typeof result);
-   
-    const matchedCohorts = uniqueResults?.map((value: any) => {
-      const cohortMatch = cohortDetails.find((cohort: any) => cohort?.name?.toLowerCase() === value?.label?.toLowerCase());
-      return cohortMatch ? { ...value } : null;
-    }).filter(Boolean);
+        }
+        return acc;
+      },
+      [] as typeof result
+    );
 
-   
+    const matchedCohorts = uniqueResults
+      ?.map((value: any) => {
+        const cohortMatch = cohortDetails.find(
+          (cohort: any) =>
+            cohort?.name?.toLowerCase() === value?.label?.toLowerCase()
+        );
+        return cohortMatch ? { ...value } : null;
+      })
+      .filter(Boolean);
 
     return matchedCohorts;
-
   } catch (error) {
-    console.error("Error in getting District Details", error);
+    console.error('Error in getting District Details', error);
     return error;
   }
 };
 
 export const formatedBlocks = async (districtCode: string) => {
   const adminState = JSON.parse(
-    localStorage.getItem("adminInfo") || "{}"
-  ).customFields.find(
-    (field: any) => field.label === "STATES"
-  );
+    localStorage.getItem('adminInfo') || '{}'
+  ).customFields.find((field: any) => field.label === 'STATES');
   try {
     const reqParams = {
       limit: 0,
@@ -197,9 +203,9 @@ export const formatedBlocks = async (districtCode: string) => {
         country: adminState?.code,
         states: districtCode,
         type: CohortTypes.CITY,
-        status: ["active"],
+        status: ['active'],
       },
-      sort: ["name", "asc"],
+      sort: ['name', 'asc'],
     };
 
     const response = await cohortList(reqParams);
@@ -207,27 +213,27 @@ export const formatedBlocks = async (districtCode: string) => {
 
     const object = {
       controllingfieldfk: districtCode,
-      fieldName: "city",
+      fieldName: 'city',
     };
     const optionReadResponse = await getStateBlockDistrictList(object);
     const result = optionReadResponse?.result?.values;
 
-   
-
     const matchedCohorts = result
       ?.map((value: any) => {
         const cohortMatch = cohortDetails.find(
-          (cohort: any) => cohort?.name?.toLowerCase() === value?.label?.toLowerCase()
+          (cohort: any) =>
+            cohort?.name?.toLowerCase() === value?.label?.toLowerCase()
         );
         // Include cohortId if the match is found
-        return cohortMatch ? { ...value, cohortId: cohortMatch.cohortId } : null;
+        return cohortMatch
+          ? { ...value, cohortId: cohortMatch.cohortId }
+          : null;
       })
       .filter(Boolean);
 
-
     return matchedCohorts;
   } catch (error) {
-    console.log("Error in getting Channel Details", error);
+    console.log('Error in getting Channel Details', error);
     return error;
   }
 };
@@ -246,7 +252,7 @@ export const getCenterList = async ({
     });
     return response?.data;
   } catch (error) {
-    console.error("error in fetching user details", error);
+    console.error('error in fetching user details', error);
     return error;
   }
 };

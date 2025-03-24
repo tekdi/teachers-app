@@ -163,33 +163,34 @@ const CentersPage = () => {
             });
 
             if (
-              accessGranted('showBlockLevelCohort', accessControl, userRole) && response
+              accessGranted('showBlockLevelCohort', accessControl, userRole) &&
+              response
             ) {
+              const blockData = response
+                .filter((block: any) => block.type === 'CENTER')
+                .map((block: any) => {
+                  const blockName = block.cohortName;
+                  const blockId = block.cohortId;
+                  localStorage.setItem('blockParentId', blockId);
 
-                const blockData = response
-                  .filter((block: any) => block.type === "CENTER")
-                  .map((block: any) => {
-                    const blockName = block.cohortName;
-                    const blockId = block.cohortId;
-                    localStorage.setItem('blockParentId', blockId);
+                  const stateField = block?.customField.find(
+                    (field: any) => field.label === 'STATES'
+                  );
+                  const state = stateField ? stateField.value : '';
 
-                    const stateField = block?.customField.find(
-                      (field: any) => field.label === 'STATES'
-                    );
-                    const state = stateField ? stateField.value : '';
+                  const districtField = block?.customField.find(
+                    (field: any) => field.label === 'DISTRICTS'
+                  );
+                  const district = districtField ? districtField.value : '';
+                  return { blockName, blockId, state, district };
+                });
 
-                    const districtField = block?.customField.find(
-                      (field: any) => field.label === 'DISTRICTS'
-                    );
-                    const district = districtField ? districtField.value : '';
-                    return { blockName, blockId, state, district };
-                  });
-                
-                setBlockData(blockData);
-              }
+              setBlockData(blockData);
+            }
 
             if (
-              accessGranted('showBlockLevelCohort', accessControl, userRole) && response
+              accessGranted('showBlockLevelCohort', accessControl, userRole) &&
+              response
             ) {
               response.map((res: any) => {
                 const centerData = res?.childData.map((child: any) => {
@@ -209,22 +210,31 @@ const CentersPage = () => {
               });
             }
 
-            if (accessGranted('showTeacherCohorts', accessControl, userRole) && response) {
+            if (
+              accessGranted('showTeacherCohorts', accessControl, userRole) &&
+              response
+            ) {
               const cohortData = response
-                .filter((center: any) => center.type === "COHORT") // Filter centers with type "cohort"
-                .map((center: any) => {
-                  const cohortName = center.cohortName;
-                  const cohortId = center.cohortId;
-                  const centerTypeField = center?.customField.find(
-                    (field: any) => field.label === 'TYPE_OF_COHORT'
-                  );
-                  const centerType = centerTypeField ? centerTypeField.value : '';
-                  return {
-                    cohortName,
-                    cohortId,
-                    centerType,
-                    cohortStatus: center?.cohortStatus,
-                  };
+                .filter((center: any) => center.type === 'CENTER')
+                .flatMap((center: any) => {
+                  return center.childData.map((child: any) => {
+                    const cohortName = child.name;
+                    const cohortId = child.cohortId;
+
+                    const centerTypeField = center?.customField?.find(
+                      (field: any) => field.label === 'TYPE_OF_COHORT'
+                    );
+                    const centerType = centerTypeField
+                      ? centerTypeField.value
+                      : '';
+
+                    return {
+                      cohortName,
+                      cohortId,
+                      centerType,
+                      cohortStatus: child.status,
+                    };
+                  });
                 });
 
               setTimeout(() => {
@@ -542,33 +552,44 @@ const CentersPage = () => {
                       center.centerType?.toUpperCase() === CenterType.REGULAR ||
                       center.centerType === ''
                   ) && (
-                      <CenterList
-                        title="CENTERS.REGULAR_CENTERS"
-                        
-                        centers={filteredCenters
-                          .filter((center) => center.centerType?.toUpperCase() === CenterType.REGULAR || center.centerType === '')
-                          .sort((a, b) => (a.cohortName || "").localeCompare(b.cohortName || ""))}
-                        router={router}
-                        theme={theme}
-                        t={t}
-                      />
-                    )}
+                    <CenterList
+                      title="CENTERS.REGULAR_CENTERS"
+                      centers={filteredCenters
+                        .filter(
+                          (center) =>
+                            center.centerType?.toUpperCase() ===
+                              CenterType.REGULAR || center.centerType === ''
+                        )
+                        .sort((a, b) =>
+                          (a.cohortName || '').localeCompare(b.cohortName || '')
+                        )}
+                      router={router}
+                      theme={theme}
+                      t={t}
+                    />
+                  )}
 
                   {/* Remote Centers */}
                   {filteredCenters.some(
                     (center) =>
                       center.centerType?.toUpperCase() === CenterType.REMOTE
                   ) && (
-                      <CenterList
-                        title="CENTERS.REMOTE_CENTERS"
-                        centers={filteredCenters
-                          .filter((center) => center.centerType?.toUpperCase() === CenterType.REMOTE)
-                          .sort((a, b) => (a.cohortName || "").localeCompare(b.cohortName || ""))}
-                        router={router}
-                        theme={theme}
-                        t={t}
-                      />
-                    )}
+                    <CenterList
+                      title="CENTERS.REMOTE_CENTERS"
+                      centers={filteredCenters
+                        .filter(
+                          (center) =>
+                            center.centerType?.toUpperCase() ===
+                            CenterType.REMOTE
+                        )
+                        .sort((a, b) =>
+                          (a.cohortName || '').localeCompare(b.cohortName || '')
+                        )}
+                      router={router}
+                      theme={theme}
+                      t={t}
+                    />
+                  )}
                 </>
               ) : (
                 <NoDataFound />

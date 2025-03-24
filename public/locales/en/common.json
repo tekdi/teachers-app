@@ -621,7 +621,9 @@
     "BOARD": "Board",
     "TVETS": "TVETs",
     "SKILL": "Skills",
-    "MIDDLE_NAME": "Middle Name"
+    "MIDDLE_NAME": "Middle Name",
+    "MIDDLE_NAME_OR_FATHER/MOTHER_NAME": "Middle Name Or Father/Mother Name",
+    "QUALIFICATIONS_DETAILS": "Qualification Details"
   },
   "FORM_ERROR_MESSAGES": {
     "INVALID_INPUT": "Invalid Input.",
