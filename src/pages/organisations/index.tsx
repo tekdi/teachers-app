@@ -19,7 +19,10 @@ import {
   Container,
   Typography,
 } from '@mui/material';
+import Image from 'next/image';
+import editIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
+import { useTheme } from '@mui/material/styles';
 import CloseIcon from '@mui/icons-material/Close';
 import SearchIcon from '@mui/icons-material/Search';
 import {
@@ -27,10 +30,12 @@ import {
   createOrganisation,
   updateOrganisation,
 } from '@/lib/api';
-import Header from '@/components/Header';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import Header from '@/components/Header';
+import { Edit } from '@mui/icons-material';
 
 export default function Organisations() {
+  const theme = useTheme<any>();
   const [organisations, setOrganisations] = useState([]);
   const [open, setOpen] = useState(false);
   const [currentOrg, setCurrentOrg] = useState({
@@ -41,6 +46,12 @@ export default function Organisations() {
   });
   const [editMode, setEditMode] = useState(false);
   const [search, setSearch] = useState('');
+  const [websiteError, setWebsiteError] = useState('');
+
+  const validateWebsite = (url: string) => {
+    const urlRegex = /^(https?:\/\/)?([\w-]+\.)+[\w-]{2,4}(\/[\w-]*)*\/?$/;
+    return urlRegex.test(url);
+  };
 
   useEffect(() => {
     fetchOrganisations();
@@ -71,6 +82,11 @@ export default function Organisations() {
   };
 
   const handleSave = async () => {
+    if (currentOrg.website.trim() && !validateWebsite(currentOrg.website)) {
+      setWebsiteError('Please enter a valid URL.');
+      return;
+    }
+    setWebsiteError('');
     try {
       if (editMode) {
         await updateOrganisation(currentOrg, currentOrg.id);
@@ -92,15 +108,23 @@ export default function Organisations() {
     <>
       <Header />
       <Container maxWidth="lg" sx={{ py: 4 }}>
-        <Box mb={4}>
+        <Box
+          boxShadow={'0px 2px 6px 2px #00000026'}
+          bgcolor={'white'}
+          pt={2}
+          borderRadius={2}
+        >
           {/* <h1>Organisations</h1> */}
 
           <Box
+            p={2}
+            // borderBottom={'1px solid #0000001f'}
+            // pb={0}
             sx={{
               display: 'flex',
               flexDirection: { xs: 'column', sm: 'row' }, // Column on small screens, row on md+
               gap: 2,
-              mb: 4,
+              // mb: 0,
               alignItems: 'center',
               justifyContent: 'space-between',
             }}
@@ -131,9 +155,15 @@ export default function Organisations() {
             {/* Create Organisation Button */}
             <Box sx={{ width: { xs: '100%', sm: 'fit-content' } }} width={{}}>
               <Button
-                variant="contained"
-                color="primary"
-                sx={{ fontWeight: '500', py: '10px', whiteSpace: 'nowrap' }}
+                sx={{
+                  textTransform: 'none',
+                  fontSize: '14px',
+                  color: '#000', // Changed text color to black
+                  minWidth: '200px',
+                  p: '8px 16px',
+                  border: '1px solid #1E1B16',
+                  boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
+                }}
                 fullWidth
                 startIcon={<AddIcon />}
                 onClick={() => handleOpen()}
@@ -143,22 +173,64 @@ export default function Organisations() {
             </Box>
           </Box>
 
-          <TableContainer component={Paper} sx={{ overflowX: 'auto', mt: 2 }}>
+          <TableContainer component={Paper} sx={{ overflowX: 'auto', mt: 0 }}>
             <Table>
-              <TableHead sx={{ bgcolor: '#fdbe16' }}>
+              <TableHead sx={{ bgcolor: '#F8EFE7' }}>
                 <TableRow>
-                  <TableCell sx={{ minWidth: 120 }}>Name</TableCell>
-                  <TableCell sx={{ minWidth: 200 }}>Description</TableCell>
-                  <TableCell sx={{ minWidth: 200 }}>Website</TableCell>
-                  <TableCell sx={{ minWidth: 150 }}>Actions</TableCell>
+                  <TableCell
+                    sx={{
+                      minWidth: 120,
+                      fontSize: '12px',
+                      fontWeight: '400',
+                      color: '#635E57',
+                      border: 'none',
+                    }}
+                  >
+                    Name
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      minWidth: 200,
+                      fontSize: '12px',
+                      fontWeight: '400',
+                      color: '#635E57',
+                      border: 'none',
+                    }}
+                  >
+                    Description
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      minWidth: 200,
+                      fontSize: '12px',
+                      fontWeight: '400',
+                      color: '#635E57',
+                      border: 'none',
+                    }}
+                  >
+                    Website
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      minWidth: 150,
+                      fontSize: '12px',
+                      fontWeight: '400',
+                      color: '#635E57',
+                      border: 'none',
+                    }}
+                  >
+                    Actions
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {organisations.map((org: any) => (
                   <TableRow key={org.id}>
-                    <TableCell>{org.name}</TableCell>
-                    <TableCell>{org.description}</TableCell>
-                    <TableCell>
+                    <TableCell sx={{ color: '#353C44' }}>{org.name}</TableCell>
+                    <TableCell sx={{ color: '#353C44' }}>
+                      {org.description}
+                    </TableCell>
+                    <TableCell sx={{ color: '#353C44' }}>
                       <a
                         href={org.website}
                         target="_blank"
@@ -167,12 +239,15 @@ export default function Organisations() {
                         {org.website}
                       </a>
                     </TableCell>
-                    <TableCell>
+                    <TableCell sx={{ color: '#353C44' }}>
                       <Stack
                         direction={{ xs: 'column', sm: 'row' }}
                         spacing={1}
                       >
-                        <Button onClick={() => handleOpen(org)} size="small">
+                        <Button
+                          startIcon={<Edit />}
+                          onClick={() => handleOpen(org)}
+                        >
                           Edit
                         </Button>
                       </Stack>
@@ -234,6 +309,7 @@ export default function Organisations() {
                 label="Name"
                 fullWidth
                 value={currentOrg.name}
+                required
                 onChange={(e) =>
                   setCurrentOrg({ ...currentOrg, name: e.target.value })
                 }
@@ -256,6 +332,8 @@ export default function Organisations() {
                   setCurrentOrg({ ...currentOrg, website: e.target.value })
                 }
                 margin="normal"
+                error={!!websiteError}
+                helperText={websiteError}
               />
             </DialogContent>
             <DialogActions
@@ -270,6 +348,7 @@ export default function Organisations() {
                 variant="contained"
                 sx={{ py: '10px', width: '100%', fontWeight: '500' }}
                 color="primary"
+                disabled={!currentOrg.name.trim()}
               >
                 Save
               </Button>
