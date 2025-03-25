@@ -90,6 +90,9 @@ function FeedBackModel({
       setLoading(false);
     }
   };
+  const isFormValid = Object.values(formData).every(
+    (value) => value.trim() !== ''
+  );
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -126,6 +129,7 @@ function FeedBackModel({
                   }
                   multiline={field.type === 'textarea'}
                   rows={field.type === 'textarea' ? 4 : 1}
+                  required
                 />
               </Box>
             ))}
@@ -134,7 +138,7 @@ function FeedBackModel({
                 variant="contained"
                 color="primary"
                 onClick={handleSubmit}
-                disabled={loading}
+                disabled={loading || !isFormValid}
               >
                 {loading ? 'Submitting...' : 'Submit'}
               </Button>
