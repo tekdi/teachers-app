@@ -39,7 +39,7 @@ export interface OpportunityList {
   description: string;
   location: any;
   is_remote: boolean;
-  opportunity_type: string;
+  // opportunity_type: string;
   experience_level: string;
   min_experience: number;
   min_salary: number;
