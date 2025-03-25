@@ -93,7 +93,7 @@ export async function getOpportunities(
   };
 }
 
-export async function getOpportunity(id: string) {
+export async function getOpportunity(id: any) {
   return fetchApi<any>(`/opportunity-service/opportunities/${id}`);
 }
 
