@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import Header from '@/components/Header';
+// import Header from '@/components/Header';
 import { limit } from '@/utils/app.constant';
 import useStore from '@/store/store';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
@@ -22,11 +22,16 @@ import {
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { showToastMessage } from '@/components/Toastify';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { GetStaticPaths } from 'next';
 import { toPascalCase } from '@/utils/Helper';
-import SearchBar from '@/components/Searchbar';
+// import SearchBar from '@/components/Searchbar';
+import { SearchInput } from '@/components/search-input';
 import { useTranslation } from 'next-i18next';
-import { applyToOpportunity, getAppliedUsers } from '@/lib/api';
+import { applyToOpportunity, getAppliedUsers, getOpportunity } from '@/lib/api';
 import { getCohortList } from '@/services/CohortServices';
+import { id } from 'date-fns/locale';
+import Header from '@/components/Header';
 
 interface UserDataProps {
   name: string;
@@ -36,7 +41,7 @@ interface UserDataProps {
   enrollmentNumber: string;
 }
 
-export default function MapYouth(oppId: any) {
+export default function MapYouth() {
   const router = useRouter();
   const [reloadState, setReloadState] = useState<boolean>(false);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
@@ -51,6 +56,7 @@ export default function MapYouth(oppId: any) {
   const opportunityId = router.query.id;
   const { t } = useTranslation();
   const [myCohorts, setMyCohorts] = useState<any[]>([]);
+  const [oppportunityName, setOpportuntiName] = useState('');
   const [cohortId, setCohortId] = useState<string>('');
 
   useEffect(() => {
@@ -59,16 +65,27 @@ export default function MapYouth(oppId: any) {
       if (userId) {
         const getMyCohortList = async () => {
           const response = await getCohortList(userId);
+          console.log(response, 'response-----------');
 
-          // Filter cohorts where type is "COHORT"
-          const cohortList = response.filter(
-            (center: any) => center.type === 'COHORT'
-          );
+          const extractCohorts = (data: any[]): any[] => {
+            let cohorts: any[] = [];
+            data.forEach((item) => {
+              if (item.type === 'COHORT') {
+                cohorts.push(item);
+              }
+              if (item.childData && item.childData.length > 0) {
+                cohorts = cohorts.concat(extractCohorts(item.childData));
+              }
+            });
+            return cohorts;
+          };
+
+          const cohortList = extractCohorts(response);
           console.log(cohortList, 'cohortList');
 
           setMyCohorts(cohortList); // Set only the filtered cohorts
 
-          if (cohortList.length > 0) {
+          if (cohortList?.length > 0) {
             setCohortId(cohortList[0].cohortId); // Default to the first cohort
           }
         };
@@ -77,8 +94,19 @@ export default function MapYouth(oppId: any) {
     }
   }, []);
 
+  const getOpportunityDetails = async () => {
+    const response = await getOpportunity(opportunityId);
+    setOpportuntiName(response.result.data.title);
+    console.log(response.result.data.title, 'response-----');
+  };
+
+  useEffect(() => {
+    getOpportunityDetails();
+  }, []);
+
   useEffect(() => {
     const getCohortMemberList = async () => {
+      setFilteredData([]);
       setLoading(true);
       try {
         if (cohortId && opportunityId) {
@@ -86,16 +114,12 @@ export default function MapYouth(oppId: any) {
           const filters = { cohortId };
 
           // Fetch all users in the cohort
-          const response = await getMyCohortMemberList({
-            limit,
-            page,
-            filters,
-          });
+          const response = await getMyCohortMemberList({ limit, filters });
+
           const cohortUsers = response?.result?.userDetails || [];
 
           // Fetch applied users
           const appliedUsersList = await getAppliedUsers(opportunityId);
-
           if (
             !appliedUsersList?.result?.data ||
             !Array.isArray(appliedUsersList.result.data)
@@ -112,7 +136,6 @@ export default function MapYouth(oppId: any) {
           const appliedUsers = appliedUsersList.result.data.map(
             (applicant: any) => applicant.application_user_id
           );
-
           // Filter out users who have already applied
           const filteredUsers = cohortUsers.filter(
             (user: any) => !appliedUsers.includes(user.userId)
@@ -129,11 +152,14 @@ export default function MapYouth(oppId: any) {
             enrollmentNumber: user?.username,
           }));
 
-          setCohortLearnerCount(userDetails.length);
+          // setCohortLearnerCount(userDetails.length);
+          console.log(userDetails, 'userDetails');
+
           setUserData(userDetails);
           setFilteredData(userDetails);
         }
       } catch (error) {
+        setFilteredData([]);
         console.error('Error fetching cohort list:', error);
         showToastMessage('Something went wrong!', 'error');
       } finally {
@@ -157,11 +183,13 @@ export default function MapYouth(oppId: any) {
       showToastMessage('Please select at least one user', 'error');
       return;
     }
+
     const statusId = 'adb327a6-7abb-4f7a-9810-eff745071a1b';
     const appliedSkills = ['2c8278c3-cdfe-42af-8960-ab80f2d6aed7'];
 
     try {
-      for (const userId of selectedUsers) {
+      // Create an array of promises for all selected users
+      const promises = selectedUsers.map(async (userId) => {
         const requestData = {
           opportunity_id: opportunityId,
           user_id: userId,
@@ -170,16 +198,30 @@ export default function MapYouth(oppId: any) {
         };
 
         const response = await applyToOpportunity(requestData);
+        return response.responseCode === 200; // Return true if successful, false otherwise
+      });
 
-        if (response.responseCode === 200) {
-          showToastMessage(`User mapped successfully!`, 'success');
-        } else {
-          showToastMessage(response.message || `Failed to map user`, 'error');
-        }
+      // Wait for all promises to resolve
+      const results = await Promise.all(promises);
+
+      // Count successes and failures
+      const successCount = results.filter((result) => result).length;
+      const failureCount = results.length - successCount;
+
+      // Display a single toast message based on the results
+      if (successCount > 0) {
+        showToastMessage(
+          `${successCount} user(s) mapped successfully!`,
+          'success'
+        );
+      }
+
+      if (failureCount > 0) {
+        showToastMessage(`${failureCount} user(s) failed to map.`, 'error');
       }
     } catch (error) {
       console.error('Error submitting mapping:', error);
-      showToastMessage('Something went wrong!', 'error');
+      // showToastMessage("Something went wrong!", "error");
     }
   };
 
@@ -208,7 +250,7 @@ export default function MapYouth(oppId: any) {
   return (
     <>
       <Header />
-      <Container maxWidth="sm">
+      <Container maxWidth="sm" sx={{ mt: 3 }}>
         <Button
           startIcon={<ArrowBackIcon />}
           onClick={() => router.push('/opportunities')}
@@ -217,82 +259,99 @@ export default function MapYouth(oppId: any) {
           {t('OPPORTUNITY.BACK_TO_OPPORTUNITY')}
         </Button>
         <Typography variant="h3" mb={3} gutterBottom>
-          {t('OPPORTUNITY.MAP_YOUTH_TO_OPPORTUNITY')} {opportunityId}
+          {t('OPPORTUNITY.MAP_YOUTH_TO_OPPORTUNITY')} {oppportunityName}
         </Typography>
 
         {/* Search Box */}
         <Box mb={2}>
-          <SearchBar
-            fullWidth
+          <SearchInput
+            // fullWidth
             onSearch={handleSearch}
-            value={searchTerm}
+            defaultValue={searchTerm}
             placeholder={t('OPPORTUNITY.SEARCH_YOUTH')}
           />
         </Box>
 
         {/* Cohort Filter Dropdown */}
-        <FormControl fullWidth sx={{
-          mb: 2
-        }}>
+        <FormControl
+          fullWidth
+          sx={{
+            mb: 2,
+          }}
+        >
           <InputLabel>{t('OPPORTUNITY.SELECT_BATCH')}</InputLabel>
           <Select
             label={t('OPPORTUNITY.SELECT_BATCH')}
             value={cohortId}
             onChange={(e) => setCohortId(e.target.value)}
+            fullWidth
           >
-            {myCohorts.map((cohort) => (
+            {myCohorts?.map((cohort) => (
               <MenuItem key={cohort.cohortId} value={cohort.cohortId}>
-                {cohort.cohortName}
+                {cohort.cohortName || cohort.name}{' '}
               </MenuItem>
             ))}
           </Select>
         </FormControl>
 
         <List>
-          {filteredData.map((user) => (
-            <ListItem
-              key={user.userId}
+          {filteredData.length > 0 ? (
+            filteredData.map((user) => (
+              <ListItem
+                key={user.userId}
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  borderTop: '1px solid #0000001A',
+                }}
+              >
+                <ListItemAvatar>
+                  <Avatar
+                    sx={{
+                      boxShadow:
+                        '0px 2px 6px 2px #00000026, 0px 1px 2px 0px #0000004D',
+                      border: '1.5px solid #B3B3B3',
+                      background: 'white',
+                      color: '#1F1B13',
+                      fontSize: '16px',
+                      lineHeight: '24px',
+                      fontWeight: '500',
+                    }}
+                  >
+                    {getInitials(user.name)}
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText
+                  sx={{
+                    color: '#2C2C2C',
+                    fontWeight: '400',
+                    '& p': {
+                      marginBottom: 0, // Remove bottom margin
+                    },
+                  }}
+                  primary={user.name}
+                  secondary={user.enrollmentNumber}
+                />
+                <Checkbox
+                  edge="end"
+                  checked={selectedUsers.includes(user.userId)}
+                  onClick={() => handleToggle(user.userId)}
+                  disableRipple
+                />
+              </ListItem>
+            ))
+          ) : (
+            <Typography
               sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                borderTop: '1px solid #0000001A',
+                textAlign: 'center',
+                color: '#2C2C2C',
+                fontWeight: '500',
+                marginTop: '16px',
               }}
             >
-              <ListItemAvatar>
-                <Avatar
-                  sx={{
-                    boxShadow:
-                      '0px 2px 6px 2px #00000026, 0px 1px 2px 0px #0000004D',
-                    border: '1.5px solid #B3B3B3',
-                    background: 'white',
-                    color: '#1F1B13',
-                    fontSize: '16px',
-                    lineHeight: '24px',
-                    fontWeight: '500',
-                  }}
-                >
-                  {getInitials(user.name)}
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText
-                sx={{
-                  color: '#2C2C2C',
-                  fontWeight: '400',
-                  '& p': {
-                    marginBottom: 0, // Remove bottom margin
-                  },
-                }}
-                primary={user.name}
-                secondary={user.enrollmentNumber}
-              />
-              <Checkbox
-                edge="end"
-                checked={selectedUsers.includes(user.userId)}
-                onClick={() => handleToggle(user.userId)}
-                disableRipple
-              />
-            </ListItem>
-          ))}
+              No youth found
+            </Typography>
+          )}
         </List>
 
         <Box
@@ -319,3 +378,19 @@ export default function MapYouth(oppId: any) {
     </>
   );
 }
+
+export async function getStaticProps({ locale }: any) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+      // Will be passed to the page component as props
+    },
+  };
+}
+
+export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
+  return {
+    paths: [], //indicates that no page needs be created at build time
+    fallback: 'blocking', //indicates the type of fallback
+  };
+};
