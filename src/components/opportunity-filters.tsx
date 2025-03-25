@@ -29,6 +29,7 @@ interface OpportunityFiltersProps {
   selectedSkills?: string;
   selectedStatus?: string;
   onFilterChange: (name: string, value: string) => void;
+  isAllOpportunities?: boolean;
 }
 
 interface options {
@@ -44,6 +45,7 @@ export function OpportunityFilters({
   selectedSkills,
   selectedStatus,
   onFilterChange,
+  isAllOpportunities = false,
 }: OpportunityFiltersProps) {
   const [categories, setCategories] = useState([]);
   const [skills, setSkills] = useState([]);
@@ -175,21 +177,24 @@ export function OpportunityFilters({
       </FormControl>
 
       {/* Status Filter */}
-      <FormControl size="small" sx={{ minWidth: 150 }}>
-        <InputLabel>{t('OPPORTUNITY.STATUS')}</InputLabel>
-        <Select
-          label={t('OPPORTUNITY.STATUS')}
-          value={selectedStatus || 'all'}
-          onChange={(e) => onFilterChange('status', e.target.value)}
-        >
-          <MenuItem value="all">{t('OPPORTUNITY.ALL_STATUS')}</MenuItem>
-          {statusOptions?.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+      {!isAllOpportunities && (
+        <FormControl size="small" sx={{ minWidth: 150 }}>
+          <InputLabel>{t('OPPORTUNITY.STATUS')}</InputLabel>
+          <Select
+            label={t('OPPORTUNITY.STATUS')}
+            value={selectedStatus || 'all'}
+            onChange={(e) => onFilterChange('status', e.target.value)}
+            // disabled={isAllOpportunities}
+          >
+            <MenuItem value="all">{t('OPPORTUNITY.ALL_STATUS')}</MenuItem>
+            {statusOptions?.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      )}
 
       {/* Country Filter */}
       <FormControl size="small" sx={{ minWidth: 150 }}>

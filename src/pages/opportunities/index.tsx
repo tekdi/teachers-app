@@ -278,6 +278,7 @@ export default function OpportunitiesPage() {
                   selectedSkills={skills as string}
                   selectedStatus={status as string}
                   onFilterChange={handleFilterChange}
+                  isAllOpportunities={selectedTab === 'all' ? true : false}
                 />
               </Box>
             </Box>

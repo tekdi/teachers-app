@@ -450,6 +450,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
         displayValue: field?.value ? toPascalCase(field?.value) : '-',
       };
     });
+  console.log(learnerDetailsByOrder, 'learnerdetails-----');
 
   //------ Test Report API Integration------
 
