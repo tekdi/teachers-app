@@ -17,7 +17,7 @@ export interface Opportunity {
   created_at: string;
   updated_at: string;
   // organisation: string;
-  role_type: string;
+  opportunity_type: string;
   // salary: string;
   work_nature: string;
   benefits: string[];
@@ -52,7 +52,7 @@ export interface OpportunityList {
   created_at: string;
   updated_at: string;
   organisation: string;
-  role_type: string;
+  opportunity_type: string;
   salary: string;
   work_nature: string;
   benefits: string[];

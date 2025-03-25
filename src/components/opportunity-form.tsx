@@ -48,7 +48,7 @@ const formSchema = z
     skills: z.array(z.string()).min(1, 'At least one skill is required'),
     no_of_candidates: z.number().min(1, 'Number of candidates is required'),
     status: z.string().min(1, 'Status is required'),
-    role_type: z.string().min(1, 'Role type is required'),
+    opportunity_type: z.string().min(1, 'Role type is required'),
     work_nature: z.string().min(1, 'Work nature is required'),
     benefits: z.array(z.string()).min(1, 'Benefits are required'),
     country: z.string().min(1, 'Country is required'),
@@ -116,10 +116,10 @@ export function OpportunityForm({
     skills: [],
     no_of_candidates: 0,
     status: 'pending',
-    role_type: '',
+    opportunity_type: '',
     work_nature: '',
     benefits: [],
-    offer_letter_provided: 'false',
+    offer_letter_provided: 'No',
     pricing_type: '',
     ...initialData,
   };
@@ -379,17 +379,17 @@ export function OpportunityForm({
 
           <Grid item xs={12}>
             <Controller
-              name="role_type"
+              name="opportunity_type"
               control={control}
               render={({ field }) => (
-                <FormControl fullWidth error={!!errors.role_type}>
+                <FormControl fullWidth error={!!errors.opportunity_type}>
                   <InputLabel>{t('OPPORTUNITY.ROLETYPE')}</InputLabel>
                   <Select
                     {...field}
                     label={t('OPPORTUNITY.ROLETYPE')}
-                    // value={defaultValues?.role_type}
+                    // value={defaultValues?.opportunity_type}
                   >
-                    {['Part-time', 'Full-time', 'Intern', 'Attachment'].map(
+                    {['part-time', 'full-time', 'intern', 'attachment'].map(
                       (role) => (
                         <MenuItem key={role} value={role}>
                           {role}
@@ -397,8 +397,10 @@ export function OpportunityForm({
                       )
                     )}
                   </Select>
-                  {errors.role_type && (
-                    <FormHelperText>{errors.role_type.message}</FormHelperText>
+                  {errors.opportunity_type && (
+                    <FormHelperText>
+                      {errors.opportunity_type.message}
+                    </FormHelperText>
                   )}
                 </FormControl>
               )}
@@ -421,12 +423,12 @@ export function OpportunityForm({
                     onChange={(e) => field.onChange(e.target.value)}
                   >
                     <FormControlLabel
-                      value="true"
+                      value="Yes"
                       control={<Radio />}
                       label="Yes"
                     />
                     <FormControlLabel
-                      value="false"
+                      value="No"
                       control={<Radio />}
                       label="No"
                     />
