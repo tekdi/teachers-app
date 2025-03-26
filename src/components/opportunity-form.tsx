@@ -41,7 +41,7 @@ const formSchema = z
     title: z.string().min(1, 'Title is required'),
     description: z.string().min(1, 'Description is required'),
     min_experience: z.number().min(0, 'Minimum experience cannot be negative'),
-    min_salary: z.number().min(0, 'Minimum salary cannot be negative'), // Add this field
+    min_salary: z.string().min(0, 'Minimum salary cannot be negative'), // Add this field
     max_salary: z.string().min(1, 'Stipend cannot be negative'),
     category: z.string().min(1, 'At least one category is required'),
     company: z.string().min(1, 'Organisation is required'),
@@ -109,7 +109,7 @@ export function OpportunityForm({
     title: '',
     description: '',
     min_experience: 0,
-    min_salary: 0,
+    min_salary: '0',
     max_salary: '0',
     category: initialData?.category?.name || '',
     company: '',
