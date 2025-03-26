@@ -160,10 +160,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
             if (
               schema.properties?.[property]?.validation?.includes('numeric')
             ) {
-              error.message = t('FORM_ERROR_MESSAGES.MUST_BE_GREATER_THAN', {
-                fieldname: property,
-                minLength: schema.properties?.[property]?.minLength,
-              });
+              error.message = t('Age must be greater than or equal to 16');
             }
           } else if (
             schema.properties?.[property]?.validation?.includes('numeric')

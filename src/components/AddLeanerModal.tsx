@@ -389,112 +389,63 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
 
   const handleChange = (event: IChangeEvent<any>) => {
     const { formData } = event;
-
     let newFormData = { ...formData };
 
-    console.log('Form data changed:', event.formData);
-    console.log('schema:', schema);
-    const dob = event.formData.dob;
-    const dependencyKeys = Object.keys(schema.dependencies)[0];
-    const dependentFields = schema?.dependencies?.dob?.properties;
-
-    // if (!isUsernameEdited) {
-    //   if (event.formData.firstName && event.formData.lastName) {
-    //     event.formData.username =
-    //       event.formData.firstName + event.formData.lastName;
-    //   } else {
-    //     event.formData.username = null;
-    //   }
-    // }
+    const dob = formData.dob;
 
     if (dob) {
       const age = calculateAge(new Date(dob));
 
-      if (age >= 18) {
-        const newSchema = { ...schema };
-        const dependentFieldKeys = Object.keys(dependentFields);
+      // Auto-populate the age field
+      newFormData.age = age;
 
-        newSchema.properties = Object.keys(newSchema.properties)
-          .filter((key) => !dependentFieldKeys.includes(key))
-          .reduce((acc: any, key) => {
-            acc[key] = newSchema.properties[key];
-            return acc;
-          }, {});
-
-        // Remove dependent fields from the formData
-        const updatedFormData = { ...event.formData };
-        dependentFieldKeys.forEach((key) => {
-          delete updatedFormData[key];
-        });
-
-        newSchema.dependencies = Object.keys(newSchema.dependencies)
-          .filter((key) => !dependentFieldKeys.includes(key))
-          .reduce((acc: any, key) => {
-            // Remove dependentFieldKeys from properties within dependencies
-            const filteredProperties = Object.keys(
-              newSchema.dependencies[key].properties
-            )
-              .filter((propKey) => !dependentFieldKeys.includes(propKey))
-              .reduce((nestedAcc: any, propKey) => {
-                nestedAcc[propKey] =
-                  newSchema.dependencies[key].properties[propKey];
-                return nestedAcc;
-              }, {});
-
-            // Add filtered dependencies back
-            acc[key] = { properties: filteredProperties };
-            return acc;
-          }, {});
-
-        setSchema(newSchema);
-        // setFormData(updatedFormData);
-        // setCustomFormData(updatedFormData);
-        newFormData = { ...updatedFormData };
-      } else if (age < 18) {
-        const newSchema = { ...originalSchema };
-        // Add dependent fields and reorder them in the schema
-        const reorderedFields: any[] = [];
-        const filteredFields = Object.keys(newSchema.properties).filter(
-          (key) => !Object.keys(dependentFields).includes(key)
-        );
-
-        filteredFields.forEach((key) => {
-          reorderedFields.push(key);
-          if (key === dependencyKeys) {
-            reorderedFields.push(...Object.keys(dependentFields));
-          }
-        });
-
-        newSchema.properties = reorderedFields.reduce((acc: any, key: any) => {
-          acc[key] = dependentFields[key] || newSchema.properties[key];
-          return acc;
-        }, {});
-
-        setSchema(newSchema);
-        // setFormData({ ...event.formData });
-        // setCustomFormData({ ...event.formData });
-        newFormData = { ...event.formData };
+      if (age < 16) {
+        showToastMessage('Date of birth should be 16 or above.', 'error');
+        setCustomFormData(newFormData);
+        return;
       }
-    } else {
-      // setFormData(event.formData);
     }
 
-    if (!isEditModal) {
-      const { firstName, lastName, username } = newFormData;
+    // Update the form value state
+    setCustomFormData(newFormData);
 
+    if (!isEditModal) {
+      const { firstName, lastName } = newFormData;
       if (firstName && lastName) {
         setCustomFormData({
           ...newFormData,
         });
       }
-      // else {
-      //   setCustomFormData({ ...formData });
-      // }
     }
-    //  else {
-    //   setCustomFormData({ ...formData });
-    // }
   };
+
+  useEffect(() => {
+    async function fetchAndUpdateSchema() {
+      if (formResponse) {
+        try {
+          const updatedResponse =
+            await updateFieldsWithExternalData(formResponse);
+          const { schema, uiSchema } = GenerateSchemaAndUiSchema(
+            updatedResponse,
+            t
+          );
+
+          // Mark the "age" field as disabled in the uiSchema
+          if (uiSchema.age) {
+            uiSchema.age['ui:disabled'] = true;
+          }
+
+          setSchema(schema);
+          setUiSchema(uiSchema);
+          setOriginalSchema({ ...schema });
+        } catch (error) {
+          console.error('Error updating schema:', error);
+        }
+      }
+    }
+
+    fetchAndUpdateSchema();
+  }, [formResponse, t]);
 
   const handleError = (errors: any) => {
     console.log('Form errors:', errors);
