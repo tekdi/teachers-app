@@ -97,7 +97,28 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
     assignedTeamLeader,
     assignedTeamLeaderNames,
     selectedStateCohortId,
+    selectedCountryName,
   } = useLocationState(open, onClose, 'YOUTH');
+  const countryCodeMapping: Record<string, string> = {
+    Burundi: '+257',
+    Comoros: '+269',
+    Djibouti: '+253',
+    Eritrea: '+291',
+    Ethiopia: '+251',
+    Kenya: '+254',
+    Madagascar: '+261',
+    Malawi: '+265',
+    Mauritius: '+230',
+    Mozambique: '+258',
+    Rwanda: '+250',
+    Seychelles: '+248',
+    Somalia: '+252',
+    'South Sudan': '+211',
+    Tanzania: '+255',
+    Uganda: '+256',
+    Zambia: '+260',
+    Zimbabwe: '+263',
+  };
 
   const { data: formResponse, isPending } = useFormRead(
     FormContext.USERS,
@@ -392,6 +413,12 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
     let newFormData = { ...formData };
 
     const dob = formData.dob;
+    if (!isEditModal) {
+      const countryName = selectedCountryName?.[0];
+      if (countryName && countryCodeMapping[countryName]) {
+        newFormData.mobile_country_code = countryCodeMapping[countryName];
+      }
+    }
 
     if (dob) {
       const age = calculateAge(new Date(dob));
@@ -433,6 +460,9 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
           // Mark the "age" field as disabled in the uiSchema
           if (uiSchema.age) {
             uiSchema.age['ui:disabled'] = true;
+          }
+          if (uiSchema.mobile_country_code) {
+            uiSchema.mobile_country_code['ui:disabled'] = true;
           }
 
           setSchema(schema);
