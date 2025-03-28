@@ -57,7 +57,7 @@ export default function MapYouth() {
   const { t } = useTranslation();
   const [myCohorts, setMyCohorts] = useState<any[]>([]);
   const [oppportunityName, setOpportuntiName] = useState('');
-  const [cohortId, setCohortId] = useState<string>('');
+  const [cohortId, setCohortId] = useState<any>('');
   const [centerCohortId, setCenterCohortId] = useState();
 
   useEffect(() => {
