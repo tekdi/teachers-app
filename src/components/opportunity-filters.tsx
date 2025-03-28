@@ -28,6 +28,9 @@ interface OpportunityFiltersProps {
   selectedCategory?: string;
   selectedSkills?: string;
   selectedStatus?: string;
+  selectedCountry?: string;
+  selectedState?: string;
+  selectedCity?: string;
   onFilterChange: (name: string, value: string) => void;
   isAllOpportunities?: boolean;
 }
@@ -44,6 +47,9 @@ export function OpportunityFilters({
   selectedCategory,
   selectedSkills,
   selectedStatus,
+  selectedCountry,
+  selectedState,
+  selectedCity,
   onFilterChange,
   isAllOpportunities = false,
 }: OpportunityFiltersProps) {
@@ -54,12 +60,11 @@ export function OpportunityFilters({
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
-  const [locationCode, setLocationCode] = useState('');
+  // const [locationCode, setLocationCode] = useState('');
 
-  const [selectedCountry, setSelectedCountry] = useState('');
-  const [selectedState, setSelectedState] = useState('');
-  const [selectedCity, setSelectedCity] = useState('');
   const { t } = useTranslation();
+
+  console.log(selectedCountry, 'selectedCountry-------------');
 
   useEffect(() => {
     async function fetchCategories() {
@@ -114,23 +119,23 @@ export function OpportunityFilters({
   }, [selectedCountry, selectedState]);
 
   // Fetch Location Code based on Country, State, and City
-  useEffect(() => {
-    if (selectedCountry && selectedState && selectedCity) {
-      getLocationCode({
-        country: selectedCountry,
-        state: selectedState,
-        city: selectedCity,
-      })
-        .then((data) => {
-          const code = data.result[0]?.id || '';
-          setLocationCode(code);
-          onFilterChange('location', code);
-        })
-        .catch((err) => console.error('Error fetching location code:', err));
-    } else {
-      setLocationCode('');
-    }
-  }, [selectedCountry, selectedState, selectedCity]);
+  // useEffect(() => {
+  //   if (selectedCountry && selectedState && selectedCity) {
+  //     getLocationCode({
+  //       country: selectedCountry,
+  //       state: selectedState,
+  //       city: selectedCity,
+  //     })
+  //       .then((data) => {
+  //         const code = data.result[0]?.id || '';
+  //         setLocationCode(code);
+  //         onFilterChange('location', code);
+  //       })
+  //       .catch((err) => console.error('Error fetching location code:', err));
+  //   } else {
+  //     setLocationCode('');
+  //   }
+  // }, [selectedCountry, selectedState, selectedCity]);
 
   return (
     <Box
@@ -201,9 +206,10 @@ export function OpportunityFilters({
         <InputLabel>{t('OPPORTUNITY.COUNTRY')}</InputLabel>
         <Select
           label={t('OPPORTUNITY.COUNTRY')}
-          value={selectedCountry}
-          onChange={(e) => setSelectedCountry(e.target.value)}
+          value={selectedCountry ? selectedCountry : 'all'}
+          onChange={(e) => onFilterChange('country', e.target.value)}
         >
+          <MenuItem value="all">{t('OPPORTUNITY.ALL_COUNTRY')}</MenuItem>
           {countries?.map((item: options) => (
             <MenuItem key={item.country} value={item.country}>
               {item.country}
@@ -217,10 +223,11 @@ export function OpportunityFilters({
         <InputLabel>{t('OPPORTUNITY.COUNTY')}</InputLabel>
         <Select
           label={t('OPPORTUNITY.COUNTY')}
-          value={selectedState}
-          onChange={(e) => setSelectedState(e.target.value)}
+          value={selectedState || 'all'}
+          onChange={(e) => onFilterChange('state', e.target.value)}
           disabled={!selectedCountry}
         >
+          <MenuItem value="all">{t('OPPORTUNITY.ALL_COUNTY')}</MenuItem>
           {states?.map((item: options) => (
             <MenuItem key={item.state} value={item.state}>
               {item.state}
@@ -234,10 +241,11 @@ export function OpportunityFilters({
         <InputLabel>{t('OPPORTUNITY.SUBCOUNTY')}</InputLabel>
         <Select
           label={t('OPPORTUNITY.SUBCOUNTY')}
-          value={selectedCity}
-          onChange={(e) => setSelectedCity(e.target.value)}
+          value={selectedCity || 'all'}
+          onChange={(e) => onFilterChange('city', e.target.value)}
           disabled={!selectedState}
         >
+          <MenuItem value="all">{t('OPPORTUNITY.ALL_SUB_COUNTY')}</MenuItem>
           {cities?.map((item: options) => (
             <MenuItem key={item.city} value={item.city}>
               {item.city}

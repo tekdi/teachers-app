@@ -40,6 +40,7 @@ import {
 } from '@/lib/api';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useTheme } from '@mui/material/styles';
 
 export default function OpportunitiesPage() {
   const router = useRouter();
@@ -51,8 +52,12 @@ export default function OpportunitiesPage() {
     category,
     status = 'approved',
     location,
+    country,
+    state,
+    city,
   } = router.query;
   const { t } = useTranslation();
+  const theme = useTheme<any>();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedOpportunity, setSelectedOpportunity] =
     useState<Opportunity | null>(null);
@@ -90,6 +95,9 @@ export default function OpportunitiesPage() {
           skills: skills as string,
           status: finalStatus,
           location: location as string,
+          country: country as string,
+          state: state as string,
+          city: city as string,
           created_by, // Pass userId if "Created by Me" tab is selected
         });
 
@@ -227,9 +235,15 @@ export default function OpportunitiesPage() {
 
             <Box mb={2}>
               <Button
-                variant="contained"
-                color="primary"
-                sx={{ fontWeight: '500', py: '10px', whiteSpace: 'nowrap' }}
+                sx={{
+                  textTransform: 'none',
+                  fontSize: '14px',
+                  color: 'black',
+                  minWidth: '200px',
+                  p: '8px 16px',
+                  border: '1px solid #1E1B16',
+                  boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
+                }}
                 fullWidth
                 startIcon={<AddIcon />}
                 onClick={() => {
@@ -277,6 +291,9 @@ export default function OpportunitiesPage() {
                   selectedCategory={category as string}
                   selectedSkills={skills as string}
                   selectedStatus={status as string}
+                  selectedCountry={country as string}
+                  selectedState={state as string}
+                  selectedCity={city as string}
                   onFilterChange={handleFilterChange}
                   isAllOpportunities={selectedTab === 'all' ? true : false}
                 />

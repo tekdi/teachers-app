@@ -425,7 +425,6 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
           ) || '-'
         );
       };
-
       if (
         field.type === 'drop_down' ||
         field.type === 'radio' ||
@@ -433,7 +432,6 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
         (field.type === 'Radio' && field.options && field.value.length)
       ) {
         const selectedOption = getSelectedOption(field);
-        console.log(selectedOption, 'selectedOption');
 
         return {
           ...field,
@@ -450,7 +448,6 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
         displayValue: field?.value ? toPascalCase(field?.value) : '-',
       };
     });
-  console.log(learnerDetailsByOrder, 'learnerdetails-----');
 
   //------ Test Report API Integration------
 

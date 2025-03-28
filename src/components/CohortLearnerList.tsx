@@ -148,7 +148,7 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
                       type={Role.STUDENT}
                       userId={data.userId}
                       learnerName={data.name}
-                      enrollmentId={data.enrollmentNumber}
+                      // enrollmentId={data.enrollmentNumber}
                       age={data.age}
                       cohortMembershipId={data.cohortMembershipId}
                       isDropout={data.memberStatus === Status.DROPOUT}

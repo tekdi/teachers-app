@@ -58,6 +58,7 @@ export default function MapYouth() {
   const [myCohorts, setMyCohorts] = useState<any[]>([]);
   const [oppportunityName, setOpportuntiName] = useState('');
   const [cohortId, setCohortId] = useState<string>('');
+  const [centerCohortId, setCenterCohortId] = useState();
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
@@ -65,7 +66,6 @@ export default function MapYouth() {
       if (userId) {
         const getMyCohortList = async () => {
           const response = await getCohortList(userId);
-          console.log(response, 'response-----------');
 
           const extractCohorts = (data: any[]): any[] => {
             let cohorts: any[] = [];
@@ -80,13 +80,35 @@ export default function MapYouth() {
             return cohorts;
           };
 
+          const extractCohortsCenter = (data: any[]): any[] => {
+            let centers: any[] = [];
+            data.forEach((item) => {
+              if (item.type === 'CENTER') {
+                centers.push(item);
+              }
+              if (item.childData && item.childData.length > 0) {
+                centers = centers.concat(extractCohortsCenter(item.childData));
+              }
+            });
+            return centers;
+          };
+
           const cohortList = extractCohorts(response);
-          console.log(cohortList, 'cohortList');
+
+          const centerList = extractCohortsCenter(response);
+
+          if (centerList.length > 0) {
+            setCenterCohortId(centerList[0].cohortId); // Set the first CENTER cohortId
+          }
 
           setMyCohorts(cohortList); // Set only the filtered cohorts
 
           if (cohortList?.length > 0) {
-            setCohortId(cohortList[0].cohortId); // Default to the first cohort
+            setCohortId(
+              centerList.length > 0
+                ? centerList[0].cohortId
+                : cohortList[0].cohortId
+            ); // Default to the first CENTER cohortId if available, otherwise the first COHORT
           }
         };
         getMyCohortList();
@@ -282,13 +304,21 @@ export default function MapYouth() {
           <InputLabel>{t('OPPORTUNITY.SELECT_BATCH')}</InputLabel>
           <Select
             label={t('OPPORTUNITY.SELECT_BATCH')}
-            value={cohortId}
-            onChange={(e) => setCohortId(e.target.value)}
+            value={cohortId || 'all'} // Default to "All Batch" if cohortId is not set
+            onChange={(e) => {
+              const selectedValue = e.target.value;
+              if (selectedValue === 'all') {
+                setCohortId(centerCohortId); // Pass centerCohortId when "All Batch" is selected
+              } else {
+                setCohortId(selectedValue); // Pass the selected cohortId
+              }
+            }}
             fullWidth
           >
+            <MenuItem value="all">All Batch</MenuItem>
             {myCohorts?.map((cohort) => (
               <MenuItem key={cohort.cohortId} value={cohort.cohortId}>
-                {cohort.cohortName || cohort.name}{' '}
+                {cohort.cohortName || cohort.name}
               </MenuItem>
             ))}
           </Select>
@@ -330,7 +360,7 @@ export default function MapYouth() {
                     },
                   }}
                   primary={user.name}
-                  secondary={user.enrollmentNumber}
+                  // secondary={user.enrollmentNumber}
                 />
                 <Checkbox
                   edge="end"
