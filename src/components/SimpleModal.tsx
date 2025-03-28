@@ -44,6 +44,7 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
     padding: theme.spacing(2),
     zIndex: 1,
     borderRadius: '12px 12px 0 0',
+    pb: '8px',
   };
 
   const footerStyle = {
@@ -83,6 +84,7 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
           <Typography
             variant="h3"
             sx={{ color: theme.palette.warning['A200'] }}
+            mb={0}
             component="h2"
           >
             {modalTitle}
@@ -94,7 +96,7 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
           />
         </Box>
 
-        <Divider />
+        <Divider sx={{ my: '2px' }} />
 
         {/* Scrollable Content */}
         <Box sx={contentStyle}>{children}</Box>
