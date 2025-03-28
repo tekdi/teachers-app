@@ -36,6 +36,9 @@ import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import { useTranslation } from 'next-i18next';
 import type { OpportunityList } from '@/types/opportunity';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import PeopleIcon from '@mui/icons-material/People';
+import { showToastMessage } from './Toastify';
+
 interface Status {
   status: string;
   id: string;
@@ -156,7 +159,10 @@ export function OpportunitiesList({
       });
 
       await Promise.all(updatePromises);
-      alert('Statuses updated successfully!');
+      if (updatePromises.length > 0) {
+        await Promise.all(updatePromises);
+        showToastMessage('Status updated successfully!'); // Display success message only once
+      }
       setOpenModal(false);
     } catch (error) {
       console.error('Error updating statuses:', error);
@@ -313,36 +319,29 @@ export function OpportunitiesList({
                         ? opportunity.opportunity_type
                         : opportunity.opportunity_opportunity_type ||
                           'Full Time'}{' '}
-                      |{' '}
-                      {opportunity.experience_level
-                        ? opportunity.experience_level
-                        : opportunity.opportunity_experience_level ||
-                          'Immediate Joiner'}
                     </Typography>
                   </Box>
 
-                  <Typography
+                  <Box
                     sx={{
-                      fontWeight: '400',
-                      color: '#484848',
-                      letterSpacing: '0.32px',
+                      display: 'flex',
+                      alignItems: 'center', // Align icon and text vertically in one line
+                      gap: 2, // Add spacing between the icon and the text
                     }}
-                    variant="body2"
-                    mb={0}
                   >
-                    KES{' '}
-                    {Math.floor(
-                      opportunity.min_salary
-                        ? opportunity.min_salary
-                        : opportunity.opportunity_min_salary
-                    )}{' '}
-                    -{' '}
-                    {Math.floor(
-                      opportunity.max_salary
-                        ? opportunity.max_salary
-                        : opportunity.opportunity_max_salary
-                    )}
-                  </Typography>
+                    <PeopleIcon fontSize="small" />
+                    <Typography
+                      sx={{
+                        fontWeight: '400',
+                        color: '#484848',
+                        letterSpacing: '0.32px',
+                      }}
+                      variant="body2"
+                      mb={0}
+                    >
+                      {`${opportunity.no_of_candidates} Openings`}
+                    </Typography>
+                  </Box>
 
                   {opportunity.status === 'approved' && (
                     <Box
@@ -366,6 +365,22 @@ export function OpportunitiesList({
                           fetchMappedUsers(opportunity.id);
                         }}
                       />
+                    </Box>
+                  )}
+                  {opportunity?.status === 'approved' && (
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        gap: 2,
+                        marginTop: '10px',
+                        fontWeight: 400,
+                      }}
+                    >
+                      <Box>{`Hired ${opportunity?.stats?.hired}`}</Box>
+                      {'|'}
+                      <Box>
+                        {`Available ${Math.max(0, opportunity?.no_of_candidates - opportunity?.stats?.hired)}`}
+                      </Box>
                     </Box>
                   )}
                 </CardContent>

@@ -63,6 +63,9 @@ interface OpportunityFilters {
   category?: string;
   created_by?: string;
   skills?: string;
+  country?: string;
+  state?: string;
+  city?: string;
 }
 
 // API Functions
@@ -202,7 +205,7 @@ export async function getMappedByMe(userId: any) {
   });
 
   const response = await fetchApi<PaginatedResponse<any>>(
-    `/opportunity-service/opportunity-applications?${params}`
+    `/opportunity-service/opportunity-applications/opportunity/list?${params}`
   );
   return {
     items: response.result.data,

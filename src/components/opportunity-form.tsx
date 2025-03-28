@@ -19,6 +19,7 @@ import {
   Switch,
   RadioGroup,
   Radio,
+  Checkbox,
 } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -119,7 +120,7 @@ export function OpportunityForm({
     opportunity_type: '',
     work_nature: '',
     benefits: [],
-    offer_letter_provided: 'No',
+    offer_letter_provided: '',
     pricing_type: '',
     ...initialData,
   };
@@ -131,8 +132,6 @@ export function OpportunityForm({
       ...data,
       location: locationCode, // Ensure mapping happens here
     };
-
-    console.log('Submitting form data:', transformedData);
 
     try {
       setIsLoading(true);
@@ -271,7 +270,7 @@ export function OpportunityForm({
               control={control}
               render={({ field }) => (
                 <FormControl fullWidth error={!!errors.country}>
-                  <InputLabel>{t('OPPORTUNITY.COUNTRY')}</InputLabel>
+                  <InputLabel required>{t('OPPORTUNITY.COUNTRY')}</InputLabel>
                   <Select label={t('OPPORTUNITY.COUNTRY')} {...field}>
                     {countries.map((item) => (
                       <MenuItem key={item.country} value={item.country}>
@@ -289,7 +288,7 @@ export function OpportunityForm({
               control={control}
               render={({ field }) => (
                 <FormControl fullWidth error={!!errors.state}>
-                  <InputLabel>{t('OPPORTUNITY.COUNTY')}</InputLabel>
+                  <InputLabel required>{t('OPPORTUNITY.COUNTY')}</InputLabel>
                   <Select
                     {...field}
                     disabled={!selectedCountry}
@@ -311,7 +310,7 @@ export function OpportunityForm({
               control={control}
               render={({ field }) => (
                 <FormControl fullWidth error={!!errors.city}>
-                  <InputLabel>{t('OPPORTUNITY.SUBCOUNTY')}</InputLabel>
+                  <InputLabel required>{t('OPPORTUNITY.SUBCOUNTY')}</InputLabel>
                   <Select
                     {...field}
                     value={defaultValues?.location?.city}
@@ -334,12 +333,14 @@ export function OpportunityForm({
               control={control}
               render={({ field }) => (
                 <FormControl fullWidth error={!!errors.company}>
-                  <InputLabel>{t('OPPORTUNITY.ORGANISATION')}</InputLabel>
+                  <InputLabel required>
+                    {t('OPPORTUNITY.ORGANISATION')}
+                  </InputLabel>
                   <Select
                     {...field}
                     value={defaultValues?.company?.id}
                     label="Organisation"
-                    onChange={(event) => field.onChange(event.target.value)} // Store a single value
+                    onChange={(event) => field.onChange(event.target.value)}
                   >
                     {organisation.map((org) => (
                       <MenuItem key={org.id} value={org.id}>
@@ -358,7 +359,7 @@ export function OpportunityForm({
               control={control}
               render={({ field }) => (
                 <FormControl fullWidth error={!!errors.category}>
-                  <InputLabel>{t('OPPORTUNITY.CATEGORY')}</InputLabel>
+                  <InputLabel required>{t('OPPORTUNITY.CATEGORY')}</InputLabel>
                   <Select
                     {...field}
                     value={defaultValues?.category?.id}
@@ -383,7 +384,7 @@ export function OpportunityForm({
               control={control}
               render={({ field }) => (
                 <FormControl fullWidth error={!!errors.opportunity_type}>
-                  <InputLabel>{t('OPPORTUNITY.ROLETYPE')}</InputLabel>
+                  <InputLabel required>{t('OPPORTUNITY.ROLETYPE')}</InputLabel>
                   <Select
                     {...field}
                     label={t('OPPORTUNITY.ROLETYPE')}
@@ -392,7 +393,7 @@ export function OpportunityForm({
                     {['part-time', 'full-time', 'intern', 'attachment'].map(
                       (role) => (
                         <MenuItem key={role} value={role}>
-                          {role}
+                          {role.charAt(0).toUpperCase() + role.slice(1)}
                         </MenuItem>
                       )
                     )}
@@ -413,7 +414,7 @@ export function OpportunityForm({
               control={control}
               render={({ field }) => (
                 <FormControl component="fieldset">
-                  <FormLabel component="legend">
+                  <FormLabel component="legend" required>
                     {t('OPPORTUNITY.OFFER_LETTER_PROVIDED')}
                   </FormLabel>
                   <RadioGroup
@@ -449,7 +450,7 @@ export function OpportunityForm({
               control={control}
               render={({ field }) => (
                 <FormControl component="fieldset">
-                  <FormLabel component="legend">
+                  <FormLabel component="legend" required>
                     {t('OPPORTUNITY.PRICING_TYPE')}
                   </FormLabel>
                   <RadioGroup
@@ -480,13 +481,24 @@ export function OpportunityForm({
               control={control}
               render={({ field }) => (
                 <FormControl fullWidth error={!!errors.benefits}>
-                  <InputLabel>{t('OPPORTUNITY.BENIFITS')}</InputLabel>
+                  <InputLabel required>{t('OPPORTUNITY.BENIFITS')}</InputLabel>
                   <Select
+                    label={t('OPPORTUNITY.BENIFITS')}
                     {...field}
                     multiple
-                    // value={defaultValues?.benefits || ''}
-                    onChange={(event) => field.onChange(event.target.value)} // Set single value
+                    value={field.value || []} // Ensure it's an array for multiselect
+                    onChange={(event) => field.onChange(event.target.value)} // Update selected values
                     input={<OutlinedInput label="Benefits" />}
+                    renderValue={(selected) => (
+                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                        {selected.map((value) => {
+                          const benefit = benefits.find((b) => b.id === value);
+                          return benefit ? (
+                            <Chip key={value} label={benefit.name} />
+                          ) : null;
+                        })}
+                      </Box>
+                    )}
                     MenuProps={{
                       PaperProps: {
                         sx: {
@@ -498,6 +510,7 @@ export function OpportunityForm({
                   >
                     {benefits.map((benefit) => (
                       <MenuItem key={benefit.id} value={benefit.id}>
+                        <Checkbox checked={field.value?.includes(benefit.id)} />
                         {benefit.name}
                       </MenuItem>
                     ))}
@@ -542,6 +555,7 @@ export function OpportunityForm({
                   label={t('OPPORTUNITY.STIPEND')}
                   error={!!errors.title}
                   helperText={errors.title?.message}
+                  required
                 />
               )}
             />
@@ -553,7 +567,7 @@ export function OpportunityForm({
               control={control}
               render={({ field }) => (
                 <FormControl fullWidth error={!!errors.work_nature}>
-                  <InputLabel>
+                  <InputLabel required>
                     {t('OPPORTUNITY.WORK_EXPERIENCE_NATURE')}
                   </InputLabel>
                   <Select
@@ -582,9 +596,10 @@ export function OpportunityForm({
               control={control}
               render={({ field }) => (
                 <FormControl fullWidth error={!!errors.skills}>
-                  <InputLabel>{t('OPPORTUNITY.SKILLS')}</InputLabel>
+                  <InputLabel required>{t('OPPORTUNITY.SKILLS')}</InputLabel>
                   <Select
                     {...field}
+                    label={t('OPPORTUNITY.SKILLS')}
                     multiple
                     input={<OutlinedInput label="Skills" />}
                     renderValue={(selected) => (
@@ -600,6 +615,7 @@ export function OpportunityForm({
                   >
                     {skills.map((skill) => (
                       <MenuItem key={skill.id} value={skill.id}>
+                        <Checkbox checked={field.value?.includes(skill.id)} />
                         {skill.name}
                       </MenuItem>
                     ))}
@@ -626,6 +642,7 @@ export function OpportunityForm({
                   helperText={errors.no_of_candidates?.message}
                   inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
                   onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
+                  required
                 />
               )}
             />

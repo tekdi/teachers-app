@@ -157,7 +157,7 @@
     "SUBMIT_YOUR_REQUEST_FOR_ISSUES": "Submit your request and let us assist you with any issues or concerns.",
     "INSTALL": "Install Now",
     "INSTALL_APP_MESSAGE": "For Easy Access, Install the App Now",
-    "INSTALL_APP_DESCRIPTION": "Get access to the Pratham Learning Management Portal (LMP) at your fingertips by installing on your device.",
+    "INSTALL_APP_DESCRIPTION": "Get access to the Pratham Youth Management Portal (YMP) at your fingertips by installing on your device.",
     "RELOAD": "Update Now",
     "UPDATE_AVAILABLE": "New Update Available!",
     "RELOAD_TO_UPDATE": "Get the latest features and improvements—update now to enjoy a smoother experience and stay up-to-date!",
@@ -623,7 +623,8 @@
     "SKILL": "Skills",
     "MIDDLE_NAME": "Middle Name",
     "MIDDLE_NAME_OR_FATHER/MOTHER_NAME": "Middle Name Or Father/Mother Name",
-    "QUALIFICATIONS_DETAILS": "Qualification Details"
+    "QUALIFICATIONS_DETAILS": "Qualification Details",
+    "COUNTRY_CODE": "Country Code"
   },
   "FORM_ERROR_MESSAGES": {
     "INVALID_INPUT": "Invalid Input.",
@@ -854,6 +855,9 @@
     "REJECTED": "Rejected",
     "CLEAR_FILTERS": "Clear Filters",
     "PRICING_TYPE": "Pricing Type",
-    "OFFER_LETTER_PROVIDED": "Offer Letter Provided"
+    "OFFER_LETTER_PROVIDED": "Offer Letter Provided",
+    "ALL_COUNTRY": "All Countries",
+    "ALL_COUNTY": "All Counties",
+    "ALL_SUB_COUNTY": "All Sub-Counties"
   }
 }

@@ -11,6 +11,7 @@ import { showToastMessage } from './Toastify';
 import { useFormRead } from '@/hooks/useFormRead';
 import { FormContext, FormContextType } from '@/utils/app.constant';
 import { updateCohortMemberStatus } from '@/services/MyClassDetailsService';
+import CloseIcon from '@mui/icons-material/Close'; // Import CloseIcon
 
 interface DropOutModalProps {
   open: boolean;
@@ -95,7 +96,13 @@ function FeedBackModel({
   );
 
   return (
-    <Modal open={open} onClose={onClose}>
+    <Modal
+      open={open}
+      onClose={(event, reason) => {
+        if (reason === 'backdropClick') return; // Disable backdrop click
+        onClose();
+      }}
+    >
       <Box
         sx={{
           width: '500px',
@@ -104,8 +111,21 @@ function FeedBackModel({
           padding: '20px',
           borderRadius: '8px',
           boxShadow: 24,
+          position: 'relative', // Enable positioning for the close icon
         }}
       >
+        {/* Close Icon */}
+        <CloseIcon
+          onClick={onClose}
+          sx={{
+            position: 'absolute',
+            top: '10px',
+            right: '10px',
+            cursor: 'pointer',
+            color: '#000',
+          }}
+        />
+
         <Typography variant="h6" mb={2}>
           Feedback Form
         </Typography>
