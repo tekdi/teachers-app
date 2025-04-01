@@ -8,7 +8,7 @@ import {
 import ApartmentIcon from '@mui/icons-material/Apartment';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import { Avatar, Box, Typography } from '@mui/material';
+import { Avatar, Box, Typography, Button, Modal } from '@mui/material';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import BottomDrawer from './BottomDrawer';
@@ -37,6 +37,7 @@ import { useRouter } from 'next/router';
 import ReactGA from 'react-ga4';
 import manageUserStore from '../store/manageUserStore';
 import { showToastMessage } from './Toastify';
+import CloseIcon from '@mui/icons-material/Close';
 
 type Anchor = 'bottom';
 
@@ -56,11 +57,15 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
   onLearnerDelete,
   cohortID,
   isFromProfile = false,
+  showSubmitFeedback,
+  feedBackFormData,
 }) => {
   const [state, setState] = React.useState({
     bottom: false,
   });
   const [showModal, setShowModal] = React.useState<boolean>(false);
+  const [showFeedbackPopup, setShowFeedbackPopup] = useState<boolean>(false);
+  const [showFeedbackModal, setShowFeedbackModal] = useState<boolean>(false);
   const [isUserDeleted, setIsUserDeleted] = React.useState<boolean>(false);
   const [confirmationModalOpen, setConfirmationModalOpen] =
     React.useState<boolean>(false);
@@ -214,6 +219,8 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
       setShowModal(true);
     } else if (name === 'unmark-drop-out') {
       handleUnmarkDropout();
+    } else if (name === 'viewFeedback') {
+      setShowFeedbackPopup(true);
     }
     if (name === 'reassign-centers') {
       setOpenCentersModal(true);
@@ -427,6 +434,14 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
     }
 
     return '';
+  };
+
+  const handleCloseFeedbackPopup = () => {
+    setShowFeedbackPopup(false); // Close the feedback popup
+  };
+  const handleEditFeedback = () => {
+    setShowFeedbackPopup(false); // Close the feedback popup
+    setShowFeedbackModal(true); // Open the FeedBackModel modal
   };
 
   return (
@@ -683,7 +698,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
                 //   name: 'reassign-centers',
                 // },
                 {
-                  label: t('COMMON.FEEDBACK'),
+                  label: t('COMMON.SUBMIT_FEEDBACK'),
                   icon: (
                     <NoAccountsIcon
                       sx={{ color: theme.palette.warning['300'] }}
@@ -719,13 +734,15 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
                 //   name: 'reassign-centers',
                 // },
                 {
-                  label: t('COMMON.FEEDBACK'),
+                  label: !showSubmitFeedback
+                    ? t('COMMON.SUBMIT_FEEDBACK')
+                    : t('COMMON.VIEW_FEEDBACK'),
                   icon: (
                     <ApartmentIcon
                       sx={{ color: theme.palette.warning['300'] }}
                     />
                   ),
-                  name: 'FeedBack',
+                  name: !showSubmitFeedback ? 'FeedBack' : 'viewFeedback',
                 },
                 {
                   label: t('COMMON.DELETE_USER_FROM_CENTER'),
@@ -797,6 +814,78 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
         onUserDelete={handleUserDelete}
         reloadState={reloadState}
         setReloadState={setReloadState}
+      />
+      <Modal
+        open={showFeedbackPopup}
+        onClose={handleCloseFeedbackPopup}
+        aria-labelledby="feedback-popup-title"
+        aria-describedby="feedback-popup-description"
+      >
+        <Box
+          sx={{
+            width: '400px',
+            margin: '100px auto',
+            backgroundColor: 'white',
+            padding: '20px',
+            borderRadius: '8px',
+            boxShadow: 24,
+            position: 'relative',
+          }}
+        >
+          <CloseIcon
+            onClick={handleCloseFeedbackPopup}
+            sx={{
+              position: 'absolute',
+              top: '10px',
+              right: '10px',
+              cursor: 'pointer',
+              color: '#000',
+            }}
+          />
+
+          <Typography
+            id="feedback-popup-title"
+            variant="h6"
+            sx={{ marginBottom: '16px' }}
+          >
+            Feedback Details
+          </Typography>
+
+          {feedBackFormData?.length > 0 ? (
+            feedBackFormData.map((field: any, index: number) => (
+              <Box key={index} sx={{ marginBottom: '12px' }}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                  {field.label}
+                </Typography>
+                <Typography variant="body2">
+                  {field.value.replace(/^"|"$/g, '') || 'N/A'}
+                </Typography>
+              </Box>
+            ))
+          ) : (
+            <Typography variant="body2">No feedback available.</Typography>
+          )}
+
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleEditFeedback}
+            >
+              Edit
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
+      <FeedBackModel
+        open={showFeedbackModal}
+        onClose={() => setShowFeedbackModal(false)}
+        cohortMembershipId={cohortMembershipId}
+        cohortId={cohortID}
+        userId={userId}
+        reloadState={reloadState}
+        setReloadState={setReloadState}
+        feedBackFormData={feedBackFormData}
       />
     </>
   );

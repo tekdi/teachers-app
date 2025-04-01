@@ -100,6 +100,7 @@ export enum FormContextType {
   COHORT = 'COHORT',
   COHORT_MEMBER = 'COHORTMEMBER',
   ADMIN_CENTER = 'ADMIN_CENTER',
+  YOUTH = 'YOUTH',
 }
 export enum ObservationEntityType {
   LEARNER = 'learner',

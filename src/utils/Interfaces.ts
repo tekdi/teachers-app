@@ -371,6 +371,8 @@ export interface LearnerListProps {
   onLearnerDelete: () => void;
   isFromProfile?: boolean;
   cohortID: any;
+  showSubmitFeedback?: boolean;
+  feedBackFormData?: any;
 }
 export interface FacilitatorListParam {
   limit: number;

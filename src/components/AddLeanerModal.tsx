@@ -241,10 +241,11 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
     setSubmittedButtonStatus(true);
     if (learnerFormData) {
       const schemaProperties = schema.properties;
-      let cohortId, fieldData;
+      let cohortId, fieldData, centerCohortId;
       if (typeof window !== 'undefined' && window.localStorage) {
         fieldData = JSON.parse(localStorage.getItem('fieldData') || '');
         cohortId = localStorage.getItem('classId');
+        centerCohortId = localStorage.getItem('centerCohortId');
       }
       const { username, password } = generateUsernameAndPassword(
         fieldData?.state?.stateCode,
@@ -258,7 +259,10 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
           {
             tenantId: tenantId,
             roleId: RoleId.STUDENT,
-            cohortIds: [cohortId],
+            cohortIds: [
+              ...(centerCohortId ? [centerCohortId] : []), // Include centerCohortId only if it is available
+              cohortId, // Always include cohortId
+            ],
           },
         ],
         customFields: [],
