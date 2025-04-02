@@ -336,7 +336,6 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
   };
 
   const filteredFields = filterMiniProfileFields(learnerState.customFieldsData);
-  console.log(filteredFields, 'filteredFields--------');
 
   const getTeamLeadersCenters = async () => {};
 

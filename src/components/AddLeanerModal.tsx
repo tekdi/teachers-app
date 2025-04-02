@@ -259,10 +259,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
           {
             tenantId: tenantId,
             roleId: RoleId.STUDENT,
-            cohortIds: [
-              ...(centerCohortId ? [centerCohortId] : []), // Include centerCohortId only if it is available
-              cohortId, // Always include cohortId
-            ],
+            cohortIds: [cohortId],
           },
         ],
         customFields: [],

@@ -232,12 +232,12 @@ const MenuDrawer: React.FC<DrawerProps> = ({
             alignItems: 'center',
           }}
         >
-          <Box
+          {/* <Box
             className="fs-14 fw-500"
             sx={{ color: theme.palette.warning['A200'] }}
           >
             {t('DASHBOARD.MENU')}
-          </Box>
+          </Box> */}
           {!isDesktop && (
             <Box>
               <IconButton onClick={closeDrawer}>

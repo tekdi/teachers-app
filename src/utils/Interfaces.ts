@@ -92,7 +92,7 @@ export interface CohortMemberList {
   limit?: number;
   page?: number;
   filters: {
-    cohortId: string;
+    cohortId: any;
     role?: string;
     status?: string[];
     name?: string | undefined;
@@ -261,6 +261,7 @@ export interface UpdateCustomField {
   name?: string;
   isEditable?: boolean;
   order: number;
+  displayValue?: any;
 }
 export interface ICohort {
   typeOfCohort: string;

@@ -466,7 +466,10 @@ const LoginPage = () => {
           sx={{ margin: '5px 10px 25px' }}
         >
           <Box
-            sx={{ width: '55%', '@media (max-width: 400px)': { width: '95%' } }}
+            sx={{
+              width: '100%',
+              '@media (max-width: 400px)': { width: '95%' },
+            }}
           >
             <Image
               src={appLogo}
@@ -535,7 +538,7 @@ const LoginPage = () => {
                 <Box
                   display="flex"
                   flexDirection="column"
-                  bgcolor={theme.palette.warning.A200}
+                  // bgcolor={theme.palette.warning.A200}
                   borderRadius={'10px'}
                   sx={{
                     '@media (max-width: 900px)': {
@@ -559,7 +562,7 @@ const LoginPage = () => {
                   >
                     <Box
                       sx={{
-                        width: '60%',
+                        width: '100%',
                         '@media (max-width: 700px)': { width: '95%' },
                       }}
                     >

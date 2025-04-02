@@ -33,6 +33,7 @@ import {
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Header from '@/components/Header';
 import { Edit } from '@mui/icons-material';
+import { CustomPagination } from '@/components/pagination';
 
 export default function Organisations() {
   const theme = useTheme<any>();
@@ -47,6 +48,9 @@ export default function Organisations() {
   const [editMode, setEditMode] = useState(false);
   const [search, setSearch] = useState('');
   const [websiteError, setWebsiteError] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const itemsPerPage = 10;
 
   const validateWebsite = (url: string) => {
     const urlRegex = /^(https?:\/\/)?([\w-]+\.)+[\w-]{2,4}(\/[\w-]*)*\/?$/;
@@ -55,14 +59,19 @@ export default function Organisations() {
 
   useEffect(() => {
     fetchOrganisations();
-  }, [search]);
+  }, [search, currentPage]);
 
   const fetchOrganisations = async () => {
     try {
       const name = search;
-      const params = { name };
+      const params = {
+        name,
+        page: currentPage, // Pass the current page directly
+        limit: itemsPerPage, // Pass the limit
+      };
       const response = await getOrganizations(params);
       setOrganisations(response.result.data || []);
+      setTotalPages(Math.ceil(response.result.total / itemsPerPage)); // Calculate total pages
     } catch (error) {
       console.error('Error fetching organisations', error);
     }
@@ -257,6 +266,13 @@ export default function Organisations() {
               </TableBody>
             </Table>
           </TableContainer>
+          <Box sx={{ display: 'flex', justifyContent: 'end' }}>
+            <CustomPagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={(page: number) => setCurrentPage(page)}
+            />
+          </Box>
 
           {/* Dialog for Add/Edit Organisation */}
           <Dialog

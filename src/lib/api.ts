@@ -197,21 +197,28 @@ export async function getAppliedUsers(opportunityId: any) {
   );
 }
 
-export async function getMappedByMe(userId: any) {
+export async function getMappedByMe(
+  userId: any,
+  page: number,
+  limit: number,
+  search: string
+) {
   const params = new URLSearchParams({
-    page: '1',
-    limit: '100',
+    page: page.toString(),
+    limit: limit.toString(),
     created_by: userId,
+    search: search || '',
   });
 
   const response = await fetchApi<PaginatedResponse<any>>(
     `/opportunity-service/opportunity-applications/opportunity/list?${params}`
   );
+
   return {
     items: response.result.data,
-    total: response.total,
-    totalPages: Math.ceil(response.total / 10),
-    currentPage: 1,
+    total: response.result.total,
+    totalPages: Math.ceil(response.result.total / limit),
+    currentPage: page,
   };
 }
 

@@ -44,8 +44,12 @@ const formSchema = z
     min_experience: z.number().min(0, 'Minimum experience cannot be negative'),
     min_salary: z.string().min(0, 'Minimum salary cannot be negative'), // Add this field
     max_salary: z.string().min(1, 'Stipend cannot be negative'),
-    category: z.string().min(1, 'At least one category is required'),
-    company: z.string().min(1, 'Organisation is required'),
+    category: z.any().refine((value) => value && value !== '', {
+      message: 'At least one category is required',
+    }),
+    company: z.any().refine((value) => value && value !== '', {
+      message: 'Organisation is required',
+    }),
     skills: z.array(z.string()).min(1, 'At least one skill is required'),
     no_of_candidates: z.number().min(1, 'Number of candidates is required'),
     status: z.string().min(1, 'Status is required'),
@@ -112,8 +116,6 @@ export function OpportunityForm({
     min_experience: 0,
     min_salary: '0',
     max_salary: '0',
-    category: initialData?.category?.name || '',
-    company: '',
     skills: [],
     no_of_candidates: 0,
     status: 'pending',
@@ -122,7 +124,12 @@ export function OpportunityForm({
     benefits: [],
     offer_letter_provided: '',
     pricing_type: '',
+    country: initialData?.location?.country || '',
+    state: initialData?.location?.state || '',
+    city: initialData?.location?.city || '',
     ...initialData,
+    category: initialData?.category?.id || '',
+    company: initialData?.company?.id || '',
   };
 
   console.log(defaultValues, 'defaultValues');
@@ -268,18 +275,24 @@ export function OpportunityForm({
             <Controller
               name="country"
               control={control}
-              render={({ field }) => (
-                <FormControl fullWidth error={!!errors.country}>
-                  <InputLabel required>{t('OPPORTUNITY.COUNTRY')}</InputLabel>
-                  <Select label={t('OPPORTUNITY.COUNTRY')} {...field}>
-                    {countries.map((item) => (
-                      <MenuItem key={item.country} value={item.country}>
-                        {item.country}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              )}
+              render={({ field }) => {
+                return (
+                  <FormControl fullWidth error={!!errors.country}>
+                    <InputLabel required>{t('OPPORTUNITY.COUNTRY')}</InputLabel>
+                    <Select
+                      label={t('OPPORTUNITY.COUNTRY')}
+                      {...field}
+                      value={field.value || ''}
+                    >
+                      {countries.map((item) => (
+                        <MenuItem key={item.country} value={item.country}>
+                          {item.country}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                );
+              }}
             />
           </Grid>
           <Grid item xs={12}>
@@ -291,6 +304,7 @@ export function OpportunityForm({
                   <InputLabel required>{t('OPPORTUNITY.COUNTY')}</InputLabel>
                   <Select
                     {...field}
+                    value={field.value || ''}
                     disabled={!selectedCountry}
                     label={t('OPPORTUNITY.COUNTY')}
                   >
@@ -313,7 +327,7 @@ export function OpportunityForm({
                   <InputLabel required>{t('OPPORTUNITY.SUBCOUNTY')}</InputLabel>
                   <Select
                     {...field}
-                    value={defaultValues?.location?.city}
+                    value={field.value || ''}
                     disabled={!selectedState}
                     label={t('OPPORTUNITY.SUBCOUNTY')}
                   >
@@ -331,26 +345,31 @@ export function OpportunityForm({
             <Controller
               name="company"
               control={control}
-              render={({ field }) => (
-                <FormControl fullWidth error={!!errors.company}>
-                  <InputLabel required>
-                    {t('OPPORTUNITY.ORGANISATION')}
-                  </InputLabel>
-                  <Select
-                    {...field}
-                    value={defaultValues?.company?.id}
-                    label="Organisation"
-                    onChange={(event) => field.onChange(event.target.value)}
-                  >
-                    {organisation.map((org) => (
-                      <MenuItem key={org.id} value={org.id}>
-                        {org.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  {errors.company && <FormHelperText></FormHelperText>}
-                </FormControl>
-              )}
+              render={({ field }) => {
+                return (
+                  <FormControl fullWidth error={!!errors.company}>
+                    <InputLabel required>
+                      {t('OPPORTUNITY.ORGANISATION')}
+                    </InputLabel>
+                    <Select
+                      {...field}
+                      value={field.value || ''}
+                      label="Organisation"
+                      onChange={(event) => {
+                        field.onChange(event.target.value);
+                        console.log(event.target.value, 'selected company');
+                      }}
+                    >
+                      {organisation.map((org) => (
+                        <MenuItem key={org.id} value={org.id}>
+                          {org.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    {errors.company && <FormHelperText></FormHelperText>}
+                  </FormControl>
+                );
+              }}
             />
           </Grid>
           <Grid item xs={12}>
@@ -362,7 +381,7 @@ export function OpportunityForm({
                   <InputLabel required>{t('OPPORTUNITY.CATEGORY')}</InputLabel>
                   <Select
                     {...field}
-                    value={defaultValues?.category?.id}
+                    value={field.value || ''}
                     label={t('OPPORTUNITY.CATEGORY')}
                     onChange={(event) => field.onChange(event.target.value)} // Store single value
                   >

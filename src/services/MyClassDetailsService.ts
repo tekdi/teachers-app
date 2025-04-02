@@ -20,9 +20,14 @@ const fetchCohortMemberList = async ({
       sort: ['name', 'asc'],
     });
     return response?.data;
-  } catch (error) {
-    console.error('error in cohort member list API ', error);
-    throw error;
+  } catch (error: any) {
+    // Handle 404 status code
+    if (error.response?.status === 404) {
+      console.warn('No data found for cohort member list.');
+      return { result: [], totalCount: 0 }; // Return an empty response
+    }
+    console.error('Error in cohort member list API:', error);
+    throw error; // Re-throw other errors
   }
 };
 
