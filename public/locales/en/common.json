@@ -167,7 +167,8 @@
     "SUB_COUNTY": "Sub-County",
     "ALL_COUNTY": "All County",
     "ALL_SUB_COUNTY": "All Sub County",
-    "FEEDBACK": "Submit Feedback"
+    "SUBMIT_FEEDBACK": "Submit Feedback",
+    "VIEW_FEEDBACK": "View Feedback"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
@@ -313,7 +314,7 @@
     "AT_REQUIRED_LETTER": "At least one letter or underscore is required",
     "ENTER_NUMBER": "Please enter a number",
     "ENTER_CHARACTER": "Please enter at least one character",
-    "CONTACT_NUMBER": "Contact Number",
+    "CONTACT_NUMBER": "Phone Number",
     "ENROLLMENT_NUMBER": "Enrollment Number",
     "SELECT_OPTION": "Select Option"
   },

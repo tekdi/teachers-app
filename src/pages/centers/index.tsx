@@ -237,6 +237,12 @@ const CentersPage = () => {
                   });
                 });
 
+              const centerCohort = response.filter(
+                (center: any) => center.type === 'CENTER'
+              );
+
+              localStorage.setItem('centerCohortId', centerCohort[0].cohortId);
+
               setTimeout(() => {
                 setCenterData(cohortData);
               });

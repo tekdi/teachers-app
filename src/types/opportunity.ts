@@ -9,8 +9,8 @@ export interface Opportunity {
   min_experience: number;
   min_salary: string;
   max_salary: string;
-  category: any;
-  company: any;
+  category?: any;
+  company?: any;
   skills: string[];
   no_of_candidates: number;
   status: string;
@@ -31,6 +31,7 @@ export interface Opportunity {
   city: string;
   offer_letter_provided: string;
   pricing_type: string;
+  // location?:any
 }
 
 export interface OpportunityList {

@@ -119,7 +119,6 @@ export default function MapYouth() {
   const getOpportunityDetails = async () => {
     const response = await getOpportunity(opportunityId);
     setOpportuntiName(response.result.data.title);
-    console.log(response.result.data.title, 'response-----');
   };
 
   useEffect(() => {
@@ -133,7 +132,7 @@ export default function MapYouth() {
       try {
         if (cohortId && opportunityId) {
           const page = 0;
-          const filters = { cohortId };
+          const filters = { cohortId: cohortId };
 
           // Fetch all users in the cohort
           const response = await getMyCohortMemberList({ limit, filters });
@@ -304,13 +303,15 @@ export default function MapYouth() {
           <InputLabel>{t('OPPORTUNITY.SELECT_BATCH')}</InputLabel>
           <Select
             label={t('OPPORTUNITY.SELECT_BATCH')}
-            value={cohortId || 'all'} // Default to "All Batch" if cohortId is not set
+            value={cohortId.length > 1 ? 'all' : cohortId} // Set "all" if multiple cohort IDs are selected
             onChange={(e) => {
               const selectedValue = e.target.value;
               if (selectedValue === 'all') {
-                setCohortId(centerCohortId); // Pass centerCohortId when "All Batch" is selected
+                // Extract all cohort IDs from myCohorts
+                const allCohortIds = myCohorts.map((cohort) => cohort.cohortId);
+                setCohortId(allCohortIds); // Set cohortId to an array of all cohort IDs
               } else {
-                setCohortId(selectedValue); // Pass the selected cohortId
+                setCohortId([selectedValue]); // Set cohortId to the selected value
               }
             }}
             fullWidth

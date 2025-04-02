@@ -133,6 +133,32 @@ export const getStateBlockDistrictList = async ({
   }
 };
 
+export const searchFields = async ({
+  limit,
+  page,
+  filters,
+}: {
+  limit: number;
+  page: number;
+  filters: { context: string; contextType: string };
+}): Promise<any> => {
+  const apiUrl = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/user/v1/fields/search`;
+
+  const requestBody = {
+    limit,
+    page,
+    filters,
+  };
+
+  try {
+    const response = await post(apiUrl, requestBody);
+    return response?.data;
+  } catch (error) {
+    console.error('Error in fetching fields via search API', error);
+    throw error;
+  }
+};
+
 export const formatedDistricts = async () => {
   const adminState = JSON.parse(
     localStorage.getItem('adminInfo') || '{}'

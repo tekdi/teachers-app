@@ -15,7 +15,7 @@ import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import logoLight from '../../public/images/logo-light.png';
+import logoLight from '../../public/images/logo-light.svg';
 import menuIcon from '../assets/images/menuIcon.svg';
 import { useDirection } from '../hooks/useDirection';
 import useStore from '../store/store';
@@ -214,8 +214,8 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, openDrawer }) => {
             </Box>
 
             <Image
-              height={40}
-              width={44}
+              height={150}
+              width={150}
               src={logoLight}
               alt="logo"
               // onClick={() => isActiveYear && router.push('/dashboard')}

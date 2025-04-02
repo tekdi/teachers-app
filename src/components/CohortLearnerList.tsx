@@ -1,3 +1,5 @@
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import LearnersListItem from '@/components/LearnersListItem';
 import { getMyCohortMemberList } from '@/services/MyClassDetailsService';
 import useStore from '@/store/store';
@@ -6,46 +8,81 @@ import { toPascalCase } from '@/utils/Helper';
 import { Box, Grid } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'next-i18next';
-import React, { useEffect, useState } from 'react';
 import NoDataFound from './common/NoDataFound';
 import Loader from './Loader';
 import SearchBar from './Searchbar';
 import { showToastMessage } from './Toastify';
+import { searchFields } from '@/services/CohortServices';
 
-interface UserDataProps {
+// Define interfaces for the props and data structures
+interface CustomField {
+  fieldId: string;
+  label: string;
+  value: string | null;
+}
+
+interface UserDetails {
   name: string;
   userId: string;
   memberStatus: string;
+  statusReason: string;
   cohortMembershipId: string;
   enrollmentNumber: string;
+  age: string;
+  customField: CustomField[];
+  showSubmitFeedback: boolean;
+  matchingFields: any;
 }
-interface CohortLearnerListProp {
-  cohortId: any;
+
+interface CohortLearnerListProps {
+  cohortId: string;
   reloadState: boolean;
   setReloadState: React.Dispatch<React.SetStateAction<boolean>>;
   isLearnerAdded: boolean;
 }
 
-const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
+const CohortLearnerList: React.FC<CohortLearnerListProps> = ({
   cohortId,
   reloadState,
   setReloadState,
   isLearnerAdded,
 }) => {
-  const [loading, setLoading] = React.useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-
-  const [userData, setUserData] = React.useState<UserDataProps[]>();
-  const [filteredData, setFilteredData] = useState(userData);
+  const [userData, setUserData] = useState<UserDetails[]>([]);
+  const [filteredData, setFilteredData] = useState<UserDetails[]>([]);
+  const [fieldIds, setFieldIds] = useState<string[]>([]); // Store fieldIds from the API
 
   const setCohortLearnerCount = useStore(
     (state) => state.setCohortLearnerCount
   );
-
-  const [isLearnerDeleted, setIsLearnerDeleted] =
-    React.useState<boolean>(false);
-
   const { t } = useTranslation();
+  const theme = useTheme();
+
+  useEffect(() => {
+    // Fetch fieldIds from the API
+    const fetchFieldIds = async () => {
+      try {
+        const response = await searchFields({
+          limit: 0,
+          page: 0,
+          filters: {
+            context: 'COHORTMEMBER',
+            contextType: 'YOUTH',
+          },
+        });
+
+        const fetchedFieldIds = response.result.map(
+          (field: CustomField) => field.fieldId
+        );
+        setFieldIds(fetchedFieldIds);
+      } catch (error) {
+        console.error('Error fetching fieldIds:', error);
+      }
+    };
+
+    fetchFieldIds();
+  }, []);
 
   useEffect(() => {
     const getCohortMemberList = async () => {
@@ -53,7 +90,7 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
       try {
         if (cohortId) {
           const page = 0;
-          const filters = { cohortId: cohortId };
+          const filters = { cohortId: [cohortId] };
           const response = await getMyCohortMemberList({
             limit,
             page,
@@ -64,8 +101,12 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
           if (resp) {
             const userDetails = resp.map((user: any) => {
               const ageField = user.customField.find(
-                (field: { label: string }) => field.label === 'AGE'
+                (field: CustomField) => field.label === 'AGE'
               );
+              const matchingFields = user.customField.filter(
+                (field: CustomField) => fieldIds.includes(field.fieldId)
+              );
+
               return {
                 name:
                   toPascalCase(user?.firstName || '') +
@@ -77,6 +118,11 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
                 cohortMembershipId: user?.cohortMembershipId,
                 enrollmentNumber: user?.username,
                 age: ageField ? ageField.value : null, // Extract age for the specific user
+                customField: user.customField,
+                showSubmitFeedback: user.customField.some(
+                  (field: CustomField) => fieldIds.includes(field.fieldId)
+                ),
+                matchingFields: matchingFields,
               };
             });
             setCohortLearnerCount(userDetails.length);
@@ -91,24 +137,17 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
       } catch (error) {
         setUserData([]);
         setFilteredData([]);
-
         console.error('Error fetching cohort list:', error);
         showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
-        setLoading(false);
       } finally {
         setLoading(false);
       }
     };
+
     getCohortMemberList();
-  }, [cohortId, reloadState, isLearnerAdded, isLearnerDeleted]);
+  }, [cohortId, reloadState, isLearnerAdded, fieldIds]);
 
-  const handleLearnerDelete = () => {
-    setIsLearnerDeleted(true);
-  };
   const handleSearch = (searchTerm: string) => {
-    // const query = event.target.value.toLowerCase();
-    // setSearchQuery(query);
-
     const filtered = userData?.filter(
       (data) =>
         data?.name?.toLowerCase()?.includes(searchTerm) ||
@@ -116,7 +155,6 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
     );
     setFilteredData(filtered);
   };
-  const theme = useTheme<any>();
 
   return (
     <div>
@@ -141,27 +179,26 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
             }}
           >
             <Grid container>
-              {filteredData?.map((data: any) => {
-                return (
-                  <Grid xs={12} sm={12} md={6} lg={4} key={data.userId}>
-                    <LearnersListItem
-                      type={Role.STUDENT}
-                      userId={data.userId}
-                      learnerName={data.name}
-                      // enrollmentId={data.enrollmentNumber}
-                      age={data.age}
-                      cohortMembershipId={data.cohortMembershipId}
-                      isDropout={data.memberStatus === Status.DROPOUT}
-                      statusReason={data.statusReason}
-                      reloadState={reloadState}
-                      setReloadState={setReloadState}
-                      showMiniProfile={true}
-                      onLearnerDelete={handleLearnerDelete}
-                      cohortID={cohortId}
-                    />
-                  </Grid>
-                );
-              })}
+              {filteredData?.map((data) => (
+                <Grid xs={12} sm={12} md={6} lg={4} key={data.userId}>
+                  <LearnersListItem
+                    type={Role.STUDENT}
+                    userId={data.userId}
+                    learnerName={data.name}
+                    age={data.age}
+                    cohortMembershipId={data.cohortMembershipId}
+                    isDropout={data.memberStatus === Status.DROPOUT}
+                    statusReason={data.statusReason}
+                    reloadState={reloadState}
+                    setReloadState={setReloadState}
+                    showMiniProfile={true}
+                    onLearnerDelete={() => {}}
+                    cohortID={cohortId}
+                    showSubmitFeedback={data.showSubmitFeedback}
+                    feedBackFormData={data.matchingFields}
+                  />
+                </Grid>
+              ))}
               {!filteredData?.length && <NoDataFound />}
             </Grid>
           </Box>

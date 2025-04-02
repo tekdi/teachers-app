@@ -240,7 +240,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
 
       if (cohortId) {
         const page = 0;
-        const filters = { cohortId: cohortId };
+        const filters = { cohortId: [cohortId] };
         try {
           const response = await getMyCohortMemberList({
             limit,
@@ -973,12 +973,35 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
                     label?: string;
                     displayValue?: string;
                     order?: number;
+                    name?: string;
                   },
                   i: number
                 ) => {
                   const labelText = item.label
                     ? t(`FORM.${item?.label?.toUpperCase()}`, item?.label)
                     : item?.label;
+
+                  // Combine country code and mobile number dynamically
+                  let displayValue = item?.displayValue;
+                  if (item.name === 'mobile') {
+                    // Find the country code field
+                    const countryCodeField = customFieldsData.find(
+                      (field) => field.name === 'mobile_country_code'
+                    );
+
+                    const countryCode =
+                      countryCodeField?.value && countryCodeField?.value !== '-'
+                        ? countryCodeField.value
+                        : ''; // Use empty string if country code is not valid
+
+                    displayValue =
+                      `${countryCode} ${item?.displayValue || ''}`.trim();
+                  }
+
+                  // Skip rendering the mobile_country_code field
+                  if (item.name === 'mobile_country_code') {
+                    return null;
+                  }
 
                   return (
                     <Grid item xs={6} key={i}>
@@ -1004,7 +1027,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
                           color: theme.palette.warning['A200'],
                         }}
                       >
-                        {item?.displayValue}
+                        {displayValue}
                       </Typography>
                     </Grid>
                   );
@@ -1014,7 +1037,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
           </Box>
         </Box>
       </Box>
-      {!isEliminatedFromBuild('AssessmentReport', 'component') &&
+      {/* {!isEliminatedFromBuild('AssessmentReport', 'component') &&
         AssessmentReport &&
         isActiveYear && (
           <Box padding={2}>
@@ -1030,7 +1053,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
               </CardContent>
             </Card>
           </Box>
-        )}
+        )} */}
     </>
   );
 };

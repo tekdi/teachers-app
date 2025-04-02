@@ -84,6 +84,8 @@ export default function OpportunitiesPage() {
     try {
       let created_by = undefined;
       let finalStatus = 'approved';
+      const limit = 9; // Number of items per page
+
       if (selectedTab !== 'mappedByMe') {
         if (selectedTab === 'createdByMe') {
           created_by = localStorage.getItem('userId') || undefined;
@@ -104,8 +106,19 @@ export default function OpportunitiesPage() {
         setOpportunities(result);
       } else {
         created_by = localStorage.getItem('userId') || undefined;
-        const response = await getMappedByMe(created_by);
-        setOpportunities(response);
+        const response = await getMappedByMe(
+          created_by,
+          Number(page),
+          limit,
+          search as string
+        ); // Pass page and limit
+        setOpportunities({
+          items: response.items,
+          total: response.total,
+          totalPages: Math.ceil(response.total / limit),
+          currentPage: Number(page),
+        });
+        console.log(response, 'response.total');
       }
     } finally {
       setIsLoading(false);

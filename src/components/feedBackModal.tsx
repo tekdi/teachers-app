@@ -31,7 +31,10 @@ function FeedBackModel({
   reloadState,
   cohortId,
   setReloadState,
-}: DropOutModalProps) {
+  feedBackFormData = [],
+}: DropOutModalProps & {
+  feedBackFormData?: any;
+}) {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<{ [key: string]: string }>({});
   const { data: formResponse, isPending } = useFormRead(
@@ -42,19 +45,22 @@ function FeedBackModel({
   useEffect(() => {
     if (formResponse?.fields) {
       const initialData: { [key: string]: string } = {};
-      formResponse.fields.forEach((field: any) => {
-        initialData[field.fieldId] = '';
-      });
-      setFormData(initialData);
-    }
-  }, [formResponse]);
 
-  const handleInputChange = (fieldId: string, value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      [fieldId]: value,
-    }));
-  };
+      formResponse.fields.forEach((field: any) => {
+        const feedbackField = feedBackFormData.find(
+          (feedback: any) => feedback.fieldId === field.fieldId
+        );
+        initialData[field.fieldId] = feedbackField
+          ? feedbackField.value.replace(/^"|"$/g, '')
+          : ''; // Auto-populate if feedback exists
+      });
+
+      // Only update state if the data has changed
+      if (JSON.stringify(formData) !== JSON.stringify(initialData)) {
+        setFormData(initialData);
+      }
+    }
+  }, [formResponse, feedBackFormData]); // Dependencies
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -91,6 +97,14 @@ function FeedBackModel({
       setLoading(false);
     }
   };
+
+  const handleInputChange = (fieldId: string, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [fieldId]: value,
+    }));
+  };
+
   const isFormValid = Object.values(formData).every(
     (value) => value.trim() !== ''
   );

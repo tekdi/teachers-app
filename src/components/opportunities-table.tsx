@@ -226,7 +226,7 @@ export function OpportunitiesList({
                         : opportunity.opportunity_title}
                     </Typography>
 
-                    {opportunity.status !== 'approved' && (
+                    {opportunity.status === 'pending' && (
                       <CardActions sx={{ p: 0, whiteSpace: 'nowrap' }}>
                         <Box sx={{ ml: 'auto' }}>
                           <Tooltip title="Edit">

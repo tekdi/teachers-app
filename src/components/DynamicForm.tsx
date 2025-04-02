@@ -183,7 +183,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
               );
               break;
             }
-            case '^[0-9]{9}$': {
+            case '^\\d{7,9}$': {
               if (
                 schema.properties?.[property]?.validation?.includes('mobile')
               ) {
