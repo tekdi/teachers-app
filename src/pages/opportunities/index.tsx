@@ -342,7 +342,11 @@ export default function OpportunitiesPage() {
               }}
               onDelete={handleDelete}
               onView={(opportunity: any) =>
-                router.push(`/opportunities/${opportunity.id}`)
+                router.push(
+                  opportunity.id
+                    ? `/opportunities/${opportunity.id}`
+                    : `/opportunities/${opportunity.opportunity_id}`
+                )
               }
             />
           )}

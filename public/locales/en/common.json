@@ -625,7 +625,8 @@
     "MIDDLE_NAME": "Middle Name",
     "MIDDLE_NAME_OR_FATHER/MOTHER_NAME": "Middle Name Or Father/Mother Name",
     "QUALIFICATIONS_DETAILS": "Qualification Details",
-    "COUNTRY_CODE": "Country Code"
+    "COUNTRY_CODE": "Country Code",
+    "Preferred_Location": "Preferred Location"
   },
   "FORM_ERROR_MESSAGES": {
     "INVALID_INPUT": "Invalid Input.",
