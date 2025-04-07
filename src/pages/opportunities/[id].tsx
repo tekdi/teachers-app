@@ -263,7 +263,8 @@ export default function OpportunityDetailPage() {
                       Salary Range
                     </Typography>
                     <Typography variant="body1">
-                      KES {opportunity?.min_salary} - ₹{opportunity?.max_salary}
+                      {opportunity?.currency ? opportunity?.currency : 'KES'}{' '}
+                      {opportunity?.min_salary} - ₹{opportunity?.max_salary}
                     </Typography>
                   </Box>
                   <Divider />

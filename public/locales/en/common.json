@@ -860,6 +860,7 @@
     "OFFER_LETTER_PROVIDED": "Offer Letter Provided",
     "ALL_COUNTRY": "All Countries",
     "ALL_COUNTY": "All Counties",
-    "ALL_SUB_COUNTY": "All Sub-Counties"
+    "ALL_SUB_COUNTY": "All Sub-Counties",
+    "CURRENCY": "Currency"
   }
 }
