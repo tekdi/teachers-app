@@ -62,6 +62,7 @@ const formSchema = z
     otherBenefits: z.string().optional(),
     pricing_type: z.string(),
     offer_letter_provided: z.string(),
+    currency: z.string().optional(),
   })
   .superRefine((data, ctx) => {
     if (
@@ -124,6 +125,7 @@ export function OpportunityForm({
     benefits: [],
     offer_letter_provided: '',
     pricing_type: '',
+    currency: '',
     country: initialData?.location?.country || '',
     state: initialData?.location?.state || '',
     city: initialData?.location?.city || '',
@@ -562,6 +564,41 @@ export function OpportunityForm({
               />
             </Grid>
           )}
+
+          <Grid item xs={12}>
+            <Controller
+              name="currency"
+              control={control}
+              render={({ field }) => (
+                <FormControl fullWidth error={!!errors.opportunity_type}>
+                  <InputLabel required>{t('OPPORTUNITY.CURRENCY')}</InputLabel>
+                  <Select
+                    {...field}
+                    label={t('OPPORTUNITY.CURRENCY')}
+                    // value={defaultValues?.opportunity_type}
+                  >
+                    {[
+                      'KES',
+                      'INR',
+                      'USD',
+                      'UGX',
+                      'TZS',
+                      'RWF',
+                      'POUND',
+                      'EURO',
+                    ].map((role) => (
+                      <MenuItem key={role} value={role}>
+                        {role}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  {errors.currency && (
+                    <FormHelperText>{errors.currency.message}</FormHelperText>
+                  )}
+                </FormControl>
+              )}
+            />
+          </Grid>
 
           <Grid item xs={12}>
             <Controller
