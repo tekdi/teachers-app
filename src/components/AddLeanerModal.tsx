@@ -462,6 +462,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
           if (uiSchema.age) {
             uiSchema.age['ui:disabled'] = true;
           }
+
           if (uiSchema.mobile_country_code) {
             uiSchema.mobile_country_code['ui:disabled'] = true;
           }

@@ -293,15 +293,6 @@ export default function OpportunityDetailPage() {
                       {opportunity.work_nature}
                     </Typography>
                   </Box>
-                  <Divider />
-                  <Box sx={{ py: 1.5 }}>
-                    <Typography variant="subtitle2" color="text.secondary">
-                      Experience level
-                    </Typography>
-                    <Typography variant="body1">
-                      {opportunity.experience_level}
-                    </Typography>
-                  </Box>
                 </CardContent>
               </Card>
             </Box>

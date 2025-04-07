@@ -156,42 +156,56 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
   };
 
   const mapFields = (formFields: any, response: any) => {
-    response.userData.phone_number = response.userData.mobile;
+    response.userData.phone_number = response.userData.mobile
+      ? response.userData.mobile
+      : '';
+
     const initialFormData: any = {};
     formFields.fields.forEach((item: any) => {
       const userData = response?.userData;
       const customFieldValue = userData?.customFields?.find(
         (field: any) => field.fieldId === item.fieldId
       );
+
       const getValue = (data: any, field: any) => {
         if (item.default) {
           return item.default;
         }
         if (item?.isMultiSelect) {
-          if (data[item.name] && item?.maxSelections > 1) {
-            return [field?.value];
+          if (item?.maxSelections > 1) {
+            if (item?.label === 'COURSES') {
+              return field?.code?.split(',') || [];
+            }
+            return field?.value?.split(',') || [];
           } else if (item?.type === 'checkbox') {
-            return String(field?.value).split(',');
+            return String(field?.code).split(',');
           } else {
-            return field?.value.toLowerCase();
+            return field?.code?.toLowerCase();
           }
         } else {
           if (item?.type === 'numeric') {
             return parseInt(String(field?.value));
           } else if (item?.type === 'text') {
             return String(field?.value);
-          } else if (item?.type === 'radio') {
-            if (typeof field?.value === 'string') {
-              return field?.value?.replace(/_/g, ' ').toLowerCase();
+          } else {
+            if (
+              field?.value === 'FEMALE' ||
+              field?.value === 'MALE' ||
+              field?.value === 'TRANSGENDER'
+            ) {
+              return field?.value?.toLowerCase();
             }
-            return field?.value.toLowerCase();
+            return field?.value?.toLowerCase();
           }
         }
       };
+
       if (item.coreField) {
         if (item?.isMultiSelect) {
           if (userData[item.name] && item?.maxSelections > 1) {
-            initialFormData[item.name] = [userData[item.name]];
+            initialFormData[item.name] = Array.isArray(userData[item.name])
+              ? userData[item.name]
+              : [userData[item.name]]; // Ensure it's an array
           } else if (item?.type === 'checkbox') {
             initialFormData[item.name] = String(userData[item.name]).split(',');
           } else {
@@ -209,12 +223,14 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
       } else {
         if (customFieldValue) {
           const fieldValue = getValue(userData, customFieldValue);
+
           if (fieldValue) {
             initialFormData[item.name] = fieldValue;
           }
         }
       }
     });
+
     return initialFormData;
   };
 
@@ -694,6 +710,14 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
                 category: 'Learner Detail Page',
                 label: 'Back Button Clicked',
               });
+            }}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '40px', // Increase the clickable area width
+              height: '40px', // Increase the clickable area height
+              cursor: 'pointer',
             }}
           >
             <ArrowBackIcon

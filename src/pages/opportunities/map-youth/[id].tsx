@@ -104,11 +104,8 @@ export default function MapYouth() {
           setMyCohorts(cohortList); // Set only the filtered cohorts
 
           if (cohortList?.length > 0) {
-            setCohortId(
-              centerList.length > 0
-                ? centerList[0].cohortId
-                : cohortList[0].cohortId
-            ); // Default to the first CENTER cohortId if available, otherwise the first COHORT
+            const allCohortIds = cohortList.map((cohort) => cohort.cohortId);
+            setCohortId(allCohortIds);
           }
         };
         getMyCohortList();

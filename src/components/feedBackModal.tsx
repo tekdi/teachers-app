@@ -52,15 +52,15 @@ function FeedBackModel({
         );
         initialData[field.fieldId] = feedbackField
           ? feedbackField.value.replace(/^"|"$/g, '')
-          : ''; // Auto-populate if feedback exists
+          : ''; // Initialize with an empty string if no feedback exists
       });
 
-      // Only update state if the data has changed
-      if (JSON.stringify(formData) !== JSON.stringify(initialData)) {
+      // Only initialize formData if it's empty
+      if (Object.keys(formData).length === 0) {
         setFormData(initialData);
       }
     }
-  }, [formResponse, feedBackFormData]); // Dependencies
+  }, [formResponse]); // Remove feedBackFormData from dependencies // Dependencies
 
   const handleSubmit = async () => {
     setLoading(true);
