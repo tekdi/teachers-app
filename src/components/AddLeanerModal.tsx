@@ -348,6 +348,13 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
             apiBody.mobile = apiBody?.phone_number;
           }
           apiBody.password = apiBody.username;
+          if (apiBody.customFields) {
+            apiBody.customFields = apiBody.customFields.filter(
+              (field: any) =>
+                field.fieldId !== '94befdc4-3173-4af3-998f-aa366d91ade7'
+            );
+          }
+
           const response = await createUser(apiBody);
           if (response) {
             showToastMessage(
