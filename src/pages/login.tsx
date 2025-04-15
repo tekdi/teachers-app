@@ -33,7 +33,7 @@ import Loader from '../components/Loader';
 import { useDirection } from '../hooks/useDirection';
 import { login } from '../services/LoginService';
 import { getUserDetails, getUserId } from '../services/ProfileService';
-import loginImg from './../assets/images/login-image.jpg';
+import loginImg from './../assets/images/login-image.png';
 import { UpdateDeviceNotification } from '@/services/NotificationService';
 import { TENANT_DATA } from '../../app.config';
 
