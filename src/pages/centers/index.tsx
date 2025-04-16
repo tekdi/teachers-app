@@ -491,8 +491,10 @@ const CentersPage = () => {
                           <Grid
                             item
                             xs={12}
-                            sm={6}
-                            md={4}
+                            sm={12}
+                            md={12}
+                            lg={6}
+                            xl={4}
                             key={cohort?.cohortId}
                           >
                             <Box
