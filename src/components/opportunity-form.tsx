@@ -139,7 +139,8 @@ export function OpportunityForm({
   async function handleFormSubmit(data: OpportunityFormData) {
     const transformedData = {
       ...data,
-      location: locationCode, // Ensure mapping happens here
+      status: 'pending',
+      location: locationCode,
     };
 
     try {
@@ -268,6 +269,7 @@ export function OpportunityForm({
                   label={t('OPPORTUNITY.DESCRIPTION')}
                   error={!!errors.description}
                   helperText={errors.description?.message}
+                  required
                 />
               )}
             />
