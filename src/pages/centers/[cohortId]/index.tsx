@@ -350,7 +350,7 @@ const CohortPage = () => {
           setCohortFacilitatorListCount(0);
         }
         try {
-          const filters = { cohortId: cohortId };
+          const filters = { cohortId: [cohortId] };
 
           const learnerResponse = await getMyCohortMemberList({
             filters,
