@@ -21,7 +21,7 @@ const statusOptions = [
   { label: 'Rejected', value: 'rejected' },
   { label: 'Open', value: 'open' },
   { label: 'Closed', value: 'closed' },
-  { label: 'Archived', value: 'archived' },
+  // { label: 'Archived', value: 'archived' },
 ];
 
 interface OpportunityFiltersProps {

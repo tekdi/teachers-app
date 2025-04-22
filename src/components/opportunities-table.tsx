@@ -76,29 +76,33 @@ export function OpportunitiesList({
   const { t } = useTranslation();
 
   // Fetch application statuses from API
-  useEffect(() => {
-    const fetchStatuses = async () => {
-      try {
-        const response = await fetchApplicationStatuses();
-        console.log(response, 'response');
+ useEffect(() => {
+   const fetchStatuses = async () => {
+     try {
+       const response = await fetchApplicationStatuses();
+       console.log(response, 'response');
 
-        if (response && response.result) {
-          setStatusOptions(
-            response.result.map((status: Status) => ({
-              label: status.status,
-              value: status.id,
-            }))
-          );
-        }
-      } catch (error) {
-        console.error('Error fetching statuses:', error);
-      } finally {
-        setLoadingStatus(false);
-      }
-    };
+       if (response && response.result) {
+         const filteredStatuses = response.result.filter(
+           (status: Status) => status.status.toLowerCase() !== 'archived'
+         );
 
-    fetchStatuses();
-  }, []);
+         setStatusOptions(
+           filteredStatuses.map((status: Status) => ({
+             label: status.status,
+             value: status.id,
+           }))
+         );
+       }
+     } catch (error) {
+       console.error('Error fetching statuses:', error);
+     } finally {
+       setLoadingStatus(false);
+     }
+   };
+
+   fetchStatuses();
+ }, []);
 
   const fetchMappedUsers = async (opportunityId: string) => {
     setSelectedOpportunity(opportunityId);
@@ -110,6 +114,8 @@ export function OpportunitiesList({
         const matchedStatus = statusOptions.find(
           (status) => status.label === user.status_name
         );
+
+        console.log(statusOptions);
 
         return {
           applicationId: user.application_id,
