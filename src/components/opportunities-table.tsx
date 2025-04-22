@@ -115,8 +115,6 @@ export function OpportunitiesList({
           (status) => status.label === user.status_name
         );
 
-        console.log(statusOptions);
-
         return {
           applicationId: user.application_id,
           userId: user.application_user_id,
