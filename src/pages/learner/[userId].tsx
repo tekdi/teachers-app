@@ -763,6 +763,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
                 key={userId}
                 userId={userId}
                 learnerName={userName}
+                showSubmitFeedback={userDetails.statusReason}
                 cohortMembershipId={userDetails.cohortMembershipId}
                 isDropout={userDetails.status === Status.DROPOUT}
                 statusReason={userDetails.statusReason}
