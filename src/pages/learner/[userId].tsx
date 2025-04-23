@@ -34,7 +34,6 @@ import withAccessControl from '@/utils/hoc/withAccessControl';
 import {
   AssessmentReportProp,
   CohortAttendancePercentParam,
-  CustomField,
   OverallAttendance,
   UpdateCustomField,
 } from '@/utils/Interfaces';
@@ -74,14 +73,19 @@ if (!isEliminatedFromBuild('AssessmentReport', 'component')) {
 }
 
 interface LearnerProfileProp {
-  reloadState?: boolean;
-  setReloadState?: React.Dispatch<React.SetStateAction<boolean>>;
+ reloadState: boolean;
+  setReloadState: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 interface CustomField {
   fieldId: string;
   label: string;
   value: string | null;
+  isEditable: boolean;
+  name: string;
+  options: string[];
+  order: number;
+  type: string;
 }
 
 interface UserDetails {
@@ -344,7 +348,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
     };
 
     fetchData();
-  }, [userId, reload, cohortId, fieldIds]);
+  }, [userId, reloadState, cohortId, fieldIds]);
 
   const getAttendanceData = async (fromDates: any, toDates: any) => {
     const filters: any = {
@@ -417,8 +421,14 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
                   )
                 );
               }
-              const fieldIdToValueMap: { [key: string]: string } =
-                mapFieldIdToValue(fields);
+             const normalizedFields = fields.map((field) => ({
+               ...field,
+               value: field.value ?? '', // convert null to empty string
+             }));
+
+             const fieldIdToValueMap: { [key: string]: string } =
+               mapFieldIdToValue(normalizedFields);
+
 
               const fetchFormData = async () => {
                 try {
@@ -836,8 +846,8 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
                 cohortMembershipId={userDetails.cohortMembershipId}
                 isDropout={userDetails.status === Status.DROPOUT}
                 statusReason={userDetails.statusReason}
-                reloadState={reloadState ?? false}
-                setReloadState={setReloadState ?? (() => {})}
+                reloadState={reloadState}
+                setReloadState={setReloadState}
                 onLearnerDelete={handleLearnerDelete}
                 isFromProfile={true}
                 cohortID={cohortId}
