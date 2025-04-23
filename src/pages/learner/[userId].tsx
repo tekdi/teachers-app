@@ -73,8 +73,8 @@ if (!isEliminatedFromBuild('AssessmentReport', 'component')) {
 }
 
 interface LearnerProfileProp {
- reloadState: boolean;
-  setReloadState: React.Dispatch<React.SetStateAction<boolean>>;
+  //  reloadState: boolean;
+  // setReloadState: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 interface CustomField {
@@ -101,10 +101,7 @@ interface UserDetails {
   matchingFields: any;
 }
 
-const LearnerProfile: React.FC<LearnerProfileProp> = ({
-  reloadState,
-  setReloadState,
-}) => {
+const LearnerProfile: React.FC<any> = () => {
   const { t } = useTranslation();
   const { dir, isRTL } = useDirection();
   const theme = useTheme<any>();
@@ -153,6 +150,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
     statusReason: any;
     cohortMembershipId: any;
   } | null>(null);
+  const [reloadState, setReloadState] = React.useState<boolean>(false);
 
   useEffect(() => {
     setSelectedValue(currentDayMonth);
@@ -421,14 +419,13 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
                   )
                 );
               }
-             const normalizedFields = fields.map((field) => ({
-               ...field,
-               value: field.value ?? '', // convert null to empty string
-             }));
+              const normalizedFields = fields.map((field) => ({
+                ...field,
+                value: field.value ?? '', // convert null to empty string
+              }));
 
-             const fieldIdToValueMap: { [key: string]: string } =
-               mapFieldIdToValue(normalizedFields);
-
+              const fieldIdToValueMap: { [key: string]: string } =
+                mapFieldIdToValue(normalizedFields);
 
               const fetchFormData = async () => {
                 try {
