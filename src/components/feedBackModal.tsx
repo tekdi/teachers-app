@@ -60,7 +60,7 @@ function FeedBackModel({
         setFormData(initialData);
       }
     }
-  }, [formResponse]); // Remove feedBackFormData from dependencies // Dependencies
+  }, [formResponse, feedBackFormData]); // Remove feedBackFormData from dependencies // Dependencies
 
   const handleSubmit = async () => {
     setLoading(true);
