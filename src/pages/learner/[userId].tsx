@@ -73,7 +73,7 @@ if (!isEliminatedFromBuild('AssessmentReport', 'component')) {
 }
 
 interface LearnerProfileProp {
-//  reloadState: boolean;
+  //  reloadState: boolean;
   // setReloadState: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -87,7 +87,6 @@ interface CustomField {
   order: number;
   type: string;
 }
-
 
 interface UserDetails {
   name: string;
@@ -152,7 +151,6 @@ const LearnerProfile: React.FC<any> = () => {
     cohortMembershipId: any;
   } | null>(null);
   const [reloadState, setReloadState] = React.useState<boolean>(false);
-
 
   useEffect(() => {
     setSelectedValue(currentDayMonth);
@@ -421,14 +419,13 @@ const LearnerProfile: React.FC<any> = () => {
                   )
                 );
               }
-             const normalizedFields = fields.map((field) => ({
-               ...field,
-               value: field.value ?? '', // convert null to empty string
-             }));
+              const normalizedFields = fields.map((field) => ({
+                ...field,
+                value: field.value ?? '', // convert null to empty string
+              }));
 
-             const fieldIdToValueMap: { [key: string]: string } =
-               mapFieldIdToValue(normalizedFields);
-
+              const fieldIdToValueMap: { [key: string]: string } =
+                mapFieldIdToValue(normalizedFields);
 
               const fetchFormData = async () => {
                 try {
@@ -836,28 +833,24 @@ const LearnerProfile: React.FC<any> = () => {
         </Grid>
         <Grid item>
           <Box>
-            {userDetails &&
-              isActiveYear &&
-              (console.log('setReloadState', setReloadState),
-              console.log('reloadState', reloadState),
-              (
-                <LearnersListItem
-                  type={Role.STUDENT}
-                  key={userId}
-                  userId={userId}
-                  learnerName={userName}
-                  showSubmitFeedback={userDetails.statusReason}
-                  cohortMembershipId={userDetails.cohortMembershipId}
-                  isDropout={userDetails.status === Status.DROPOUT}
-                  statusReason={userDetails.statusReason}
-                  reloadState={reloadState}
-                  setReloadState={setReloadState}
-                  onLearnerDelete={handleLearnerDelete}
-                  isFromProfile={true}
-                  cohortID={cohortId}
-                  feedBackFormData={filteredData?.matchingFields}
-                />
-              ))}
+            {userDetails && isActiveYear && (
+              <LearnersListItem
+                type={Role.STUDENT}
+                key={userId}
+                userId={userId}
+                learnerName={userName}
+                showSubmitFeedback={userDetails.statusReason}
+                cohortMembershipId={userDetails.cohortMembershipId}
+                isDropout={userDetails.status === Status.DROPOUT}
+                statusReason={userDetails.statusReason}
+                reloadState={reloadState}
+                setReloadState={setReloadState}
+                onLearnerDelete={handleLearnerDelete}
+                isFromProfile={true}
+                cohortID={cohortId}
+                feedBackFormData={filteredData?.matchingFields}
+              />
+            )}
           </Box>
         </Grid>
       </Grid>
