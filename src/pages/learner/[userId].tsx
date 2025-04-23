@@ -61,6 +61,7 @@ import React, { ComponentType, useEffect, useState } from 'react';
 import { accessControl, AttendanceAPILimit } from '../../../app.config';
 import { isEliminatedFromBuild } from '../../../featureEliminationUtil';
 import { useDirection } from '../../hooks/useDirection';
+import { searchFields } from '@/services/CohortServices';
 let AssessmentReport: ComponentType<AssessmentReportProp> | null = null;
 
 if (!isEliminatedFromBuild('AssessmentReport', 'component')) {
@@ -75,6 +76,25 @@ if (!isEliminatedFromBuild('AssessmentReport', 'component')) {
 interface LearnerProfileProp {
   reloadState?: boolean;
   setReloadState?: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+interface CustomField {
+  fieldId: string;
+  label: string;
+  value: string | null;
+}
+
+interface UserDetails {
+  name: string;
+  userId: string;
+  memberStatus: string;
+  statusReason: string;
+  cohortMembershipId: string;
+  enrollmentNumber: string;
+  age: string;
+  // customField: CustomField[];
+  showSubmitFeedback: boolean;
+  matchingFields: any;
 }
 
 const LearnerProfile: React.FC<LearnerProfileProp> = ({
@@ -122,6 +142,8 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
   const [openAddLearnerModal, setOpenAddLearnerModal] = React.useState(false);
   const [reload, setReload] = React.useState(false);
   const [cohortId, setCohortId] = React.useState('');
+  const [fieldIds, setFieldIds] = useState<string[]>([]); // Store fieldIds from the API
+  const [filteredData, setFilteredData] = useState<UserDetails | null>(null);
   const [userDetails, setUserDetails] = React.useState<{
     status: any;
     statusReason: any;
@@ -251,10 +273,35 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
   };
 
   useEffect(() => {
+    // Fetch fieldIds from the API
+    const fetchFieldIds = async () => {
+      try {
+        const response = await searchFields({
+          limit: 0,
+          page: 0,
+          filters: {
+            context: 'COHORTMEMBER',
+            contextType: 'YOUTH',
+          },
+        });
+
+        const fetchedFieldIds = response.result.map(
+          (field: CustomField) => field.fieldId
+        );
+        setFieldIds(fetchedFieldIds);
+      } catch (error) {
+        console.error('Error fetching fieldIds:', error);
+      }
+    };
+
+    fetchFieldIds();
+  }, []);
+
+  useEffect(() => {
     const fetchData = async () => {
       fetchDataAndInitializeForm();
 
-      if (cohortId) {
+      if (cohortId && fieldIds.length) {
         const page = 0;
         const filters = { cohortId: [cohortId] };
         try {
@@ -267,6 +314,28 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
           if (resp) {
             const result = getUserDetailsById(resp, userId);
             setUserDetails(result);
+            const filteredList = resp.filter(
+              (item: any) => item.userId === userId
+            );
+            const userDetails = filteredList.map((user: any) => {
+              const matchingFields = user.customField.filter(
+                (field: CustomField) => fieldIds.includes(field.fieldId)
+              );
+
+              return {
+                customField: user.customField,
+                showSubmitFeedback: user.customField.some(
+                  (field: CustomField) => fieldIds.includes(field.fieldId)
+                ),
+                matchingFields: matchingFields,
+              };
+            });
+
+            if (userDetails.length) {
+              setFilteredData(userDetails[0]);
+            }
+          } else {
+            setFilteredData(null);
           }
         } catch (error) {
           console.error('Error fetching cohort member list:', error);
@@ -275,7 +344,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
     };
 
     fetchData();
-  }, [userId, reload, cohortId]);
+  }, [userId, reload, cohortId, fieldIds]);
 
   const getAttendanceData = async (fromDates: any, toDates: any) => {
     const filters: any = {
@@ -772,6 +841,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
                 onLearnerDelete={handleLearnerDelete}
                 isFromProfile={true}
                 cohortID={cohortId}
+                feedBackFormData={filteredData?.matchingFields}
               />
             )}
           </Box>
