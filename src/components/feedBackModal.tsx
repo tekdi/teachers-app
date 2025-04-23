@@ -76,16 +76,12 @@ function FeedBackModel({
         customFields,
       };
 
-      console.log('Submitting payload:', dynamicBody);
-
       const response = await updateCohortMemberStatus({
         memberStatus: 'active',
         statusReason: 'Feedback submitted',
         membershipId: cohortMembershipId,
         dynamicBody,
       });
-
-      console.log('API Response:', response);
 
       showToastMessage('Feedback submitted successfully', 'success');
       onClose();

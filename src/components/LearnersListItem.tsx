@@ -732,17 +732,17 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
                 //   ),
                 //   name: 'reassign-centers',
                 // },
-                // {
-                //   label: !showSubmitFeedback
-                //     ? t('COMMON.SUBMIT_FEEDBACK')
-                //     : t('COMMON.VIEW_FEEDBACK'),
-                //   icon: (
-                //     <ApartmentIcon
-                //       sx={{ color: theme.palette.warning['300'] }}
-                //     />
-                //   ),
-                //   name: !showSubmitFeedback ? 'FeedBack' : 'viewFeedback',
-                // },
+                {
+                  label: !showSubmitFeedback
+                    ? t('COMMON.SUBMIT_FEEDBACK')
+                    : t('COMMON.VIEW_FEEDBACK'),
+                  icon: (
+                    <ApartmentIcon
+                      sx={{ color: theme.palette.warning['300'] }}
+                    />
+                  ),
+                  name: !showSubmitFeedback ? 'FeedBack' : 'viewFeedback',
+                },
                 {
                   label: t('COMMON.DELETE_USER_FROM_CENTER'),
                   icon: (
