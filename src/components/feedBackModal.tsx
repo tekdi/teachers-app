@@ -42,6 +42,7 @@ function FeedBackModel({
     FormContextType.COHORT_MEMBER
   );
 
+  console.log('feedBackFormData6545421', feedBackFormData);
   useEffect(() => {
     if (formResponse?.fields) {
       const initialData: { [key: string]: string } = {};
@@ -55,12 +56,14 @@ function FeedBackModel({
           : ''; // Initialize with an empty string if no feedback exists
       });
 
+      console.log('initialData', initialData);
+
       // Only initialize formData if it's empty
       if (Object.keys(formData).length === 0) {
         setFormData(initialData);
       }
     }
-  }, [formResponse]); // Remove feedBackFormData from dependencies // Dependencies
+  }, [formResponse, feedBackFormData]); // Remove feedBackFormData from dependencies // Dependencies
 
   const handleSubmit = async () => {
     setLoading(true);
