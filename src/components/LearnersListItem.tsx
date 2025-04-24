@@ -876,16 +876,18 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
           </Box>
         </Box>
       </Modal>
-      <FeedBackModel
-        open={showFeedbackModal}
-        onClose={() => setShowFeedbackModal(false)}
-        cohortMembershipId={cohortMembershipId}
-        cohortId={cohortID}
-        userId={userId}
-        reloadState={reloadState}
-        setReloadState={setReloadState}
-        feedBackFormData={feedBackFormData}
-      />
+      {showFeedbackModal && (
+        <FeedBackModel
+          open={showFeedbackModal}
+          onClose={() => setShowFeedbackModal(false)}
+          cohortMembershipId={cohortMembershipId}
+          cohortId={cohortID}
+          userId={userId}
+          reloadState={reloadState}
+          setReloadState={setReloadState}
+          feedBackFormData={feedBackFormData}
+        />
+      )}
     </>
   );
 };
