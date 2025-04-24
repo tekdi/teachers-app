@@ -183,10 +183,10 @@ const CohortLearnerList: React.FC<CohortLearnerListProps> = ({
                 <Grid xs={12} sm={12} md={6} lg={4} key={data.userId}>
                   <LearnersListItem
                     type={Role.STUDENT}
-                    userId={data.userId}
-                    learnerName={data.name}
+                    userId={data?.userId}
+                    learnerName={data?.name}
                     age={data.age}
-                    cohortMembershipId={data.cohortMembershipId}
+                    cohortMembershipId={data?.cohortMembershipId}
                     isDropout={data.memberStatus === Status.DROPOUT}
                     statusReason={data.statusReason}
                     reloadState={reloadState}
@@ -194,8 +194,8 @@ const CohortLearnerList: React.FC<CohortLearnerListProps> = ({
                     showMiniProfile={true}
                     onLearnerDelete={() => {}}
                     cohortID={cohortId}
-                    showSubmitFeedback={data.showSubmitFeedback}
-                    feedBackFormData={data.matchingFields}
+                    showSubmitFeedback={data?.showSubmitFeedback}
+                    feedBackFormData={data?.matchingFields}
                   />
                 </Grid>
               ))}

@@ -55,12 +55,10 @@ function FeedBackModel({
           : ''; // Initialize with an empty string if no feedback exists
       });
 
-      // Only initialize formData if it's empty
-      if (Object.keys(formData).length === 0) {
-        setFormData(initialData);
-      }
+      // Always update formData when feedback data changes
+      setFormData(initialData);
     }
-  }, [formResponse, feedBackFormData]); // Remove feedBackFormData from dependencies // Dependencies
+  }, []);
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -163,6 +161,7 @@ function FeedBackModel({
                 />
               </Box>
             ))}
+
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
               <Button
                 variant="contained"
