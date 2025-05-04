@@ -55,7 +55,7 @@ const ForgotPassword = () => {
 
       setSuccessMessage(true);
     } catch (error: any) {
-      const errorMessage = error?.response?.data?.params?.err || "Something went wrong";
+      const errorMessage = error?.response?.data?.params?.err ?? "Something went wrong";
       showToastMessage(errorMessage, 'error');
     }
   };
