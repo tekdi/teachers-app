@@ -126,7 +126,7 @@ Course planning features include:
 User management includes:
 - **AddFacilitator.tsx**: Adding new teachers/facilitators
 - **ManageUser.tsx**: User management interface
-- **AddLeanerModal.tsx**: Adding new students
+- **AddLearnerModal.tsx**: Adding new students
 
 ## Performance Considerations
 
