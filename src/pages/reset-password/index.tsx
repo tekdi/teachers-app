@@ -50,7 +50,7 @@ const ResetPassword = () => {
     } catch (error: any) {
       console.error('Error resetting password:', error);
       setForgotPassword(false);
-      showToastMessage(error.response.data.params.err, 'error');
+      showToastMessage(error?.response?.data?.params?.err || t('COMMON.DEFAULT_ERROR'), 'error');
     }
   };
 
