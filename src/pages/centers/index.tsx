@@ -35,9 +35,13 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useMemo, useState } from 'react';
 import { setTimeout } from 'timers';
 import { accessControl } from '../../../app.config';
-import FilterModalCenter from '../blocks/components/FilterModalCenter';
 import taxonomyStore from '@/store/taxonomyStore';
 import { telemetryFactory } from '@/utils/telemetry';
+import { getFormRead } from '@/hooks/useFormRead';
+import { FormContext, FormContextType } from '@/utils/app.constant';
+import { useQuery } from '@tanstack/react-query';
+import AddNewBatch from '@/components/AddBatchModel';
+import { tr } from 'date-fns/locale';
 
 const CentersPage = () => {
   const { t } = useTranslation();
@@ -54,6 +58,7 @@ const CentersPage = () => {
   const [isTeamLeader, setIsTeamLeader] = useState(false);
   const [filterModalOpen, setFilterModalOpen] = useState(false);
   const [filteredCenters, setFilteredCenters] = useState(centerData);
+  const [openAddBatchModal, setOpenAddBatchModal] = React.useState(false);
   const [searchInput, setSearchInput] = useState('');
   const [selectedCenters, setSelectedCenters] = useState<string[]>([]);
   const [sortOrder, setSortOrder] = useState('');
@@ -67,10 +72,21 @@ const CentersPage = () => {
   const handleFilterModalOpen = () => setFilterModalOpen(true);
   const handleFilterModalClose = () => setFilterModalOpen(false);
   const [isCenterAdded, setIsCenterAdded] = useState(false);
+  const [formdata, setFormData] = useState<any>();
   const setType = taxonomyStore((state) => state.setType);
   const store = useStore();
   const userRole = store.userRole;
   const isActiveYear = store.isActiveYearSelected;
+  const [userId, setUserId] = useState('');
+  const {
+    data: batchFormData,
+    isLoading: batchFormDataLoading,
+    error: batchFormDataError,
+  } = useQuery<any>({
+    queryKey: ['batchFormData'],
+    queryFn: () => getFormRead(FormContext.COHORTS, FormContextType.COHORTS),
+    staleTime: 36000000,
+  });
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -317,6 +333,39 @@ const CentersPage = () => {
     setOpenCreateCenterModal(false);
   };
 
+  const handleOpenAddBatchModal = () => {
+    setOpenAddBatchModal(true);
+  };
+
+  const handleCloseAddBatchModal = () => {
+    setOpenAddBatchModal(false);
+    setReloadState(true);
+    // setSubmittedButtonStatus(false);
+  };
+
+  const getFormData = async () => {
+    try {
+      // const res = await getFormRead("cohorts", "cohort");
+      if (batchFormData && batchFormData?.fields) {
+        const formData = batchFormData?.fields;
+        setFormData(formData);
+      } else {
+        console.log('No response Data');
+      }
+    } catch (error) {
+      showToastMessage(t('COMMON.ERROR_MESSAGE_SOMETHING_WRONG'), 'error');
+      console.log('Error fetching form data:', error);
+    }
+  };
+
+  useEffect(() => {
+    getFormData();
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const userId = localStorage.getItem(Storage.USER_ID) || '';
+      setUserId(userId);
+    }
+  }, []);
+
   return (
     <>
       <Header />
@@ -395,8 +444,28 @@ const CentersPage = () => {
         <Box>
           {value === 1 && (
             <>
+              <Box my={2} px={'18px'}>
+                <Button
+                  sx={{
+                    border: '1px solid #1E1B16',
+                    borderRadius: '100px',
+                    height: '40px',
+                    px: '16px',
+                    color: theme.palette.error.contrastText,
+                    '& .MuiButton-endIcon': {
+                      marginLeft: isRTL ? '0px !important' : '8px !important',
+                      marginRight: isRTL ? '8px !important' : '-2px !important',
+                    },
+                  }}
+                  className="text-1E"
+                  endIcon={<AddIcon />}
+                  onClick={handleOpenAddBatchModal}
+                >
+                  {t('COMMON.ADD_NEW')}
+                </Button>
+              </Box>
               <Grid
-                px={'18px'}
+                // px={'18px'}
                 spacing={2}
                 mt={1}
                 sx={{ display: 'flex', alignItems: 'center' }}
@@ -617,6 +686,13 @@ const CentersPage = () => {
           </Box>
         ) : null}
       </Box>
+      <AddNewBatch
+        open={openAddBatchModal}
+        onClose={handleCloseAddBatchModal}
+        formData={formdata}
+        isEditModal={true}
+        userId={userId}
+      />
       {/* <FilterModalCenter
         open={filterModalOpen}
         handleClose={handleFilterModalClose}

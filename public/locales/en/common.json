@@ -626,7 +626,8 @@
     "MIDDLE_NAME_OR_FATHER/MOTHER_NAME": "Middle Name Or Father/Mother Name",
     "QUALIFICATIONS_DETAILS": "Qualification Details",
     "COUNTRY_CODE": "Country Code",
-    "Preferred_Location": "Preferred Location"
+    "Preferred_Location": "Preferred Location",
+    "BATCH_NAME": "Batch Name"
   },
   "FORM_ERROR_MESSAGES": {
     "INVALID_INPUT": "Invalid Input.",
@@ -830,7 +831,7 @@
     "BENIFITS": "Benefits",
     "OTHERBENIFITS": "Other Benefits",
     "STIPEND": "Stipend",
-    "WORK_EXPERIENCE_NATURE": "Work Experience Nature",
+    "WORK_EXPERIENCE_NATURE": "Work Mode",
     "SKILLS": "Skills",
     "ALL_SKILLS": "All Skills",
     "NUMBER_OF_VACUNCIES": "Number of Vacancies",
@@ -856,11 +857,15 @@
     "CREATE_NEW_OPPORTUNITY": " Create Opportunity",
     "REJECTED": "Rejected",
     "CLEAR_FILTERS": "Clear Filters",
-    "PRICING_TYPE": "Pricing Type",
+    "PRICING_TYPE": "Opportunity Type",
     "OFFER_LETTER_PROVIDED": "Offer Letter Provided",
     "ALL_COUNTRY": "All Countries",
     "ALL_COUNTY": "All Counties",
     "ALL_SUB_COUNTY": "All Sub-Counties",
     "CURRENCY": "Currency"
+  },
+  "BATCHES": {
+    "NEW_BATCHES": "New Batch",
+    "BATCH_CREATED": "Batch created successfully!"
   }
 }

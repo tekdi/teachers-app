@@ -1,11 +1,11 @@
-import { Role } from "@/utils/app.constant";
-import { capitalizeFirstLetterOfEachWordInArray } from "@/utils/Helper";
-import { Box, Grid, Typography, useMediaQuery } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
-import { useTranslation } from "next-i18next";
-import React, { useState } from "react";
-import MultipleSelectCheckmarks from "./FormControl";
-import { useRouter } from "next/router";
+import { Role } from '@/utils/app.constant';
+import { capitalizeFirstLetterOfEachWordInArray } from '@/utils/Helper';
+import { Box, Grid, Typography, useMediaQuery } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'next-i18next';
+import React, { useState } from 'react';
+import MultipleSelectCheckmarks from './FormControl';
+import { useRouter } from 'next/router';
 
 interface State {
   value: string;
@@ -40,7 +40,7 @@ interface DropdownBoxProps {
   selectedBlock: string[];
   selectedCenter?: any;
   inModal?: boolean;
-   handleCountryChangeWrapper: (
+  handleCountryChangeWrapper: (
     selectedNames: string[],
     selectedCodes: string[]
   ) => Promise<void>;
@@ -86,27 +86,26 @@ const AreaSelection: React.FC<DropdownBoxProps> = ({
   isMediumScreen,
   isCenterSelection = true,
   inModal = false,
-  handleCenterChangeWrapper = () => { },
+  handleCenterChangeWrapper = () => {},
   stateDefaultValue,
   blockDefaultValue,
   districtDefaultValue,
   isUserAdd,
-  iscenterCreate=false,
+  iscenterCreate = false,
   userType,
   reAssignModal = false,
-}) => { 
+}) => {
   const router = useRouter();
 
-  const {  center } = router.query;
-console.log(blocks,"blocks-------");
+  const { center } = router.query;
 
   const { t } = useTranslation();
   const theme = useTheme<any>();
   const [singleState, setSingleState] = useState<boolean>(true);
-  const [stateValue, setStateValue] = useState<string>("");
-  const [stateCode, setStateCode] = useState<string>("");
+  const [stateValue, setStateValue] = useState<string>('');
+  const [stateCode, setStateCode] = useState<string>('');
   const isSmallScreen = useMediaQuery((theme: any) =>
-    theme.breakpoints.down("sm")
+    theme.breakpoints.down('sm')
   );
   // isSmallScreen=isMobile?true: false;
   const centerNames = allCenters?.map((center) => center.label) || [];
@@ -118,91 +117,90 @@ console.log(blocks,"blocks-------");
   return (
     <Box
       sx={{
-        display: "flex",
-        borderRadius: "8px",
+        display: 'flex',
+        borderRadius: '8px',
       }}
     >
       <Box
         sx={{
-          display: "flex",
-          width: "100%",
-          justifyContent: "space-between",
-          "@media (max-width: 900px)": {
-            flexDirection: "column",
+          display: 'flex',
+          width: '100%',
+          justifyContent: 'space-between',
+          '@media (max-width: 900px)': {
+            flexDirection: 'column',
           },
         }}
       >
         {userType && !reAssignModal && inModal === false && (
           <Box>
             <Typography marginTop="20px" variant="h1">
-              {userType === Role.CONTENT_CREATOR ? t("SIDEBAR.SCTA") : userType}
+              {userType === Role.CONTENT_CREATOR ? t('SIDEBAR.SCTA') : userType}
             </Typography>
           </Box>
         )}
 
-        {(<Box
-          sx={{
-            width: inModal ? "100%" : "62%",
-            "@media (max-width: 900px)": {
-              width: "100%",
-            },
-          }}
-        >
-          
-           
-              <Grid container spacing={2}>
-                <Grid
-              item
-              xs={12}
-              sm={inModal ? 12 : 6}
-              md={inModal ? 12 : 4}
-              lg={inModal ? 12 : isCenterSelection ? 3 : 4}
-            >
-              <MultipleSelectCheckmarks
-                names={country?.map(
-                  (country) =>
-                    country.label?.toLowerCase().charAt(0).toUpperCase() +
-                    country.label?.toLowerCase().slice(1)
-                )}
-                codes={country?.map((country) => country.value)}
-                tagName={t("COMMON.COUNTRY")}
-                selectedCategories={selectedState}
-                onCategoryChange={handleCountryChangeWrapper}
-                // disabled={stateDefaultValue !== t("COMMON.ALL_STATES")}
-                overall={!inModal}
-                // defaultValue={stateDefaultValue}
-              />
-            </Grid>
+        {
+          <Box
+            sx={{
+              width: inModal ? '100%' : '62%',
+              '@media (max-width: 900px)': {
+                width: '100%',
+              },
+            }}
+          >
+            <Grid container spacing={2}>
+              <Grid
+                item
+                xs={12}
+                sm={inModal ? 12 : 6}
+                md={inModal ? 12 : 4}
+                lg={inModal ? 12 : isCenterSelection ? 3 : 4}
+              >
+                <MultipleSelectCheckmarks
+                  names={country?.map(
+                    (country) =>
+                      country.label?.toLowerCase().charAt(0).toUpperCase() +
+                      country.label?.toLowerCase().slice(1)
+                  )}
+                  codes={country?.map((country) => country.value)}
+                  tagName={t('COMMON.COUNTRY')}
+                  selectedCategories={selectedState}
+                  onCategoryChange={handleCountryChangeWrapper}
+                  // disabled={stateDefaultValue !== t("COMMON.ALL_STATES")}
+                  overall={!inModal}
+                  // defaultValue={stateDefaultValue}
+                />
+              </Grid>
 
-            <Grid
-              item
-              xs={12}
-              sm={inModal ? 12 : 6}
-              md={inModal ? 12 : 4}
-              lg={inModal ? 12 : isCenterSelection ? 3 : 4}
-            >
-              <MultipleSelectCheckmarks
-                names={states?.map((states) => states.label)}
-                codes={states?.map((states) => states.value)}
-                tagName={t("COMMON.COUNTY")}
-                selectedCategories={selectedDistrict}
-                onCategoryChange={handleStateChangeWrapper}
-                // disabled={
-                //   districts?.length <= 0 ||
-                //   (selectedState.length === 0 &&
-                //     stateDefaultValue === t("COMMON.ALL_STATES"))
-                // }
-                overall={!inModal}
-                defaultValue={
-                  reAssignModal
-                    ? districtDefaultValue
-                    : selectedState.length > 0 && districts?.length === 0
-                      ? t("COMMON.COUNTY")
-                      : t("COMMON.ALL_COUNTY")
-                }
-              />
-            </Grid>
-            <Grid
+              <Grid
+                item
+                xs={12}
+                sm={inModal ? 12 : 6}
+                md={inModal ? 12 : 4}
+                lg={inModal ? 12 : isCenterSelection ? 3 : 4}
+              >
+                <MultipleSelectCheckmarks
+                  names={states?.map((states) => states.label)}
+                  codes={states?.map((states) => states.value)}
+                  tagName={t('COMMON.COUNTY')}
+                  selectedCategories={selectedDistrict}
+                  onCategoryChange={handleStateChangeWrapper}
+                  // disabled={
+                  //   districts?.length <= 0 ||
+                  //   (selectedState.length === 0 &&
+                  //     stateDefaultValue === t("COMMON.ALL_STATES"))
+                  // }
+                  overall={!inModal}
+                  defaultValue={
+                    reAssignModal
+                      ? districtDefaultValue
+                      : selectedState.length > 0 && districts?.length === 0
+                        ? t('COMMON.COUNTY')
+                        : t('COMMON.ALL_COUNTY')
+                  }
+                />
+              </Grid>
+              <Grid
                 item
                 xs={12}
                 sm={inModal ? 12 : 6}
@@ -212,17 +210,25 @@ console.log(blocks,"blocks-------");
                 {shouldRenderSelectCheckmarks && (
                   <MultipleSelectCheckmarks
                     names={capitalizeFirstLetterOfEachWordInArray(
-                      blocks?.length > 0 ? blocks.map((block) => block.label) : []
+                      blocks?.length > 0
+                        ? blocks.map((block) => block.label)
+                        : []
                     )}
-                    codes={blocks?.length > 0 ? blocks?.map((block) => block.value) : []}
-                    tagName={t("COMMON.SUB_COUNTY")}
-                    selectedCategories={capitalizeFirstLetterOfEachWordInArray(selectedBlock)}
+                    codes={
+                      blocks?.length > 0
+                        ? blocks?.map((block) => block.value)
+                        : []
+                    }
+                    tagName={t('COMMON.SUB_COUNTY')}
+                    selectedCategories={capitalizeFirstLetterOfEachWordInArray(
+                      selectedBlock
+                    )}
                     onCategoryChange={handleBlockChangeWrapper}
                     overall={!inModal}
                     defaultValue={
                       selectedDistrict?.length > 0 && blocks?.length === 0
-                        ? t("COMMON.SUB_COUNTY")
-                        : t("COMMON.ALL_SUB_COUNTY")
+                        ? t('COMMON.SUB_COUNTY')
+                        : t('COMMON.ALL_SUB_COUNTY')
                     }
                   />
                 )}
@@ -245,9 +251,7 @@ console.log(blocks,"blocks-------");
                   />
                 </Grid>
               )} */}
-              </Grid>
-           
-
+            </Grid>
 
             {/* {isCenterSelection && !iscenterCreate && (
               <Grid
@@ -271,9 +275,8 @@ console.log(blocks,"blocks-------");
                 />
               </Grid>
             )} */}
-
-          
-        </Box>)}
+          </Box>
+        }
       </Box>
     </Box>
   );

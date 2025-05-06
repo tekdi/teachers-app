@@ -101,6 +101,7 @@ export enum FormContextType {
   COHORT_MEMBER = 'COHORTMEMBER',
   ADMIN_CENTER = 'ADMIN_CENTER',
   YOUTH = 'YOUTH',
+  COHORTS = 'cohort',
 }
 export enum ObservationEntityType {
   LEARNER = 'learner',
@@ -192,6 +193,7 @@ export enum CohortTypes {
   STATE = 'STATE',
   COUNTRY = 'COUNTRY',
   CITY = 'CITY',
+  BATCH = 'COHORT',
 }
 
 export const metaTags = {
@@ -277,4 +279,8 @@ export enum sessionType {
 }
 export enum fieldKeys {
   GENDER = 'gender',
+}
+
+export enum apiCatchingDuration {
+  GETREADFORM = 36000000,
 }
