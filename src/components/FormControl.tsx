@@ -1,12 +1,12 @@
-import * as React from "react";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import ListItemText from "@mui/material/ListItemText";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { useTranslation } from "next-i18next";
-import { useMediaQuery } from "@mui/material";
+import * as React from 'react';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import ListItemText from '@mui/material/ListItemText';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { useTranslation } from 'next-i18next';
+import { useMediaQuery } from '@mui/material';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -24,12 +24,16 @@ interface MultipleSelectCheckmarksProps {
   codes: string[];
   tagName: string;
   selectedCategories: string[];
-  onCategoryChange: (selectedNames: string[], selectedCodes: string[], selectedCohortId?: any) => void;
+  onCategoryChange: (
+    selectedNames: string[],
+    selectedCodes: string[],
+    selectedCohortId?: any
+  ) => void;
   disabled?: boolean;
   overall?: boolean;
   defaultValue?: string;
-  width?:any
-  cohortIds?:any
+  width?: any;
+  cohortIds?: any;
 }
 
 const MultipleSelectCheckmarks: React.FC<MultipleSelectCheckmarksProps> = ({
@@ -42,13 +46,13 @@ const MultipleSelectCheckmarks: React.FC<MultipleSelectCheckmarksProps> = ({
   overall = false,
   defaultValue,
   width,
-  cohortIds
+  cohortIds,
 }) => {
   const { t } = useTranslation();
   const isSmallScreen = useMediaQuery((theme: any) =>
-    theme.breakpoints.down("sm")
+    theme.breakpoints.down('sm')
   );
-  const isMediumScreen = useMediaQuery("(max-width:900px)");
+  const isMediumScreen = useMediaQuery('(max-width:900px)');
 
   const handleChange = (
     event: SelectChangeEvent<typeof selectedCategories>
@@ -57,9 +61,9 @@ const MultipleSelectCheckmarks: React.FC<MultipleSelectCheckmarksProps> = ({
       target: { value },
     } = event;
 
-    let selectedNames = typeof value === "string" ? value.split(",") : value;
+    let selectedNames = typeof value === 'string' ? value.split(',') : value;
 
-    if (selectedNames.includes("all")) {
+    if (selectedNames.includes('all')) {
       selectedNames = defaultValue ? [defaultValue] : [];
     }
 
@@ -68,39 +72,39 @@ const MultipleSelectCheckmarks: React.FC<MultipleSelectCheckmarksProps> = ({
     );
     const selectedCohortId = selectedNames?.map(
       (name) => cohortIds?.[names?.indexOf(name)]
-    ); 
-//const selectedCohortId="";
+    );
+    //const selectedCohortId="";
     onCategoryChange(selectedNames, selectedCodes, selectedCohortId);
   };
 
   return (
     <div>
-      <FormControl sx={{ width: "100%" }} disabled={disabled}>
+      <FormControl sx={{ width: '100%' }} disabled={disabled}>
         <InputLabel id="multiple-checkbox-label">{tagName}</InputLabel>
         <Select
           labelId="multiple-checkbox-label"
           id="multiple-checkbox"
           value={
-            selectedCategories?.length === 0 || selectedCategories[0] === ""
+            selectedCategories?.length === 0 || selectedCategories[0] === ''
               ? defaultValue
                 ? [defaultValue]
-                : ""
+                : ''
               : selectedCategories
           }
-          sx={{ width: width? width:undefined }}
+          sx={{ width: width ? width : undefined }}
           onChange={handleChange}
           input={<OutlinedInput label={tagName} />}
           renderValue={(selected) => {
             const selectedArray = Array.isArray(selected)
               ? selected
               : [selected];
-            return selectedArray.join(", ");
+            return selectedArray.join(', ');
           }}
           MenuProps={MenuProps}
         >
           {overall && (
             <MenuItem value="all">
-              <em>{t("COMMON.ALL")}</em>
+              <em>{t('COMMON.ALL')}</em>
             </MenuItem>
           )}
 
