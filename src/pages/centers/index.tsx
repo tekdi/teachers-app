@@ -361,7 +361,7 @@ const CentersPage = () => {
   useEffect(() => {
     getFormData();
     if (typeof window !== 'undefined' && window.localStorage) {
-      const userId = localStorage.getItem(Storage.USER_ID) || '';
+      const userId = localStorage.getItem('userId') || '';
       setUserId(userId);
     }
   }, []);
