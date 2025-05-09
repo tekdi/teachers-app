@@ -202,6 +202,7 @@ const CentersPage = () => {
                 });
 
               setBlockData(blockData);
+              localStorage.setItem('tvetName', blockData[0].blockName);
             }
 
             if (
