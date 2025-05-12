@@ -548,7 +548,7 @@ const LearnerProfile: React.FC<any> = () => {
     if (field.label === 'TVETS_ENROLLMENT_NUMBER') {
       return [
         {
-          key: 'TVET_NAME',
+          name: 'TVET_NAME',
           label: 'TVET Name',
           displayValue: tvetName
             ? capitalizeFirstLetterOfEachWordInArray(tvetName ? [tvetName] : [])
@@ -1092,7 +1092,7 @@ const LearnerProfile: React.FC<any> = () => {
                 (
                   item: {
                     label?: string;
-                    displayValue?: string;
+                    displayValue?: string | string[];
                     order?: number;
                     name?: string;
                   },
