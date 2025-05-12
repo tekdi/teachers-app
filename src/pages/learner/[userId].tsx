@@ -23,6 +23,7 @@ import {
 } from '@/utils/app.constant';
 import { logEvent } from '@/utils/googleAnalytics';
 import {
+  capitalizeFirstLetterOfEachWordInArray,
   extractAddress,
   formatSelectedDate,
   getUserDetailsById,
@@ -540,6 +541,24 @@ const LearnerProfile: React.FC<any> = () => {
         displayValue: field?.value ? toPascalCase(field?.value) : '-',
       };
     });
+
+  const updatedLearnerDetails = learnerDetailsByOrder.flatMap((field) => {
+    const tvetName = localStorage.getItem('tvetName');
+
+    if (field.label === 'TVETS_ENROLLMENT_NUMBER') {
+      return [
+        {
+          key: 'TVET_NAME',
+          label: 'TVET Name',
+          displayValue: tvetName
+            ? capitalizeFirstLetterOfEachWordInArray(tvetName ? [tvetName] : [])
+            : '-',
+        },
+        field,
+      ];
+    }
+    return field;
+  });
 
   //------ Test Report API Integration------
 
@@ -1069,7 +1088,7 @@ const LearnerProfile: React.FC<any> = () => {
             padding="15px"
           >
             <Grid container spacing={4}>
-              {learnerDetailsByOrder?.map(
+              {updatedLearnerDetails?.map(
                 (
                   item: {
                     label?: string;
