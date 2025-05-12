@@ -472,7 +472,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
     if (field.label === 'TVETS_ENROLLMENT_NUMBER') {
       return [
         {
-          key: 'TVET_NAME',
+          name: 'TVET_NAME',
           label: 'TVET Name',
           displayValue: tvetName
             ? capitalizeFirstLetterOfEachWordInArray(tvetName ? [tvetName] : [])
@@ -1014,7 +1014,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
                 (
                   item: {
                     label?: string;
-                    displayValue?: string;
+                    displayValue?: string | string[];
                     order?: number;
                     name?: string;
                   },
