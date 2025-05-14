@@ -359,10 +359,9 @@ const AddNewBatch: React.FC<AddLearnerModalProps> = ({
     }
   }, [isCenterAdmin]);
 
-  const years = Array.from(
-    { length: 5 },
-    (_, i) => new Date().getFullYear() + i
-  ).map((year) => ({ label: year.toString(), value: year.toString() }));
+  const years = Array.from({ length: 2030 - 2023 + 1 }, (_, i) => 2023 + i).map(
+    (year) => ({ label: year.toString(), value: year.toString() })
+  );
 
   const handleStartMonthChange = (event: SelectChangeEvent<string>) => {
     const selectedMonth = event.target.value;
@@ -470,19 +469,20 @@ const AddNewBatch: React.FC<AddLearnerModalProps> = ({
   ) => {
     const text = event.target.value;
     setAdditionalText(text);
-    const centerPrefix = selectedCenter?.[0] || '';
+    const centerPrefix = isCenterAdmin
+      ? myCohort[0] || ''
+      : selectedCenter?.[0] || '';
 
     setBatchName(
-      `${centerPrefix} ${startMonth} ${startYear} - ${endMonth} ${endYear} ${text}`
+      `${centerPrefix} ${startMonth} ${startYear} - ${endMonth} ${endYear} ${text}`.trim()
     );
     setCustomFormData((prevData: any) => ({
       ...prevData,
-      name: `${centerPrefix} ${startMonth} ${startYear} - ${endMonth} ${endYear} ${text}`,
+      name: `${centerPrefix} ${startMonth} ${startYear} - ${endMonth} ${endYear} ${text}`.trim(),
     }));
   };
 
   const handleChangeForm = (event: IChangeEvent<any>) => {
-    // Update the form data when the user interacts with the form
     setCustomFormData(event.formData);
   };
 
