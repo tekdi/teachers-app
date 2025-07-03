@@ -304,6 +304,7 @@ export const generateUsernameAndPassword = (
 export const mapFieldIdToValue = (
   fields: CustomField[]
 ): { [key: string]: string } => {
+  if (!Array.isArray(fields)) return {};
   return fields.reduce((acc: { [key: string]: string }, field: CustomField) => {
     acc[field.fieldId] = field.value;
     return acc;

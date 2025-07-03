@@ -7,7 +7,7 @@ export const cohortList = async ({
   limit,
   offset,
   filters,
-}: CohortListParam): Promise<any> => {
+}:any): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/cohort/search`;
   try {
     const response = await post(apiUrl, { limit, offset, filters });
@@ -68,4 +68,65 @@ export const bulkCreateCohortMembers = async (payload: any): Promise<any> => {
     console.error('Error in bulk creating cohort members', error);
     throw error;
   }
+};
+
+export const getSchoolNames = async (): Promise<Record<string, {}>> => {
+  if (typeof window !== 'undefined' && window.localStorage) {
+    const schoolNamesStr = localStorage.getItem('schoolClusterNames');
+    if (schoolNamesStr) {
+      return JSON.parse(schoolNamesStr);
+    } else {
+      let schoolFilters = {
+        limit: 0, offset: 0, filters: { type: "SCHOOL", status: ["active"] },
+      };
+      const schoolRes = await cohortList(schoolFilters);
+
+      let clusterFilters = {
+        limit: 0, offset: 0, filters: { type: "CLUSTER", status: ["active"] },
+      };
+      const clusterRes = await cohortList(clusterFilters);
+
+       const schoolMap: Record<string, {code:string; name: string; clusterName: string }> = {};
+       const schools = schoolRes?.results?.cohortDetails || [];
+       const clusters = clusterRes?.results?.cohortDetails || [];
+      if (!schools.length || !clusters.length) return schoolMap;
+      
+       schools.forEach((school: any) => {
+          const cluster = clusters.find((c: any) => c.cohortId === school.parentId);
+          schoolMap[school.cohortId] = { code: school.cohortId, name: school.name, clusterName: cluster.name };
+      });
+
+      if (typeof window !== 'undefined' && window.localStorage) {
+          localStorage.setItem('schoolClusterNames', JSON.stringify(schoolMap));
+      }
+      return schoolMap
+    }
+  }
+  return {};
+};
+
+export const getClusterNames = async (): Promise<Record<string, string>> => {
+  if (typeof window !== 'undefined' && window.localStorage) {
+    const clusterNamesStr = localStorage.getItem('clusterNames');
+    if (clusterNamesStr) {
+      return JSON.parse(clusterNamesStr);
+    } else {
+      let data = {
+        limit: 0,
+        offset: 0,
+        filters: { type: "CLUSTER", status: ["active"] },
+      };
+      const clusters = await cohortList(data);
+       const clusterMap: Record<string, string> = {};
+       clusters.forEach((school: any) => {
+          clusterMap[school.cohortId] = school.name;
+      });
+
+      if (typeof window !== 'undefined' && window.localStorage) {
+          localStorage.setItem('clusterNames', JSON.stringify(clusterMap));
+      }
+      return clusterMap
+    }
+  }
+  return {};
 };

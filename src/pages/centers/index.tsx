@@ -4,7 +4,7 @@ import Header from '@/components/Header';
 import Loader from '@/components/Loader';
 import ManageUser from '@/components/ManageUser';
 import { showToastMessage } from '@/components/Toastify';
-import { getCohortList } from '@/services/CohortServices';
+import { getCohortList, getSchoolNames } from '@/services/CohortServices';
 import useStore from '@/store/store';
 import { CenterType, Role } from '@/utils/app.constant';
 import { accessGranted, toPascalCase } from '@/utils/Helper';
@@ -144,10 +144,15 @@ const CentersPage = () => {
             accessGranted('showTeacherCohorts', accessControl, userRole)
           ) {
             const response = await getCohortList(userId);
+                      // Retrieve and parse schoolNames from localStorage
+            const schools = await getSchoolNames();
+
             const cohortData = response?.map((block: any) => {
-              const cohortName = block.cohortName;
+            const school = schools[block.parentId];
+            const cohortName = `${(school as { name?: string })?.name || "-"}, ${block.cohortName}`; // School, Class format 
+              //const cohortName = block.cohortName;
               const cohortId = block.cohortId;
-              return { cohortName, cohortId };
+              return { cohortName, cohortId, teacherSlot: block?.teacherSlot };
             });
 
             console.log('cohortData', cohortData);
@@ -546,6 +551,10 @@ const CentersPage = () => {
                                     }}
                                   >
                                     {cohort?.cohortName}
+                                      <br />
+                                      <span style={{ color: "#888", fontSize: "12px" }}>
+                                        {cohort.teacherSlot || "-"}
+                                      </span>
                                   </Box>
                                   <ChevronRightIcon />
                                 </Box>
