@@ -30,7 +30,7 @@ import SessionCardFooter from '@/components/SessionCardFooter';
 import WeekCalender from '@/components/WeekCalender';
 import DeleteCenterModal from '@/components/center/DeleteCenterModal';
 import RenameCenterModal from '@/components/center/RenameCenterModal';
-import { getCohortDetails } from '@/services/CohortServices';
+import { getCohortDetails, getSchoolNames } from '@/services/CohortServices';
 import { getEventList } from '@/services/EventService';
 import reassignLearnerStore from '@/store/reassignLearnerStore';
 import { CustomField } from '@/utils/Interfaces';
@@ -173,6 +173,7 @@ const CohortPage = () => {
   useEffect(() => {
     const getCohortData = async () => {
       const response = await getCohortDetails(cohortId);
+      const schools = await getSchoolNames();
 
       let cohortData = null;
 
@@ -202,7 +203,11 @@ const CohortPage = () => {
               : '';
         }
         setCohortDetails(cohortData);
-        setCohortName(cohortData?.name);
+
+        const school = schools[cohortData.parentId];
+        const cohortName = `${(school as { name?: string })?.name || "-"}, ${cohortData.name}`; // School, Class format 
+        setCohortName(cohortName);
+        //setCohortName(cohortData?.name);
       }
     };
     getCohortData();
@@ -382,7 +387,7 @@ const CohortPage = () => {
             />
             <Box m={'1rem 1rem 0.5rem 0.5rem'} display={'column'} gap={'5px'}>
               <Typography textAlign={'left'} fontSize={'22px'}>
-                {toPascalCase(cohortDetails?.name)}
+                {toPascalCase(cohortName || cohortDetails?.name)}
               </Typography>
               {cohortDetails?.centerType && (
                 <Typography textAlign={'left'} fontSize={'22px'}>

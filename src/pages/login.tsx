@@ -33,6 +33,8 @@ import { login } from '../services/LoginService';
 import { getUserDetails, getUserId } from '../services/ProfileService';
 import loginImg from './../assets/images/login-image.jpg';
 import { Telemetry } from '@/utils/app.constant';
+import { AcademicYear } from "@/utils/Interfaces";
+import { getAcademicYear } from "@/services/AcademicYearService";
 
 const LoginPage = () => {
   const { t } = useTranslation();
@@ -73,6 +75,9 @@ const LoginPage = () => {
     (state: { setBlockName: any }) => state.setBlockName
   );
 
+  const setIsActiveYearSelected = useStore(
+    (state: { setIsActiveYearSelected: any }) => state.setIsActiveYearSelected
+  );
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -221,7 +226,28 @@ const LoginPage = () => {
           },
         };
         telemetryFactory.interact(telemetryInteract);
-        router.push('/dashboard');
+        const getAcademicYearList = async () => {
+            const academicYearList: AcademicYear[] = await getAcademicYear();
+            if (academicYearList) {
+              localStorage.setItem(
+                "academicYearList",
+                JSON.stringify(academicYearList)
+              );
+              const extractedAcademicYears = academicYearList?.map(
+                ({ id, session, isActive }) => ({ id, session, isActive })
+              );
+              const activeSession = extractedAcademicYears?.find(
+                (item) => item.isActive
+              );
+              const activeSessionId = activeSession ? activeSession.id : "";
+              localStorage.setItem("academicYearId", activeSessionId);
+              if (activeSessionId) {
+                setIsActiveYearSelected(true);
+                router.push('/dashboard');
+              }
+            }
+          };
+          getAcademicYearList();
       } catch (error: any) {
         setLoading(false);
         if (error.response && error.response.status === 404) {

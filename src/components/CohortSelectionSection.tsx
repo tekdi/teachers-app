@@ -10,7 +10,7 @@ import {
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 
-import { getCohortList } from '@/services/CohortServices';
+import { getCohortList, getSchoolNames } from '@/services/CohortServices';
 import useStore from '@/store/store';
 import { CohortDetails, ICohort } from '@/utils/Interfaces';
 import { CustomField } from '@/utils/Interfaces';
@@ -181,7 +181,7 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
               setBlockId(blockField?.fieldId);
             }
           }
-
+          
           if (response && response?.length > 0) {
             const extractNamesAndCohortTypes = (
               data: ChildData[]
@@ -215,14 +215,20 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
             }
           }
           if (response && response.length > 0) {
+              const schools = await getSchoolNames();
+
             if (response[0].type === cohortHierarchy.COHORT) {
               const filteredData = response
-                ?.map((item: any) => ({
-                  cohortId: item?.cohortId,
-                  parentId: item?.parentId,
-                  name: item?.cohortName || item?.name,
-                  params: item?.params,
-                }))
+                ?.map((item: any) => {
+                  const school = schools[item?.parentId];
+                  const cohortName = `${(school as { name?: string })?.name || "-"}, ${item?.cohortName || item?.name}${item?.teacherSlot ? `, ${item.teacherSlot}` : ''}`; // School, Class, [Type of Cohort] format
+                  return {
+                    cohortId: item?.cohortId,
+                    parentId: item?.parentId,
+                    name: cohortName, // School, Class format
+                    params: item?.params,
+                  };
+                })
                 ?.filter(Boolean);
               setSelectedCohortsData(filteredData);
               setCohortsData(filteredData);

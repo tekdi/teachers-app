@@ -1,4 +1,10 @@
 /* eslint-disable no-unused-vars */
+
+export interface AcademicYear {
+  id: string;
+  session: string;
+  isActive: string;
+}
 export interface AttendanceParams {
   userId: string;
   attendanceDate: string;

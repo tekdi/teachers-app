@@ -10,10 +10,12 @@ const useStore = create(
       cohorts: [],
       userRole: '',
       pairs: [],
+      isActiveYearSelected: '',
       setValue: (newValue) => set((state) => ({ value: newValue })),
       setBlock: (newBlock) => set((state) => ({ block: newBlock })),
       setUserRole: (newRole) => set((state) => ({ userRole: newRole })),
       setCohorts: (newCohorts) => set(() => ({ cohorts: newCohorts })),
+      setIsActiveYearSelected: (newYear) => set(() => ({ isActiveYearSelected: newYear })),
     }),
     {
       name: 'teacherApp',
@@ -21,5 +23,9 @@ const useStore = create(
     }
   )
 );
+export const store = {
+  getState: useStore.getState,
+  setState: useStore.setState,
+};
 
 export default useStore;
