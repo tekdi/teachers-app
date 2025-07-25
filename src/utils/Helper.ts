@@ -292,12 +292,12 @@ export const generateUsernameAndPassword = (
   const randomNum = Math.floor(10000 + Math.random() * 90000).toString();
   const yearSuffix =
     yearOfJoining !== '' ? yearOfJoining?.slice(-2) : currentYear;
-  const username =
-    role === 'F'
-      ? `FSC${stateCode}${yearSuffix}${randomNum}`
-      : `SC${stateCode}${currentYear}${randomNum}`;
+  // const username =
+  //   role === 'F'
+  //     ? `FSC${stateCode}${yearSuffix}${randomNum}`
+  //     : `SC${stateCode}${currentYear}${randomNum}`;
+  const username = `OBLF${currentYear}${randomNum}`;
   const password = randomNum;
-
   return { username, password };
 };
 

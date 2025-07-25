@@ -17,7 +17,7 @@ import {
   Typography,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-
+import AddMembersModal from "@/components/AddMembersModal";
 import AddLearnerModal from '@/components/AddLeanerModal';
 import CenterSessionModal from '@/components/CenterSessionModal';
 import CohortFacilitatorList from '@/components/CohortFacilitatorList';
@@ -96,6 +96,8 @@ const CohortPage = () => {
   const setBlockId = manageUserStore(
     (state: { setBlockId: any }) => state.setBlockId
   );
+  const [addMembersModalOpen, setAddMembersModalOpen] = useState(false);
+  
 
   const [open, setOpen] = React.useState(false);
   const theme = useTheme<any>();
@@ -128,6 +130,19 @@ const CohortPage = () => {
     setClickedBox(selection);
   };
 
+const handleAddMembersModal = () => {
+    setAddMembersModalOpen(true);
+  };
+  const handleCloseAddMembersModal = () => {
+    setAddMembersModalOpen(false);
+    setIsLearnerAdded(true);
+  };
+
+
+const onAfterUsersAdd = async (teacherIds: string[]) => {
+      setIsLearnerAdded(true);
+
+};
   const removeModal = () => {
     setDeleteModal(true);
   };
@@ -360,6 +375,7 @@ const CohortPage = () => {
   const handleEditEvent = () => {
     setOnEditEvent(true);
   };
+
 
   return (
     <>
@@ -720,6 +736,22 @@ const CohortPage = () => {
                 {t('COMMON.ADD_NEW')}
               </Button>
             </Box>
+             <Box mt={3} px={'18px'}>
+              <Button
+                sx={{
+                  border: '1px solid #1E1B16',
+                  borderRadius: '100px',
+                  height: '40px',
+                  width: '126px',
+                  color: theme.palette.error.contrastText,
+                }}
+                className="text-1E"
+                endIcon={<AddIcon />}
+                onClick={handleAddMembersModal}
+              >
+                {t('Select')}
+              </Button>
+            </Box>
             <Box
               px={'18px'}
               mt={2}
@@ -756,6 +788,17 @@ const CohortPage = () => {
                 open={openAddLearnerModal}
                 onClose={handleCloseAddLearnerModal}
                 onLearnerAdded={handleLearnerAdded}
+              />
+            )}
+            {addMembersModalOpen && (
+              <AddMembersModal
+                open={addMembersModalOpen}
+                onClose={handleCloseAddMembersModal}
+                onAdd={onAfterUsersAdd}
+                cohortId={cohortId}
+                roleId={'3eb5d425-f0f1-4d99-a27d-85ec63101bcc'}
+                title={t("COMMON.ADD_STUDENTS")}
+                showCohortFilters={true }
               />
             )}
           </>

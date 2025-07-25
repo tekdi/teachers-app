@@ -56,6 +56,7 @@ import {
   tourGuideNavigtion,
   showMyTimeTable,
   showEventsByList,
+  attendanceSettings
 } from './../../app.config';
 
 import AttendanceComparison from '@/components/AttendanceComparison';
@@ -126,25 +127,18 @@ const formatTimeToHHMM = (date: Date) => {
   return `${hours}:${minutes}`;
 };
 
-const isWithinAttendanceTimeUpdated = (
-  attendanceTimes: {
-    allow_late_marking?: number;
-    restrict_attendance_timings?: number;
-    attendance_starts_at?: string | null;
-    attendance_ends_at?: string | null;
-    can_be_updated?: number;
-    back_dated_attendance_allowed_days?: number;
-    back_dated_attendance?: number;
-  },
+const canAttendanceMarked = (
+  scope: 'self' | 'student',
+  selectedCohort?:any,
   selectedDate?: any,
   attendanceData?: any
 ) => {
   const now = new Date();
-
+  const attendanceSet = attendanceSettings?.[scope];
   // console.log('attendanceDataUpdated', attendanceData);
 
   if (
-    attendanceTimes?.can_be_updated === 0 &&
+    attendanceSet?.can_be_updated === 0 &&
     attendanceData?.length > 0 &&
     attendanceData?.[0]?.attendanceId
   ) {
@@ -159,41 +153,80 @@ const isWithinAttendanceTimeUpdated = (
   let currentDate = formatSelectedDate(now);
   let currentTimeFormatted = formatTimeToHHMM(now);
   if (currentDate !== selectedDate) {
-    if (attendanceTimes?.back_dated_attendance !== 1) {
+    if (attendanceSet?.back_dated_attendance !== 1) {
       return false;
     } else if (
-      attendanceTimes?.back_dated_attendance_allowed_days &&
-      differenceInDays > attendanceTimes?.back_dated_attendance_allowed_days
+      attendanceSet?.back_dated_attendance_allowed_days &&
+      differenceInDays > attendanceSet?.back_dated_attendance_allowed_days
     ) {
       return false;
     } else {
       return true;
     }
   } else if (currentDate === selectedDate) {
-    if (
-      attendanceTimes.restrict_attendance_timings === 1 &&
-      (attendanceTimes.attendance_starts_at ||
-        attendanceTimes.attendance_ends_at)
-    ) {
-      if (
-        attendanceTimes.attendance_starts_at &&
-        currentTimeFormatted < attendanceTimes.attendance_starts_at
-      ) {
-        return false;
-      } else if (
-        attendanceTimes.attendance_ends_at &&
-        currentTimeFormatted > attendanceTimes.attendance_ends_at &&
-        attendanceTimes.allow_late_marking !== 1
-      ) {
-        return false;
-      } else {
-        return true;
-      }
-    } else if (attendanceTimes.restrict_attendance_timings === 0) {
+      const now = new Date();
+      if (attendanceSet.restrict_attendance_timings === 1) {
+        const flag = attendanceWindow(selectedCohort?.teacherSlot);
+        if (flag == 'early') {
+          return false;
+        } else {
+          return true;
+        }
+    } else if (attendanceSet.restrict_attendance_timings === 0) {
       return true;
     }
   }
 };
+
+
+
+function timeSlotcheck(slot:string) {
+    // slot format: "10:30 AM - 12:30 PM"
+    const startTimeStr = slot.split('-')[0].trim(); // "10:30 AM"
+    const [startTime, startPeriod] = startTimeStr.split(' ');
+    const [startHours, startMinutes] = startTime.split(':').map(Number);
+    const now = new Date();
+    let slotStart = new Date(now);
+    let slotStartHours = startHours;
+    if (startPeriod === 'PM' && startHours < 12) slotStartHours += 12;
+    if (startPeriod === 'AM' && startHours === 12) slotStartHours = 0;
+    slotStart.setHours(slotStartHours, startMinutes, 0, 0);
+    
+    // End time
+    const endTimeStr = slot.split('-')[1].trim(); // "12:30 PM"
+    const [endTime, endPeriod] = endTimeStr.split(' ');
+    const [endHours, endMinutes] = endTime.split(':').map(Number);
+    let slotEnd = new Date(now);
+    let slotEndHours = endHours;
+    if (endPeriod === 'PM' && endHours < 12) slotEndHours += 12;
+    if (endPeriod === 'AM' && endHours === 12) slotEndHours = 0;
+    slotEnd.setHours(slotEndHours, endMinutes, 0, 0);
+
+    return [slotStart, slotEnd];
+}
+
+function attendanceWindow(slot: string, markedAt: Date = new Date()): 'onTime' | 'late' | 'early' {
+  //slot = "02:15 AM - 12:30 PM"
+  const startTimeStr = slot.split('-')[0].trim(); // "10:30 AM"
+  const [time, period] = startTimeStr.split(' ');
+  const [hours, minutes] = time.split(':').map(Number);
+  let slotDate = new Date(markedAt);
+  let slotHours = hours;
+  if (period === 'PM' && hours < 12) slotHours += 12;
+  if (period === 'AM' && hours === 12) slotHours = 0;
+  slotDate.setHours(slotHours, minutes, 0, 0);
+
+  const windowStart = new Date(slotDate.getTime() - 5 * 60 * 1000);
+  const windowEnd = new Date(slotDate.getTime() + 5 * 60 * 1000);
+
+  if (markedAt >= windowStart && markedAt <= windowEnd) {
+    return 'onTime';
+  }
+  if (markedAt > windowEnd) {
+    return 'late';
+  }
+  return 'early';
+}
 
 const calculateDateDifference = (date1: Date, date2: Date) => {
   const diffTime = Math.abs(date2.getTime() - date1.getTime());
@@ -201,12 +234,9 @@ const calculateDateDifference = (date1: Date, date2: Date) => {
   return diffDays - 1;
 };
 
-const checkIsAllowedToShow = (attendanceData: { allowed: number }) => {
+const checkIsAllowedToShow = (scope: 'self' | 'student') => {
   // check role of user is teacher or not
-
-  if (attendanceData) {
-    return attendanceData?.allowed === 1;
-  }
+  return attendanceSettings?.[scope]?.allowed;
 };
 
 interface DashboardProps {}
@@ -323,55 +353,38 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
   const attendanceConfiguration = (selectedDate: any) => {
     const mycohortID = localStorage.getItem('classId');
-    console.log('selectedCohortData', selectedCohortData);
 
     // Find the cohort data that matches the mycohortID
     const selectedCohort = selectedCohortData?.find(
       (cohort) => cohort.cohortId === mycohortID
     );
+    
     if (selectedCohort) {
-      const getData = selectedCohort.params;
-      if (getData) {
-        console.log('getData', getData);
+      // const getData = selectedCohort.params;
+      // if (getData) {
+      //   console.log('getData', getData);
 
-        setData(getData);
-      } else {
-        setData(null);
-      }
+      //   setData(getData);
+      // } else {
+      //   setData(null);
+      // }
 
       //-----------------set learner data configuration -------------
-      const attendanceTimesLearners = getData?.student;
-      const canMarkAttendanceLerners1 = attendanceTimesLearners
-        ? isWithinAttendanceTimeUpdated(
-            attendanceTimesLearners,
-            selectedDate,
-            attendanceData
-          )
-        : false;
-
+      //const attendanceTimesLearners = getData?.student;
+      const canMarkAttendanceLerners1 = canAttendanceMarked('student', selectedCohort, selectedDate, attendanceData)
       setCanMarkAttendanceLerners(canMarkAttendanceLerners1);
-      const isAllowedToMarkLearners1 = attendanceTimesLearners
-        ? checkIsAllowedToShow(attendanceTimesLearners)
-        : false;
+      const isAllowedToMarkLearners1 = checkIsAllowedToShow('student');
       setIsAllowedToMarkLearners(isAllowedToMarkLearners1);
 
       //---------------set self attendance configuration-------------------------
-      const attendanceTimesSelf = getData?.self;
-      const canMarkAttendanceSelf1 = attendanceTimesSelf
-        ? isWithinAttendanceTimeUpdated(
-            attendanceTimesSelf,
-            selectedDate,
-            attendanceData
-          )
-        : false;
+      const canMarkAttendanceSelf1 = canAttendanceMarked('self', selectedCohort, selectedDate, attendanceData)
+        
       setCanMarkAttendanceSelf(canMarkAttendanceSelf1);
 
       //check is user role is teacher or not
       const isTeacherRole = role === Role.TEACHER;
 
-      const isAllowedToMarkSelf1 = attendanceTimesSelf
-        ? checkIsAllowedToShow(attendanceTimesSelf) && isTeacherRole
-        : false;
+      const isAllowedToMarkSelf1 = checkIsAllowedToShow('self') 
       setIsAllowedToMarkSelf(isAllowedToMarkSelf1);
     }
   };
@@ -380,6 +393,37 @@ const Dashboard: React.FC<DashboardProps> = () => {
     const getSelectedDate = selectedDate;
     attendanceConfiguration(getSelectedDate);
   }, [attendanceData, selectedCohortData, selectedDate]);
+
+const isLocationValid = (
+  cohortLat: number,
+  cohortLon: number,
+): boolean => {
+  const distance = getDistanceInMeters(cohortLat, cohortLon);
+  return distance <= 50;
+};
+
+function getDistanceInMeters(
+  lat1: number,
+  lon1: number,
+
+): number {
+  const toRad = (value: number) => (value * Math.PI) / 180;
+  const R = 6371000; // Earth's radius in meters
+  const lat2 = attendanceLocation?.latitude || 0;
+  const lon2 = attendanceLocation?.longitude || 0;
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+    Math.sin(dLon / 2) ** 2;
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  return R * c;
+}
+
 
   // handle self attendance
   const handleUpdateAction = async () => {
@@ -393,11 +437,11 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
     // Prepare data object
     const currentDate = new Date();
-    const dateForAttendance = formatSelectedDate(currentDate);
+    const today = formatSelectedDate(currentDate);
 
     console.log('attendanceLocation?', attendanceLocation);
     // if (selectedAttendance) {
-    const data = {
+    const data:any = {
       userId: userId,
       attendance: selectedAttendance ? selectedAttendance : '',
       attendanceDate: selectedDate,
@@ -407,6 +451,28 @@ const Dashboard: React.FC<DashboardProps> = () => {
       absentReason:
         selectedAttendance === attendanceType.ABSENT ? reasonOfAbsent : '',
     };
+
+    // Find the cohort data that matches the mycohortID
+    const selectedCohort:any = selectedCohortData?.find(
+      (cohort) => cohort.cohortId === classId
+    );
+    
+    data['lateMark'] = true;
+    if (today == selectedDate) {
+      // Check if the current time is within the attendance window
+      const flag = attendanceWindow(selectedCohort?.teacherSlot);
+      if (flag === 'late') {
+        data['lateMark'] = true;
+      } else
+          data['lateMark'] = false;
+    } 
+    if (selectedCohort?.latitude && selectedCohort?.longitude) {
+      const valid:boolean = isLocationValid(
+        selectedCohort.latitude,
+        selectedCohort.longitude,
+      );
+      data['validLocation'] = valid;
+    }
 
     try {
       // Call the API to mark attendance
@@ -419,7 +485,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
         showToastMessage(response?.response?.data?.errorMessage, 'error');
       } else {
         showToastMessage(t('COMMON.SOMETHING_WENT_WRONG'), 'error');
-        console.log('erro');
       }
     } catch (error) {
       console.log('error', error);
@@ -492,8 +557,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
       const getSelectedCohortDetails = response?.find(
         (item: any) => item?.cohortId === classId
       );
-      console.log('ResponseCohortDetails:', getSelectedCohortDetails);
-      console.log('classId', classId);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -692,8 +755,6 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
             try {
               const results = await Promise.all(fetchPromises);
-              console.log('Fetched data:', results);
-
               const nameIDAttendanceArray = results
                 .filter((result) => !result?.error && result?.data?.contextId)
                 .map((result) => {
