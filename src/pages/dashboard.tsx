@@ -395,22 +395,24 @@ const Dashboard: React.FC<DashboardProps> = () => {
   }, [attendanceData, selectedCohortData, selectedDate]);
 
 const isLocationValid = (
-  cohortLat: number,
-  cohortLon: number,
+  cohort:any,
+  location:any
 ): boolean => {
-  const distance = getDistanceInMeters(cohortLat, cohortLon);
+  const cohortLat = cohort.latitude;
+  const cohortLon = cohort.longitude;
+  const distance = getDistanceInMeters(cohortLat, cohortLon, location);
   return distance <= 50;
 };
 
 function getDistanceInMeters(
   lat1: number,
   lon1: number,
-
+  location:any
 ): number {
   const toRad = (value: number) => (value * Math.PI) / 180;
   const R = 6371000; // Earth's radius in meters
-  const lat2 = attendanceLocation?.latitude || 0;
-  const lon2 = attendanceLocation?.longitude || 0;
+  const lat2 = location?.latitude || 0;
+  const lon2 = location?.longitude || 0;
   const dLat = toRad(lat2 - lat1);
   const dLon = toRad(lon2 - lon1);
 
@@ -468,8 +470,7 @@ function getDistanceInMeters(
     } 
     if (selectedCohort?.latitude && selectedCohort?.longitude) {
       const valid:boolean = isLocationValid(
-        selectedCohort.latitude,
-        selectedCohort.longitude,
+        selectedCohort, attendanceLocation
       );
       data['validLocation'] = valid;
     }
