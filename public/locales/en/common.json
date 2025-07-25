@@ -142,7 +142,8 @@
     "OKAY": "Okay",
     "HELD_EVERY_WEEK_ON": "Held every week on {{days}}",
     "SESSION_SCHEDULED_SUCCESSFULLY": "Session has been scheduled successfully!",
-    "CENTER": "Class"
+    "CENTER": "Class",
+     "ADD_STUDENTS": "Add Students"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
@@ -187,7 +188,8 @@
     "REMOTE_AVERAGE_ATTENDANCE": "Remote Average Attendance",
     "REGULAR_AVERAGE_ATTENDANCE": "Regular Average Attendance",
     "BLOCK": "Block",
-    "ATTENDANCE": "Attendance (%)"
+    "ATTENDANCE": "Attendance (%)",
+    "ADD_STUDENTS": "Add Students"
   },
   "ATTENDANCE": {
     "TOTAL_STUDENTS": "Total: {{count}}",

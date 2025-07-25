@@ -112,5 +112,28 @@ export const showProgramYear = false;
 
 export const showFilterCenterType = false;
 
-export const addUserName = false
-export const addPassword = false
+export const addUserName = true
+export const addPassword = true
+
+export const attendanceSettings =  {
+  "self": {
+    "allowed": 1,
+    "can_be_updated": 0,
+    "allow_late_marking": 1,
+    "attendance_ends_at": "10:35",
+    "capture_geoLocation": 1,
+    "attendance_starts_at": "10:25",
+    "back_dated_attendance": 0,
+    "restrict_attendance_timings": 0,
+    "back_dated_attendance_allowed_days": 0
+  },
+  "student": {
+    "allowed": 1,
+    "can_be_updated": 1,
+    "allow_late_marking": 1,
+    "capture_geoLocation": 0,
+    "back_dated_attendance": 1,
+    "restrict_attendance_timings": 0,
+    "back_dated_attendance_allowed_days": 180
+  }
+}

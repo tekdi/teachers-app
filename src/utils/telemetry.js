@@ -66,61 +66,61 @@ export const telemetryFactory = {
 
   interact: (interactEventInput) => {
     if (typeof window !== 'undefined') {
-      const eventData = getEventData(interactEventInput);
-      if (CsTelemetryModule.instance.isInitialised) {
-        CsTelemetryModule.instance.telemetryService.raiseInteractTelemetry({
-          options: eventData.options,
-          edata: eventData.edata,
-        });
-      }
+      // const eventData = getEventData(interactEventInput);
+      // if (CsTelemetryModule.instance.isInitialised) {
+      //   CsTelemetryModule.instance.telemetryService.raiseInteractTelemetry({
+      //     options: eventData.options,
+      //     edata: eventData.edata,
+      //   });
+      // }
     }
   },
 
   impression: (impressionEventInput) => {
     if (typeof window !== 'undefined') {
-      const eventData = getEventData(impressionEventInput);
-      if (CsTelemetryModule.instance.isInitialised) {
-        CsTelemetryModule.instance.telemetryService.raiseImpressionTelemetry({
-          options: eventData.options,
-          edata: eventData.edata,
-        });
-      }
+      // const eventData = getEventData(impressionEventInput);
+      // if (CsTelemetryModule.instance.isInitialised) {
+      //   CsTelemetryModule.instance.telemetryService.raiseImpressionTelemetry({
+      //     options: eventData.options,
+      //     edata: eventData.edata,
+      //   });
+      // }
     }
   },
 
   assess: (assessEventInput) => {
     if (typeof window !== 'undefined') {
-      const eventData = getEventData(assessEventInput);
-      if (CsTelemetryModule.instance.isInitialised) {
-        CsTelemetryModule.instance.telemetryService.raiseAssesTelemetry({
-          options: eventData.options,
-          edata: eventData.edata,
-        });
-      }
+      // const eventData = getEventData(assessEventInput);
+      // if (CsTelemetryModule.instance.isInitialised) {
+      //   CsTelemetryModule.instance.telemetryService.raiseAssesTelemetry({
+      //     options: eventData.options,
+      //     edata: eventData.edata,
+      //   });
+      // }
     }
   },
 
   response: (responseEventInput) => {
     if (typeof window !== 'undefined') {
-      const eventData = getEventData(responseEventInput);
-      if (CsTelemetryModule.instance.isInitialised) {
-        CsTelemetryModule.instance.telemetryService.raiseResponseTelemetry({
-          options: eventData.options,
-          edata: eventData.edata,
-        });
-      }
+      // const eventData = getEventData(responseEventInput);
+      // if (CsTelemetryModule.instance.isInitialised) {
+      //   CsTelemetryModule.instance.telemetryService.raiseResponseTelemetry({
+      //     options: eventData.options,
+      //     edata: eventData.edata,
+      //   });
+      // }
     }
   },
 
   interrupt: (interactEventInput) => {
     if (typeof window !== 'undefined') {
-      const eventData = getEventData(interactEventInput);
-      if (CsTelemetryModule.instance.isInitialised) {
-        CsTelemetryModule.instance.telemetryService.raiseInterruptTelemetry({
-          options: eventData.options,
-          edata: eventData.edata,
-        });
-      }
+      // const eventData = getEventData(interactEventInput);
+      // if (CsTelemetryModule.instance.isInitialised) {
+      //   CsTelemetryModule.instance.telemetryService.raiseInterruptTelemetry({
+      //     options: eventData.options,
+      //     edata: eventData.edata,
+      //   });
+      // }
     }
   },
 

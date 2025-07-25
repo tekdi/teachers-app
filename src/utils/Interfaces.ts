@@ -66,6 +66,8 @@ export interface MarkAttendanceParams {
   scope: string;
   absentReason?: string;
   attendanceLocation: any;
+  lateMark?: boolean;
+  validLocation?: boolean;
 }
 
 export interface UserIdFilter {

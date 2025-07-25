@@ -57,7 +57,7 @@ const CohortLearnerList: React.FC<CohortLearnerListProp> = ({
 
           if (resp) {
             const userDetails = resp.map((user: any) => ({
-              name: toPascalCase(user.name),
+              name: (user.name) ? toPascalCase(user.name): user.firstName + ' ' + user.lastName,
               userId: user.userId,
               memberStatus: user.status,
               statusReason: user.statusReason,

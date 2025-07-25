@@ -70,8 +70,10 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
 
   useEffect(() => {
     if (formResponse) {
-      console.log('formResponse', formResponse);
       const { schema, uiSchema } = GenerateSchemaAndUiSchema(formResponse, t);
+            console.log('schema', schema);
+            console.log('uiSchema', uiSchema);
+
       setSchema(schema);
       setUiSchema(uiSchema);
     }
@@ -141,7 +143,7 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
           {
             tenantId: tenantId,
             roleId: RoleId.STUDENT,
-            cohortId: [cohortId],
+            cohortIds: [cohortId],
           },
         ],
         customFields: [],
@@ -165,6 +167,8 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
           if (typeof fieldValue !== 'object') {
             apiBody[fieldKey] = fieldValue;
             if (fieldKey === 'name') {
+              apiBody['firstName'] = fieldValue.split(' ')[0];
+              apiBody['lastName'] = fieldValue.split(' ').slice(1).join(' ');
               setFullname(fieldValue);
             }
           }

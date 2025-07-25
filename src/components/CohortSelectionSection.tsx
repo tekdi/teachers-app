@@ -220,13 +220,15 @@ const CohortSelectionSection: React.FC<CohortSelectionSectionProps> = ({
             if (response[0].type === cohortHierarchy.COHORT) {
               const filteredData = response
                 ?.map((item: any) => {
-                  const school = schools[item?.parentId];
+                  const school:any = schools[item?.parentId];
                   const cohortName = `${(school as { name?: string })?.name || "-"}, ${item?.cohortName || item?.name}${item?.teacherSlot ? `, ${item.teacherSlot}` : ''}`; // School, Class, [Type of Cohort] format
                   return {
                     cohortId: item?.cohortId,
                     parentId: item?.parentId,
                     name: cohortName, // School, Class format
-                    params: item?.params,
+                    teacherSlot: item?.teacherSlot || '09:00 AM - 05:00 PM',
+                    latitude: school?.latitude || '',
+                    longitude: school?.longitude || '',
                   };
                 })
                 ?.filter(Boolean);
