@@ -466,8 +466,6 @@ function getDistanceInMeters(
       } else
           data['lateMark'] = false;
     } 
-    selectedCohort.latitude="12.8166813691315"
-    selectedCohort.longitude= "77.694144737417"
     if (selectedCohort?.latitude && selectedCohort?.longitude) {
       const valid:boolean = isLocationValid(
         selectedCohort.latitude,
