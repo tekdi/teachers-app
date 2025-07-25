@@ -164,11 +164,12 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
         );
 
         if (fieldId === null || fieldId === 'null') {
-          if (typeof fieldValue !== 'object') {
+          if (typeof fieldValue !== 'object' && typeof fieldValue === 'string') {
+            const nameParts = fieldValue.trim().split(/\s+/); // Split by any number of spaces
             apiBody[fieldKey] = fieldValue;
             if (fieldKey === 'name') {
-              apiBody['firstName'] = fieldValue.split(' ')[0];
-              apiBody['lastName'] = fieldValue.split(' ').slice(1).join(' ');
+              apiBody['firstName'] = nameParts[0] || '';
+              apiBody['lastName'] = nameParts.slice(1).join(' ') || '';
               setFullname(fieldValue);
             }
           }
