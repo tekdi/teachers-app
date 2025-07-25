@@ -167,8 +167,8 @@ const AddLearnerModal: React.FC<AddLearnerModalProps> = ({
           if (typeof fieldValue !== 'object') {
             apiBody[fieldKey] = fieldValue;
             if (fieldKey === 'name') {
-              apiBody['firstName'] = fieldValue.split(' ')[0];
-              apiBody['lastName'] = fieldValue.split(' ').slice(1).join(' ');
+              apiBody['firstName'] = fieldValue?.split(' ')[0];
+              apiBody['lastName'] = fieldValue?.split(' ').slice(1).join(' ');
               setFullname(fieldValue);
             }
           }
