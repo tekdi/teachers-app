@@ -721,7 +721,7 @@ const onAfterUsersAdd = async (teacherIds: string[]) => {
         {value === 2 && (
           <>
             <Box mt={3} px={'18px'}>
-              <Button
+              {/* <Button
                 sx={{
                   border: '1px solid #1E1B16',
                   borderRadius: '100px',
@@ -734,7 +734,7 @@ const onAfterUsersAdd = async (teacherIds: string[]) => {
                 onClick={handleOpenAddLearnerModal}
               >
                 {t('COMMON.ADD_NEW')}
-              </Button>
+              </Button> */}
             </Box>
              <Box mt={3} px={'18px'}>
               <Button
