@@ -307,7 +307,7 @@ const LearnersListItem: React.FC<LearnerListProps> = ({
           if (data) {
             const userData = data?.userData;
             setUserData(userData);
-            setUserName(userData?.name);
+            setUserName(userData?.name || userData?.firstName + ' ' + userData?.lastName);
             const customFields = userData?.customFields;
             customFields.forEach((field: any) => {
                 if (field.label === "MOTHER_NAME") {

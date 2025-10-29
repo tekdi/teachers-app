@@ -285,7 +285,7 @@ const LearnerProfile: React.FC<LearnerProfileProp> = ({
             const data = response;
             if (data) {
               const coreFieldData = data?.result?.userData;
-              setUserName(toPascalCase(coreFieldData?.name));
+              setUserName(toPascalCase(coreFieldData?.name || coreFieldData?.firstName + ' ' + coreFieldData?.lastName));
               const fields: CustomField[] =
                 data?.result?.userData?.customFields;
               if (fields?.length > 0) {
