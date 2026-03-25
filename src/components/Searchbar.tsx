@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Box,
   Button,
@@ -34,23 +34,36 @@ const SearchBar: React.FC<SearchBarProps> = ({
 }) => {
   const theme = useTheme<any>();
   const [searchTerm, setSearchTerm] = useState(value);
+  const prevResultsLengthRef = useRef<number | undefined | null>(null);
+  const searchTermRef = useRef(searchTerm);
 
   useEffect(() => {
     setSearchTerm(value);
   }, [value]);
 
   useEffect(() => {
-    if (resultsLength === 0 && searchTerm.trim()) {
+    searchTermRef.current = searchTerm;
+  }, [searchTerm]);
+
+  useEffect(() => {
+    if (
+      prevResultsLengthRef.current !== null &&
+      prevResultsLengthRef.current !== undefined &&
+      prevResultsLengthRef.current > 0 &&
+      resultsLength === 0 &&
+      searchTermRef.current.trim()
+    ) {
       showToastMessage('No Data Found', 'info');
       setSearchTerm('');
       onSearch('');
       onClear?.();
     }
-  }, [resultsLength, searchTerm, onSearch, onClear]);
+
+    prevResultsLengthRef.current = resultsLength;
+  }, [resultsLength, onSearch, onClear]);
 
   const handleSearchClear = () => {
     setSearchTerm('');
-    handleSearch('');
     onSearch('');
     onClear?.();
   };
