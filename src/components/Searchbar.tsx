@@ -1,6 +1,7 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Box,
+  Button,
   Grid,
   IconButton,
   InputBase,
@@ -10,6 +11,7 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
 import { debounce } from '@/utils/Helper';
+import { showToastMessage } from './Toastify';
 
 export interface SearchBarProps {
   onSearch: (value: string) => void;
@@ -17,20 +19,53 @@ export interface SearchBarProps {
   onClear?: () => void;
   placeholder: string;
   fullWidth?: boolean;
+  showClearSearch?: boolean;
+  resultsLength?: number;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({
   onSearch,
   value = '',
+  onClear,
   placeholder = 'Search...',
   fullWidth = false,
+  showClearSearch = false,
+  resultsLength,
 }) => {
   const theme = useTheme<any>();
   const [searchTerm, setSearchTerm] = useState(value);
+  const prevResultsLengthRef = useRef<number | undefined | null>(null);
+  const searchTermRef = useRef(searchTerm);
+
+  useEffect(() => {
+    setSearchTerm(value);
+  }, [value]);
+
+  useEffect(() => {
+    searchTermRef.current = searchTerm;
+  }, [searchTerm]);
+
+  useEffect(() => {
+    if (
+      prevResultsLengthRef.current !== null &&
+      prevResultsLengthRef.current !== undefined &&
+      prevResultsLengthRef.current > 0 &&
+      resultsLength === 0 &&
+      searchTermRef.current.trim()
+    ) {
+      showToastMessage('No Data Found', 'info');
+      setSearchTerm('');
+      onSearch('');
+      onClear?.();
+    }
+
+    prevResultsLengthRef.current = resultsLength;
+  }, [resultsLength, onSearch, onClear]);
 
   const handleSearchClear = () => {
-    onSearch('');
     setSearchTerm('');
+    onSearch('');
+    onClear?.();
   };
 
   const handleSearch = useCallback(
@@ -44,6 +79,13 @@ const SearchBar: React.FC<SearchBarProps> = ({
     const searchTerm = event.target.value;
     setSearchTerm(searchTerm);
     handleSearch(searchTerm);
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      onSearch(searchTerm);
+    }
   };
 
   return (
@@ -63,6 +105,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
             <InputBase
               value={searchTerm}
               onChange={handleChange}
+              onKeyDown={handleKeyDown}
               sx={{ ml: theme.spacing(3), flex: 1, fontSize: '14px' }}
               placeholder={placeholder}
               inputProps={{ 'aria-label': placeholder }}
@@ -76,6 +119,17 @@ const SearchBar: React.FC<SearchBarProps> = ({
               {searchTerm ? <ClearIcon /> : <SearchIcon />}
             </IconButton>
           </Paper>
+          {showClearSearch && searchTerm && (
+            <Box sx={{ mt: 1, textAlign: 'right' }}>
+              <Button
+                size="small"
+                onClick={handleSearchClear}
+                sx={{ textTransform: 'none' }}
+              >
+                Clear Search
+              </Button>
+            </Box>
+          )}
         </Box>
       </Grid>
     </Grid>
